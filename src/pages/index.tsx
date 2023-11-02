@@ -5,6 +5,7 @@ import { api } from "~/utils/api";
 
 export default function Home() {
   const user = useUser();
+
   return (
     <>
       <Head>
