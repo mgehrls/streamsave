@@ -48,7 +48,13 @@ export default function Home() {
                   </button>
                 </SignInButton>
               )}
-              {user.isSignedIn && <div> User image</div>}
+              {user.isSignedIn && (
+                <SignOutButton>
+                  <button className="flex items-center justify-center bg-pink-700 px-6 py-2 transition-all hover:scale-105 hover:rounded-md">
+                    Sign Out
+                  </button>
+                </SignOutButton>
+              )}
             </header>
 
             {!user.isSignedIn && (
