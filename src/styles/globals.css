@@ -6,3 +6,6 @@
     box-sizing: border-box;
     transition: all 0.25s linear;
 }
+html{
+    background-color: rgb(24 24 27);
+}
