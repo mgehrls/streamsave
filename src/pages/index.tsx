@@ -4,16 +4,21 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Loading from "~/components/Loading";
+import { api } from "~/utils/api";
 
 export default function Home() {
   const user = useUser();
   const [isClient, setIsClient] = useState(false);
+
+  const { data } = api.mDB.getTrending.useQuery();
 
   useEffect(() => {
     setIsClient(true);
   }, []);
 
   if (!isClient) return;
+
+  if (data) console.log(data);
 
   if (!user.isLoaded)
     return (
@@ -31,7 +36,7 @@ export default function Home() {
       </Head>
       <div className="min-h-screen w-full">
         <div className="flex min-h-screen w-full items-start justify-center">
-          <div className="flex min-h-screen w-full max-w-5xl flex-col justify-start border-x border-slate-900">
+          <div className="flex min-h-screen w-full max-w-5xl flex-col justify-between border-x border-slate-900">
             <header className="flex items-center justify-between bg-slate-800 px-8 py-4">
               <div className="flex items-center">
                 <Link
@@ -74,6 +79,22 @@ export default function Home() {
                 <BottomSection />
               </>
             )}
+            <footer className="mt-auto">
+              <div className="flex flex-col items-center justify-center bg-slate-800 px-8 py-8">
+                <p className="text-md text-slate-200">
+                  &copy; 2023 StreamSave. All rights reserved.
+                </p>
+                <p className="text-md text-slate-200">
+                  data and images courtesy of{" "}
+                  <a
+                    className="font-bold underline"
+                    href="https://www.themoviedb.org/"
+                  >
+                    themoviedb.org
+                  </a>
+                </p>
+              </div>
+            </footer>
           </div>
         </div>
       </div>
