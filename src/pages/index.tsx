@@ -5,20 +5,17 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Loading from "~/components/Loading";
 import { api } from "~/utils/api";
+import type { MovieAPIResult, ShowAPIResult } from "~/utils/types";
 
 export default function Home() {
   const user = useUser();
   const [isClient, setIsClient] = useState(false);
-
-  const { data } = api.mDB.getTrending.useQuery();
 
   useEffect(() => {
     setIsClient(true);
   }, []);
 
   if (!isClient) return;
-
-  if (data) console.log(data);
 
   if (!user.isLoaded)
     return (
@@ -69,9 +66,7 @@ export default function Home() {
                 </SignOutButton>
               )}
             </header>
-            {user.isSignedIn && (
-              <div className="h-full p-8"> User is signed in</div>
-            )}
+            {user.isSignedIn && <Feed />}
             {!user.isSignedIn && user.isLoaded && (
               <>
                 <TopSection />
@@ -98,6 +93,70 @@ export default function Home() {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function Feed() {
+  const { data, isLoading, isError } = api.mDB.getTrending.useQuery();
+
+  if (isError) return <div>Something went wrong</div>;
+  if (!data) return <div>Loading...</div>;
+
+  return (
+    <div>
+      <h2 className="p-8 text-xl">Popular Shows</h2>
+      {isLoading && <Loading />}
+      <div className="flex gap-4 overflow-scroll">
+        {data.popularShows.map((show) => (
+          <ShowCard key={show.id} show={show} />
+        ))}
+      </div>
+      <h2 className="p-8 text-xl">Popular Movies</h2>
+      {isLoading && <Loading />}
+      <div className="flex gap-4 overflow-scroll">
+        {data.popularMovies.map((movie) => (
+          <MovieCard key={movie.id} movie={movie} />
+        ))}
+      </div>
+      <h2 className="p-8 text-xl">Trending Shows</h2>
+      {isLoading && <Loading />}
+      <div className="flex gap-4 overflow-scroll">
+        {data.trendingShows.map((show) => (
+          <ShowCard key={show.id} show={show} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ShowCard({ show }: { show: ShowAPIResult }) {
+  const basePath = "https://image.tmdb.org/t/p/w500";
+
+  return (
+    <div className="p-4">
+      <Image
+        src={`${basePath}${show.poster_path}`}
+        alt=""
+        width={128}
+        height={200}
+      />
+      {show.name}
+    </div>
+  );
+}
+
+function MovieCard({ movie }: { movie: MovieAPIResult }) {
+  const basePath = "https://image.tmdb.org/t/p/w500";
+  return (
+    <div className="p-4">
+      <Image
+        src={`${basePath}${movie.poster_path}`}
+        alt=""
+        width={128}
+        height={200}
+      />
+      {movie.title}
     </div>
   );
 }
