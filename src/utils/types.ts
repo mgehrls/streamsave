@@ -31,6 +31,7 @@ export type ShowAPIResult =   {
     vote_average: number,
     vote_count: number,
     origin_country: string[],
+    title: string,
   }
   
 export type APIResponse = {

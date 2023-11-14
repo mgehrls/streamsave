@@ -6,7 +6,7 @@ import Link from "next/link";
 import Loading from "~/components/Loading";
 import { api } from "~/utils/api";
 import type { MovieAPIResult, ShowAPIResult } from "~/utils/types";
-import { Swiper, SwiperSlide, useSwiper } from "swiper/react";
+import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
 
 import "swiper/css";
@@ -14,6 +14,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 import "swiper/css/a11y";
+import { type } from "os";
 
 export default function Home() {
   const user = useUser();
@@ -107,10 +108,9 @@ export default function Home() {
 
 function Feed() {
   const { data, isLoading, isError } = api.mDB.getTrending.useQuery();
-  const rowClasses = "flex gap-4 overflow-x-scroll rounded-lg bg-slate-800 p-4";
 
   if (isError) return <div>Something went wrong</div>;
-  if (!data) return <div>Loading...</div>;
+  if (isLoading) return <div>Loading...</div>;
 
   return (
     <div>
@@ -141,7 +141,7 @@ function MediaRow({
         >
           {media.map((show) => (
             <SwiperSlide key={show.id}>
-              <ShowCard show={show} />
+              <MediaCard media={show} />
             </SwiperSlide>
           ))}
         </Swiper>
@@ -150,19 +150,17 @@ function MediaRow({
   );
 }
 
-function ShowCard({ show }: { show: ShowAPIResult | MovieAPIResult }) {
+function MediaCard({ media }: { media: ShowAPIResult | MovieAPIResult }) {
   const basePath = "https://image.tmdb.org/t/p/w500";
 
-  const media: { poster_path: string; title: string } = {
-    poster_path: show.poster_path,
-    title: show.title ? show.title : show.name,
-  };
+  const posterPath = media.poster_path;
+  const title: string = media.title;
 
   return (
     <div className="max-w-[194px] border-[1px] border-slate-50 bg-zinc-900 p-2">
       <div className="flex h-[264px] w-44 items-center bg-slate-800">
         <Image
-          src={`${basePath}${media.poster_path}`}
+          src={`${basePath}${posterPath}`}
           alt=""
           width={176}
           height={264}
@@ -171,7 +169,7 @@ function ShowCard({ show }: { show: ShowAPIResult | MovieAPIResult }) {
       </div>
       <div className="p-1">
         <div className="flex h-12 items-center">
-          <h3 className="line-clamp-2 text-lg leading-[19px]">{media.title}</h3>
+          <h3 className="line-clamp-2 text-lg leading-[19px]">{title}</h3>
         </div>
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1 pt-1">
           <p className="rounded-full bg-black px-3 text-sm">action</p>

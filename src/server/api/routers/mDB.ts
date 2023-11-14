@@ -12,12 +12,18 @@ const fetchPopularMovies = async ()=>{
 const fetchTrendingShows = async ()=>{
   const res = await fetch(`https://api.themoviedb.org/3/trending/tv/day?api_key=${API_KEY_SECRET}&language=en-US&adult=false`)
   const trendingShowsData = await res.json() as APIResponse
-  return trendingShowsData.results as Array<ShowAPIResult>
+  const trendingShows = trendingShowsData.results as ShowAPIResult[]
+  return trendingShows.map((result) => {
+    return {...result, title:result.name}
+  }) as Array<ShowAPIResult>
 }
 const fetchPopularShows = async ()=>{
 const res = await fetch(` https://api.themoviedb.org/3/tv/top_rated?api_key=${API_KEY_SECRET}&language=en-US&adult=false`)
 const popularShowsData = await res.json() as APIResponse
-return popularShowsData.results as Array<ShowAPIResult>
+const popularShows = popularShowsData.results as ShowAPIResult[]
+return popularShows.map((result) => {
+  return {...result, title:result.name}
+}) as Array<ShowAPIResult>
 }
 
 export const mDBRouter = createTRPCRouter({
