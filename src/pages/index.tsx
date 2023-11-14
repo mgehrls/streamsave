@@ -6,6 +6,14 @@ import Link from "next/link";
 import Loading from "~/components/Loading";
 import { api } from "~/utils/api";
 import type { MovieAPIResult, ShowAPIResult } from "~/utils/types";
+import { Swiper, SwiperSlide, useSwiper } from "swiper/react";
+import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
+
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "swiper/css/scrollbar";
+import "swiper/css/a11y";
 
 export default function Home() {
   const user = useUser();
@@ -99,64 +107,78 @@ export default function Home() {
 
 function Feed() {
   const { data, isLoading, isError } = api.mDB.getTrending.useQuery();
+  const rowClasses = "flex gap-4 overflow-x-scroll rounded-lg bg-slate-800 p-4";
 
   if (isError) return <div>Something went wrong</div>;
   if (!data) return <div>Loading...</div>;
 
   return (
     <div>
-      <h2 className="p-8 text-xl">Popular Shows</h2>
-      {isLoading && <Loading />}
-      <div className="flex gap-4 overflow-scroll">
-        {data.popularShows.map((show) => (
-          <ShowCard key={show.id} show={show} />
-        ))}
-      </div>
-      <h2 className="p-8 text-xl">Popular Movies</h2>
-      {isLoading && <Loading />}
-      <div className="flex gap-4 overflow-scroll">
-        {data.popularMovies.map((movie) => (
-          <MovieCard key={movie.id} movie={movie} />
-        ))}
-      </div>
-      <h2 className="p-8 text-xl">Trending Shows</h2>
-      {isLoading && <Loading />}
-      <div className="flex gap-4 overflow-scroll">
-        {data.trendingShows.map((show) => (
-          <ShowCard key={show.id} show={show} />
-        ))}
+      <MediaRow title={"Trending Shows"} media={data.trendingShows} />
+      <MediaRow title={"Popular Shows"} media={data.popularShows} />
+      <MediaRow title={"Popular Movies"} media={data.popularMovies} />
+    </div>
+  );
+}
+
+function MediaRow({
+  title,
+  media,
+}: {
+  title: string;
+  media: MovieAPIResult[] | ShowAPIResult[];
+}) {
+  return (
+    <div>
+      <h2>{title}</h2>
+      <div>
+        <Swiper
+          className="w-full"
+          modules={[Navigation, Pagination, Scrollbar, A11y]}
+          slidesPerView={5}
+          loop={true}
+          navigation={true}
+        >
+          {media.map((show) => (
+            <SwiperSlide key={show.id}>
+              <ShowCard show={show} />
+            </SwiperSlide>
+          ))}
+        </Swiper>
       </div>
     </div>
   );
 }
 
-function ShowCard({ show }: { show: ShowAPIResult }) {
+function ShowCard({ show }: { show: ShowAPIResult | MovieAPIResult }) {
   const basePath = "https://image.tmdb.org/t/p/w500";
 
-  return (
-    <div className="p-4">
-      <Image
-        src={`${basePath}${show.poster_path}`}
-        alt=""
-        width={128}
-        height={200}
-      />
-      {show.name}
-    </div>
-  );
-}
+  const media: { poster_path: string; title: string } = {
+    poster_path: show.poster_path,
+    title: show.title ? show.title : show.name,
+  };
 
-function MovieCard({ movie }: { movie: MovieAPIResult }) {
-  const basePath = "https://image.tmdb.org/t/p/w500";
   return (
-    <div className="p-4">
-      <Image
-        src={`${basePath}${movie.poster_path}`}
-        alt=""
-        width={128}
-        height={200}
-      />
-      {movie.title}
+    <div className="max-w-[194px] border-[1px] border-slate-50 bg-zinc-900 p-2">
+      <div className="flex h-[264px] w-44 items-center bg-slate-800">
+        <Image
+          src={`${basePath}${media.poster_path}`}
+          alt=""
+          width={176}
+          height={264}
+          className="object-scale-down"
+        />
+      </div>
+      <div className="p-1">
+        <div className="flex h-12 items-center">
+          <h3 className="line-clamp-2 text-lg leading-[19px]">{media.title}</h3>
+        </div>
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 pt-1">
+          <p className="rounded-full bg-black px-3 text-sm">action</p>
+          <p className="rounded-full bg-black px-3 text-sm">drama</p>
+          <p className="rounded-full bg-black px-3 text-sm">sci fi</p>
+        </div>
+      </div>
     </div>
   );
 }
