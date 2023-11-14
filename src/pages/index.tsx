@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import Link from "next/link";
 import Loading from "~/components/Loading";
 import { api } from "~/utils/api";
@@ -14,7 +14,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 import "swiper/css/a11y";
-import { type } from "os";
+import useWindowSize from "~/utils/useWindowSize";
 
 export default function Home() {
   const user = useUser();
@@ -114,9 +114,21 @@ function Feed() {
 
   return (
     <div>
-      <MediaRow title={"Trending Shows"} media={data.trendingShows} />
-      <MediaRow title={"Popular Shows"} media={data.popularShows} />
-      <MediaRow title={"Popular Movies"} media={data.popularMovies} />
+      <MediaRow
+        title={"Trending Shows"}
+        media={data.trendingShows}
+        bgColor="bg-zinc-800"
+      />
+      <MediaRow
+        title={"Popular Shows"}
+        media={data.popularShows}
+        bgColor="bg-zinc-700"
+      />
+      <MediaRow
+        title={"Popular Movies"}
+        media={data.popularMovies}
+        bgColor="bg-zinc-800"
+      />
     </div>
   );
 }
@@ -124,23 +136,35 @@ function Feed() {
 function MediaRow({
   title,
   media,
+  bgColor,
 }: {
   title: string;
   media: MovieAPIResult[] | ShowAPIResult[];
+  bgColor?: string;
 }) {
+  const size = useWindowSize();
+  const slidesPerView =
+    size.width && size.width > 768
+      ? 5
+      : size.width && size.width > 690
+      ? 4
+      : size.width && size.width > 480
+      ? 3
+      : 2;
+
   return (
-    <div>
-      <h2>{title}</h2>
+    <div className={`p-4 ${bgColor}`}>
+      <h2 className="py-2 text-xl font-bold tracking-wider">{title}</h2>
       <div>
         <Swiper
           className="w-full"
           modules={[Navigation, Pagination, Scrollbar, A11y]}
-          slidesPerView={5}
+          slidesPerView={slidesPerView}
           loop={true}
           navigation={true}
         >
-          {media.map((show) => (
-            <SwiperSlide key={show.id}>
+          {media.map((show, i) => (
+            <SwiperSlide className="w-full" key={show.id}>
               <MediaCard media={show} />
             </SwiperSlide>
           ))}
@@ -157,8 +181,12 @@ function MediaCard({ media }: { media: ShowAPIResult | MovieAPIResult }) {
   const title: string = media.title;
 
   return (
-    <div className="max-w-[194px] border-[1px] border-slate-50 bg-zinc-900 p-2">
-      <div className="flex h-[264px] w-44 items-center bg-slate-800">
+    <div className="relative max-w-[160px] bg-slate-900 p-2 lg:max-w-[194px]">
+      <button className="absolute left-0 top-0 bg-black text-white">WL</button>
+      <button className="absolute right-0 top-0 bg-black text-white">
+        Fav
+      </button>
+      <div className="flex h-52 w-36 items-center bg-black lg:h-[264px] lg:w-44">
         <Image
           src={`${basePath}${posterPath}`}
           alt=""
@@ -168,10 +196,12 @@ function MediaCard({ media }: { media: ShowAPIResult | MovieAPIResult }) {
         />
       </div>
       <div className="p-1">
-        <div className="flex h-12 items-center">
-          <h3 className="line-clamp-2 text-lg leading-[19px]">{title}</h3>
+        <div className="mt-1 flex h-[40px] items-center">
+          <h3 className="text-md line-clamp-2 leading-[19px] lg:text-lg">
+            {title}
+          </h3>
         </div>
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 pt-1">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 pt-2">
           <p className="rounded-full bg-black px-3 text-sm">action</p>
           <p className="rounded-full bg-black px-3 text-sm">drama</p>
           <p className="rounded-full bg-black px-3 text-sm">sci fi</p>

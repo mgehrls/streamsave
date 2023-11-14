@@ -30,3 +30,39 @@ html{
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
+.swiper-button-next{
+    width: 40px !important;
+    height: 80px !important;
+    color:white !important;
+    background-color: black;
+    opacity: 60%;
+    border: 2px solid white;
+    scale: .7;
+}
+.swiper-button-next:hover,
+.swiper-button-next:focus{
+    opacity: 100%;
+
+}
+.swiper-button-prev{
+    width: 40px !important;
+    height: 80px !important;
+    color:white !important;
+    background-color: black;
+    border: 2px solid white;
+    opacity: 60%;   
+    scale: .7;
+}
+.swiper-button-prev:hover,
+.swiper-button-prev:focus{
+    opacity: 100%;
+
+}
+@media screen and (min-width:700px) {
+    .swiper-button-prev{
+        scale:.8;
+    }
+    .swiper-button-next{
+        scale:.8
+    }
+}
