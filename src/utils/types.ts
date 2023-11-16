@@ -40,3 +40,30 @@ export type APIResponse = {
     total_pages: number,
     total_results: number,
   }
+
+  export type SbMedia ={
+    backdrop_path:string,
+    created_at?:string,
+    description:string,
+    id:number,
+    poster_path:string,
+    title:string,
+    type: string
+}
+
+export type ListItemPlusMedia={
+    id:string,
+    created_at?:string,
+    lastSeen: Date | null,
+    media: SbMedia,
+    media_id:number,
+    user_id:string,
+}
+
+export type ListItem = {
+    id:string,
+    created_at?:string,
+    lastSeen: Date | null,
+    media_id:number,
+    user_id:string,
+}

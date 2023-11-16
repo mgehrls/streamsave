@@ -11,11 +11,24 @@ generator client {
     provider = "prisma-client-js"
 }
 
-model Post {
+model ListItem {
     id        String   @id @default(cuid())
     createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    content   String   @db.VarChar(255)
-    authorId  String
-    @@index([authorId])
+    lastSeen  String   @db.VarChar(255)
+    userId    String
+    media     Media    @relation(fields: [mediaId], references: [id])
+    mediaId   Int
+
+    @@index([mediaId])
+}
+
+model Media {
+    id          Int        @id @unique
+    createdAt   DateTime   @default(now())
+    title       String     @db.VarChar(255)
+    type        String     @db.VarChar(255)
+    poster      String     @db.VarChar(255)
+    backdrop    String     @db.VarChar(255)
+    description String     @db.VarChar(255)
+    listItem    ListItem[]
 }

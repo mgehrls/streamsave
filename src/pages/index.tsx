@@ -1,24 +1,27 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import Head from "next/head";
 import { SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
 import Image from "next/image";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Loading from "~/components/Loading";
 import { api } from "~/utils/api";
 import type { MovieAPIResult, ShowAPIResult } from "~/utils/types";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
+import useWindowSize from "~/utils/useWindowSize";
 
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 import "swiper/css/a11y";
-import useWindowSize from "~/utils/useWindowSize";
 
 export default function Home() {
   const user = useUser();
   const [isClient, setIsClient] = useState(false);
+
+  //function that fetches userProfile from database
 
   useEffect(() => {
     setIsClient(true);
@@ -144,13 +147,19 @@ function MediaRow({
 }) {
   const size = useWindowSize();
   const slidesPerView =
-    size.width && size.width > 768
-      ? 5
-      : size.width && size.width > 690
-      ? 4
-      : size.width && size.width > 480
+    size.width && size.width < 440
+      ? 2
+      : size.width && size.width < 510
+      ? 2.5
+      : size.width && size.width < 595
       ? 3
-      : 2;
+      : size.width && size.width < 680
+      ? 3.5
+      : size.width && size.width < 760
+      ? 4
+      : size.width && size.width < 870
+      ? 4.5
+      : 5;
 
   return (
     <div className={`p-4 ${bgColor}`}>
@@ -160,11 +169,13 @@ function MediaRow({
           className="w-full"
           modules={[Navigation, Pagination, Scrollbar, A11y]}
           slidesPerView={slidesPerView}
+          spaceBetween={10}
           loop={true}
           navigation={true}
+          centeredSlidesBounds={true}
         >
-          {media.map((show, i) => (
-            <SwiperSlide className="w-full" key={show.id}>
+          {media.map((show) => (
+            <SwiperSlide key={show.id}>
               <MediaCard media={show} />
             </SwiperSlide>
           ))}
@@ -181,7 +192,7 @@ function MediaCard({ media }: { media: ShowAPIResult | MovieAPIResult }) {
   const title: string = media.title;
 
   return (
-    <div className="relative max-w-[160px] bg-slate-900 p-2 lg:max-w-[194px]">
+    <div className="relative mx-auto min-w-[160px] max-w-[160px] bg-slate-900 p-2 lg:min-w-[194px] lg:max-w-[194px]">
       <button className="absolute left-0 top-0 bg-black text-white">WL</button>
       <button className="absolute right-0 top-0 bg-black text-white">
         Fav
