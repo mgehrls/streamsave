@@ -43,39 +43,25 @@ export type APIResponse = {
     total_results: number,
   }
 
-  export type SbMedia ={
-    backdrop_path:string,
-    created_at?:string,
-    description:string,
-    id:number,
-    poster_path:string,
-    title:string,
-    type: string
+  export type Media ={
+    id: number;
+    title: string;
+    type: string;
+    poster: string;
+    backdrop: string;
+    description: string;
+    createdAt?: Date;
 }
 
 export type ListItemPlusMedia=({
-  media: {
-      id: number;
-      createdAt: Date;
-      title: string;
-      type: string;
-      poster: string;
-      backdrop: string;
-      description: string;
-  };
-} & {
+  media: Media;
+} & ListItem) | undefined
+
+export type ListItem = {
   id: string;
   createdAt: Date;
   lastSeen: string;
   userId: string;
   mediaId: number;
   watchLater: boolean;
-}) | undefined
-
-export type ListItem = {
-    id:string,
-    created_at?:string,
-    lastSeen: Date | null,
-    media_id:number,
-    user_id:string,
 }

@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Loading from "~/components/Loading";
 import { api } from "~/utils/api";
-import type { APIResult, ListItemPlusMedia } from "~/utils/types";
+import type { ListItemPlusMedia, Media } from "~/utils/types";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
 import useWindowSize from "~/utils/useWindowSize";
@@ -121,6 +121,13 @@ function Feed() {
 
   return (
     <div>
+      {listData && (
+        <MediaRow
+          title={"Your List"}
+          bgColor="bg-slate-800"
+          listItems={listData}
+        />
+      )}
       <MediaRow
         title={"Trending Shows"}
         media={trendingShows}
@@ -150,11 +157,14 @@ function MediaRow({
   listItems,
 }: {
   title: string;
-  media: APIResult[];
+  media?: Media[];
   bgColor?: string;
   listItems?: ListItemPlusMedia[];
 }) {
   const size = useWindowSize();
+
+  if (!media && !listItems) return null;
+
   const slidesPerView =
     size.width && size.width < 440
       ? 2
@@ -172,7 +182,7 @@ function MediaRow({
 
   return (
     <div className={`p-4 ${bgColor}`}>
-      <h2 className="py-2 text-xl font-bold tracking-wider">{title}</h2>
+      <h2 className="pb-2 text-xl font-bold tracking-wider">{title}</h2>
       <div>
         <Swiper
           className="w-full"
@@ -183,13 +193,26 @@ function MediaRow({
           navigation={true}
           centeredSlidesBounds={true}
         >
-          {media.map((show) => {
+          {media?.map((media) => {
+            const item: ListItemPlusMedia = listItems?.find(
+              (item) => item?.media.id === media.id,
+            );
             return (
-              <SwiperSlide key={show.id}>
-                <MediaCard media={show} listItems={listItems} />
+              <SwiperSlide key={media.id}>
+                <MediaCard media={media} item={item} />
               </SwiperSlide>
             );
           })}
+          {listItems &&
+            !media &&
+            listItems?.map((item) => {
+              if (item)
+                return (
+                  <SwiperSlide key={item.id}>
+                    <MediaCard media={item.media} item={item} />
+                  </SwiperSlide>
+                );
+            })}
         </Swiper>
       </div>
     </div>
@@ -198,124 +221,159 @@ function MediaRow({
 
 function MediaCard({
   media,
-  listItems,
+  item,
 }: {
-  media: APIResult;
-  listItems?: ListItemPlusMedia[];
+  media: Media;
+  item?: ListItemPlusMedia;
 }) {
-  const posterPath = media.poster_path;
-  const title: string = media.title;
   const ctx = api.useUtils();
 
-  const objectToSend = {
+  const objectToSend: {
     media: {
-      id: media.id,
-      type: media.name ? "tv" : "movie",
-      title: media.title || media.name,
-      poster: media.poster_path,
-      backdrop: media.backdrop_path,
-      description: media.overview,
-      watchLater: false,
+      id: number;
+      type: string;
+      title: string;
+      poster: string;
+      backdrop: string;
+      description: string;
+      watchLater: boolean;
+    };
+  } = {
+    media: {
+      ...media,
+      watchLater: item?.watchLater ?? false,
     },
   };
+
   const likeBtnClasses =
     "absolute right-0 top-0 rounded-bl-lg bg-black p-2 text-white opacity-70 hover:opacity-100";
   const watchLaterBtnClasses =
     "absolute left-0 top-0 rounded-br-lg bg-black p-2 text-white opacity-70 hover:opacity-100";
+  const iconSize = 20;
   const basePath = "https://image.tmdb.org/t/p/w500";
-
-  const listItem = listItems?.find((item) => item?.mediaId === media.id);
 
   const [confirmRemoval, setConfirmRemoval] = useState(false);
 
-  const { mutate: addToList } = api.db.addListItem.useMutation({
-    onSuccess: () => {
-      //invalidate the cache, void tells typescript that we don't care to await the promise. It can happen in the background.
-      void ctx.db.getUserList.invalidate();
-    },
-  });
+  const { mutate: addToList, isLoading: adding } =
+    api.db.addListItem.useMutation({
+      onSuccess: () => {
+        //invalidate the cache, void tells typescript that we don't care to await the promise. It can happen in the background.
+        void ctx.db.getUserList.invalidate();
+      },
+    });
 
-  const { mutate: removeFromList } = api.db.deleteListItem.useMutation({
-    onSuccess: () => {
-      void ctx.db.getUserList.invalidate();
-    },
-  });
+  const { mutate: removeFromList, isLoading: removing } =
+    api.db.deleteListItem.useMutation({
+      onSuccess: () => {
+        void ctx.db.getUserList.invalidate();
+      },
+    });
 
-  const { mutate: updateListItem } = api.db.updateListItem.useMutation({
-    onSuccess: () => {
-      void ctx.db.getUserList.invalidate();
-    },
-  });
+  const { mutate: updateListItem, isLoading: updating } =
+    api.db.updateListItem.useMutation({
+      onSuccess: () => {
+        void ctx.db.getUserList.invalidate();
+      },
+    });
 
   return (
     <div className="relative mx-auto min-w-[160px] max-w-[160px] bg-slate-900 p-2 lg:min-w-[194px] lg:max-w-[194px]">
-      {confirmRemoval && listItem?.id && (
+      {confirmRemoval && item?.id && (
         <div className="absolute left-0 top-0 z-10 flex h-full w-full flex-col items-center justify-center gap-8 bg-black p-2 text-white">
           <p className="font-bold">Remove from List?</p>
-          <button onClick={() => removeFromList({ id: listItem.id })}>
-            Remove
-          </button>
+          {!removing && (
+            <button onClick={() => removeFromList({ id: item.id })}>
+              Remove
+            </button>
+          )}
+          {removing && (
+            <div>
+              <Loading />
+            </div>
+          )}
+
           <button onClick={() => setConfirmRemoval(false)}>Close</button>
         </div>
       )}
 
-      {listItem && !listItem.watchLater && (
+      {item && !item.watchLater && (
         <button
           onClick={() => setConfirmRemoval(true)}
           className={likeBtnClasses}
         >
-          <FaHeart fill="red" />
+          <FaHeart size={iconSize} fill="red" />
         </button>
       )}
-      {listItem && listItem.watchLater && (
+      {item && item.watchLater && (
         <>
           <button
             onClick={() => setConfirmRemoval(true)}
             className={watchLaterBtnClasses}
           >
-            <FaClockRotateLeft fill="blue" />
+            <FaClockRotateLeft size={iconSize} fill="green" />
           </button>
-          <button
-            onClick={() =>
-              updateListItem({
-                id: listItem.id,
-                watchLater: false,
-                lastSeen: "",
-              })
-            }
-            className={likeBtnClasses}
-          >
-            <FaRegHeart color="white" />
-          </button>
+          {!updating && (
+            <button
+              onClick={() =>
+                updateListItem({
+                  id: item.id,
+                  watchLater: false,
+                  lastSeen: "",
+                })
+              }
+              className={likeBtnClasses}
+            >
+              <FaRegHeart size={iconSize} color="white" />
+            </button>
+          )}
+          {updating && (
+            <div className={likeBtnClasses}>
+              <Loading />
+            </div>
+          )}
         </>
       )}
-      {!listItem && (
+      {!item && (
         <>
-          <button
-            onClick={() => {
-              objectToSend.media.watchLater = true;
-              addToList(objectToSend);
-              setConfirmRemoval(false);
-            }}
-            className={watchLaterBtnClasses}
-          >
-            <FaClockRotateLeft />
-          </button>
-          <button
-            onClick={() => {
-              addToList(objectToSend);
-              setConfirmRemoval(false);
-            }}
-            className={likeBtnClasses}
-          >
-            <FaRegHeart color="white" />
-          </button>
+          {!adding && (
+            <button
+              onClick={() => {
+                objectToSend.media.watchLater = true;
+                addToList(objectToSend);
+                setConfirmRemoval(false);
+              }}
+              className={watchLaterBtnClasses}
+            >
+              <FaClockRotateLeft size={iconSize} />
+            </button>
+          )}
+          {adding && (
+            <div className={watchLaterBtnClasses}>
+              <Loading />
+            </div>
+          )}
+          {!adding && (
+            <button
+              onClick={() => {
+                addToList(objectToSend);
+                setConfirmRemoval(false);
+              }}
+              className={likeBtnClasses}
+            >
+              <FaRegHeart size={iconSize} color="white" />
+            </button>
+          )}
+          {adding && (
+            <div className={likeBtnClasses}>
+              <Loading />
+            </div>
+          )}
         </>
       )}
 
       <div className="flex h-52 w-36 items-center bg-black lg:h-[264px] lg:w-44">
         <Image
-          src={`${basePath}${posterPath}`}
+          src={`${basePath}${media.poster}`}
           alt=""
           width={176}
           height={264}
@@ -325,7 +383,7 @@ function MediaCard({
       <div className="p-1">
         <div className="mt-1 flex h-[40px] items-center">
           <h3 className="text-md line-clamp-2 leading-[19px] lg:text-lg">
-            {title}
+            {media.title}
           </h3>
         </div>
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1 pt-2">
