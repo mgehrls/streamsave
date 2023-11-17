@@ -12,12 +12,13 @@ generator client {
 }
 
 model ListItem {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    lastSeen  String   @db.VarChar(255)
-    userId    String
-    media     Media    @relation(fields: [mediaId], references: [id])
-    mediaId   Int
+    id         String   @id @default(cuid())
+    createdAt  DateTime @default(now())
+    lastSeen   String   @db.VarChar(255)
+    userId     String
+    media      Media    @relation(fields: [mediaId], references: [id])
+    mediaId    Int
+    watchLater Boolean  @default(false)
 
     @@index([mediaId])
 }
@@ -29,6 +30,6 @@ model Media {
     type        String     @db.VarChar(255)
     poster      String     @db.VarChar(255)
     backdrop    String     @db.VarChar(255)
-    description String     @db.VarChar(255)
+    description String     @db.VarChar(1000)
     listItem    ListItem[]
 }

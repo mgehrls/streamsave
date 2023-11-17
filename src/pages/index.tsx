@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import Head from "next/head";
 import { SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
@@ -6,10 +7,12 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Loading from "~/components/Loading";
 import { api } from "~/utils/api";
-import type { MovieAPIResult, ShowAPIResult } from "~/utils/types";
+import type { APIResult, ListItemPlusMedia } from "~/utils/types";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
 import useWindowSize from "~/utils/useWindowSize";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { FaClockRotateLeft } from "react-icons/fa6";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -20,8 +23,6 @@ import "swiper/css/a11y";
 export default function Home() {
   const user = useUser();
   const [isClient, setIsClient] = useState(false);
-
-  //function that fetches userProfile from database
 
   useEffect(() => {
     setIsClient(true);
@@ -110,27 +111,33 @@ export default function Home() {
 }
 
 function Feed() {
-  const { data, isLoading, isError } = api.mDB.getTrending.useQuery();
+  const { data: apiData, isLoading, isError } = api.mDB.getTrending.useQuery();
+  const { data: listData } = api.db.getUserList.useQuery();
 
   if (isError) return <div>Something went wrong</div>;
   if (isLoading) return <div>Loading...</div>;
+
+  const { trendingShows, popularShows, popularMovies } = apiData;
 
   return (
     <div>
       <MediaRow
         title={"Trending Shows"}
-        media={data.trendingShows}
+        media={trendingShows}
         bgColor="bg-zinc-800"
+        listItems={listData}
       />
       <MediaRow
         title={"Popular Shows"}
-        media={data.popularShows}
+        media={popularShows}
         bgColor="bg-zinc-700"
+        listItems={listData}
       />
       <MediaRow
         title={"Popular Movies"}
-        media={data.popularMovies}
+        media={popularMovies}
         bgColor="bg-zinc-800"
+        listItems={listData}
       />
     </div>
   );
@@ -140,10 +147,12 @@ function MediaRow({
   title,
   media,
   bgColor,
+  listItems,
 }: {
   title: string;
-  media: MovieAPIResult[] | ShowAPIResult[];
+  media: APIResult[];
   bgColor?: string;
+  listItems?: ListItemPlusMedia[];
 }) {
   const size = useWindowSize();
   const slidesPerView =
@@ -174,29 +183,136 @@ function MediaRow({
           navigation={true}
           centeredSlidesBounds={true}
         >
-          {media.map((show) => (
-            <SwiperSlide key={show.id}>
-              <MediaCard media={show} />
-            </SwiperSlide>
-          ))}
+          {media.map((show) => {
+            return (
+              <SwiperSlide key={show.id}>
+                <MediaCard media={show} listItems={listItems} />
+              </SwiperSlide>
+            );
+          })}
         </Swiper>
       </div>
     </div>
   );
 }
 
-function MediaCard({ media }: { media: ShowAPIResult | MovieAPIResult }) {
-  const basePath = "https://image.tmdb.org/t/p/w500";
-
+function MediaCard({
+  media,
+  listItems,
+}: {
+  media: APIResult;
+  listItems?: ListItemPlusMedia[];
+}) {
   const posterPath = media.poster_path;
   const title: string = media.title;
+  const ctx = api.useUtils();
+
+  const objectToSend = {
+    media: {
+      id: media.id,
+      type: media.name ? "tv" : "movie",
+      title: media.title || media.name,
+      poster: media.poster_path,
+      backdrop: media.backdrop_path,
+      description: media.overview,
+      watchLater: false,
+    },
+  };
+  const likeBtnClasses =
+    "absolute right-0 top-0 rounded-bl-lg bg-black p-2 text-white opacity-70 hover:opacity-100";
+  const watchLaterBtnClasses =
+    "absolute left-0 top-0 rounded-br-lg bg-black p-2 text-white opacity-70 hover:opacity-100";
+  const basePath = "https://image.tmdb.org/t/p/w500";
+
+  const listItem = listItems?.find((item) => item?.mediaId === media.id);
+
+  const [confirmRemoval, setConfirmRemoval] = useState(false);
+
+  const { mutate: addToList } = api.db.addListItem.useMutation({
+    onSuccess: () => {
+      //invalidate the cache, void tells typescript that we don't care to await the promise. It can happen in the background.
+      void ctx.db.getUserList.invalidate();
+    },
+  });
+
+  const { mutate: removeFromList } = api.db.deleteListItem.useMutation({
+    onSuccess: () => {
+      void ctx.db.getUserList.invalidate();
+    },
+  });
+
+  const { mutate: updateListItem } = api.db.updateListItem.useMutation({
+    onSuccess: () => {
+      void ctx.db.getUserList.invalidate();
+    },
+  });
 
   return (
     <div className="relative mx-auto min-w-[160px] max-w-[160px] bg-slate-900 p-2 lg:min-w-[194px] lg:max-w-[194px]">
-      <button className="absolute left-0 top-0 bg-black text-white">WL</button>
-      <button className="absolute right-0 top-0 bg-black text-white">
-        Fav
-      </button>
+      {confirmRemoval && listItem?.id && (
+        <div className="absolute left-0 top-0 z-10 flex h-full w-full flex-col items-center justify-center gap-8 bg-black p-2 text-white">
+          <p className="font-bold">Remove from List?</p>
+          <button onClick={() => removeFromList({ id: listItem.id })}>
+            Remove
+          </button>
+          <button onClick={() => setConfirmRemoval(false)}>Close</button>
+        </div>
+      )}
+
+      {listItem && !listItem.watchLater && (
+        <button
+          onClick={() => setConfirmRemoval(true)}
+          className={likeBtnClasses}
+        >
+          <FaHeart fill="red" />
+        </button>
+      )}
+      {listItem && listItem.watchLater && (
+        <>
+          <button
+            onClick={() => setConfirmRemoval(true)}
+            className={watchLaterBtnClasses}
+          >
+            <FaClockRotateLeft fill="blue" />
+          </button>
+          <button
+            onClick={() =>
+              updateListItem({
+                id: listItem.id,
+                watchLater: false,
+                lastSeen: "",
+              })
+            }
+            className={likeBtnClasses}
+          >
+            <FaRegHeart color="white" />
+          </button>
+        </>
+      )}
+      {!listItem && (
+        <>
+          <button
+            onClick={() => {
+              objectToSend.media.watchLater = true;
+              addToList(objectToSend);
+              setConfirmRemoval(false);
+            }}
+            className={watchLaterBtnClasses}
+          >
+            <FaClockRotateLeft />
+          </button>
+          <button
+            onClick={() => {
+              addToList(objectToSend);
+              setConfirmRemoval(false);
+            }}
+            className={likeBtnClasses}
+          >
+            <FaRegHeart color="white" />
+          </button>
+        </>
+      )}
+
       <div className="flex h-52 w-36 items-center bg-black lg:h-[264px] lg:w-44">
         <Image
           src={`${basePath}${posterPath}`}

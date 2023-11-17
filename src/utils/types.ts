@@ -33,6 +33,8 @@ export type ShowAPIResult =   {
     origin_country: string[],
     title: string,
   }
+
+export type APIResult = MovieAPIResult & ShowAPIResult;
   
 export type APIResponse = {
     pages: number,
@@ -51,14 +53,24 @@ export type APIResponse = {
     type: string
 }
 
-export type ListItemPlusMedia={
-    id:string,
-    created_at?:string,
-    lastSeen: Date | null,
-    media: SbMedia,
-    media_id:number,
-    user_id:string,
-}
+export type ListItemPlusMedia=({
+  media: {
+      id: number;
+      createdAt: Date;
+      title: string;
+      type: string;
+      poster: string;
+      backdrop: string;
+      description: string;
+  };
+} & {
+  id: string;
+  createdAt: Date;
+  lastSeen: string;
+  userId: string;
+  mediaId: number;
+  watchLater: boolean;
+}) | undefined
 
 export type ListItem = {
     id:string,
