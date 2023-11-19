@@ -6,7 +6,7 @@ import { createTRPCRouter, privateProcedure } from "~/server/api/trpc";
 import { z } from "zod";
 import type { Prisma } from "@prisma/client";
 
-export const dbRouter = createTRPCRouter({
+export const listItemRouter = createTRPCRouter({
     getUserList: privateProcedure 
         .query(async ({ ctx }) => {
            const { db } = ctx;

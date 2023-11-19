@@ -16,7 +16,8 @@ model ListItem {
     createdAt  DateTime @default(now())
     lastSeen   String   @db.VarChar(255)
     userId     String
-    media      Media    @relation(fields: [mediaId], references: [id])
+    media      Media    @relation(fields: [mediaId], references: [id], onDelete: Restrict)
+    tags       Tag[]
     mediaId    Int
     watchLater Boolean  @default(false)
 
@@ -32,4 +33,10 @@ model Media {
     backdrop    String     @db.VarChar(255)
     description String     @db.VarChar(1000)
     listItem    ListItem[]
+}
+
+model Tag {
+    id       Int        @id @unique
+    name     String     @db.VarChar(255)
+    listItem ListItem[]
 }

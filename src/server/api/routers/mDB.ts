@@ -8,7 +8,7 @@ const fetchPopularMovies = async ()=>{
   const res = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY_SECRET}&language=en-US&adult=false`)
   const popularMoviesData = await res.json() as APIResponse
   return popularMoviesData.results.map((result) => {
-    return {id: result.id, title:result.title, type:"movie", poster:result.poster_path, backdrop:result.backdrop_path, description:result.overview}
+    return {id: result.id, title:result.title, type:"movie", poster:result.poster_path, backdrop:result.backdrop_path, description:result.overview, genres:result.genre_ids}
   }) as Array<Media>
 }
 const fetchTrendingShows = async ()=>{
@@ -16,7 +16,7 @@ const fetchTrendingShows = async ()=>{
   const trendingShowsData = await res.json() as APIResponse
   const trendingShows = trendingShowsData.results as APIResult[]
   return trendingShows.map((result) => {
-    return {id:result.id, title:result.name, type:"tv", poster:result.poster_path, backdrop:result.backdrop_path, description:result.overview}
+    return {id:result.id, title:result.name, type:"tv", poster:result.poster_path, backdrop:result.backdrop_path, description:result.overview, genres:result.genre_ids}
   }) as Array<Media>
 }
 const fetchPopularShows = async ()=>{
@@ -24,7 +24,7 @@ const res = await fetch(` https://api.themoviedb.org/3/tv/top_rated?api_key=${AP
 const popularShowsData = await res.json() as APIResponse
 const popularShows = popularShowsData.results as APIResult[]
 return popularShows.map((result) => {
-  return {id:result.id, title:result.name, type:"tv", poster:result.poster_path, backdrop:result.backdrop_path, description:result.overview}
+  return {id:result.id, title:result.name, type:"tv", poster:result.poster_path, backdrop:result.backdrop_path, description:result.overview, genres:result.genre_ids}
 }) as Array<Media>
 }
 

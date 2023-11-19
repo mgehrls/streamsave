@@ -1,6 +1,6 @@
 import { mDBRouter } from "~/server/api/routers/mDB";
 import { createTRPCRouter } from "~/server/api/trpc";
-import { dbRouter } from "./routers/db";
+import { listItemRouter } from "./routers/listItem";
 
 /**
  * This is the primary router for your server.
@@ -9,7 +9,7 @@ import { dbRouter } from "./routers/db";
  */
 export const appRouter = createTRPCRouter({
   mDB: mDBRouter,
-  db: dbRouter,
+  listItem: listItemRouter,
 });
 
 // export type definition of API

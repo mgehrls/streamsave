@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import Head from "next/head";
 import { SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
 import Image from "next/image";
@@ -11,8 +9,7 @@ import type { ListItemPlusMedia, Media } from "~/utils/types";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
 import useWindowSize from "~/utils/useWindowSize";
-import { FaHeart, FaRegHeart } from "react-icons/fa";
-import { FaClockRotateLeft } from "react-icons/fa6";
+import MediaCard from "~/components/MediaCard";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -112,7 +109,7 @@ export default function Home() {
 
 function Feed() {
   const { data: apiData, isLoading, isError } = api.mDB.getTrending.useQuery();
-  const { data: listData } = api.db.getUserList.useQuery();
+  const { data: listData } = api.listItem.getUserList.useQuery();
 
   if (isError) return <div>Something went wrong</div>;
   if (isLoading) return <div>Loading...</div>;
@@ -214,183 +211,6 @@ function MediaRow({
                 );
             })}
         </Swiper>
-      </div>
-    </div>
-  );
-}
-
-function MediaCard({
-  media,
-  item,
-}: {
-  media: Media;
-  item?: ListItemPlusMedia;
-}) {
-  const ctx = api.useUtils();
-
-  const objectToSend: {
-    media: {
-      id: number;
-      type: string;
-      title: string;
-      poster: string;
-      backdrop: string;
-      description: string;
-      watchLater: boolean;
-    };
-  } = {
-    media: {
-      ...media,
-      watchLater: item?.watchLater ?? false,
-    },
-  };
-
-  const likeBtnClasses =
-    "absolute right-0 top-0 rounded-bl-lg bg-black p-2 text-white opacity-70 hover:opacity-100";
-  const watchLaterBtnClasses =
-    "absolute left-0 top-0 rounded-br-lg bg-black p-2 text-white opacity-70 hover:opacity-100";
-  const iconSize = 20;
-  const basePath = "https://image.tmdb.org/t/p/w500";
-
-  const [confirmRemoval, setConfirmRemoval] = useState(false);
-
-  const { mutate: addToList, isLoading: adding } =
-    api.db.addListItem.useMutation({
-      onSuccess: () => {
-        //invalidate the cache, void tells typescript that we don't care to await the promise. It can happen in the background.
-        void ctx.db.getUserList.invalidate();
-      },
-    });
-
-  const { mutate: removeFromList, isLoading: removing } =
-    api.db.deleteListItem.useMutation({
-      onSuccess: () => {
-        void ctx.db.getUserList.invalidate();
-      },
-    });
-
-  const { mutate: updateListItem, isLoading: updating } =
-    api.db.updateListItem.useMutation({
-      onSuccess: () => {
-        void ctx.db.getUserList.invalidate();
-      },
-    });
-
-  return (
-    <div className="relative mx-auto min-w-[160px] max-w-[160px] bg-slate-900 p-2 lg:min-w-[194px] lg:max-w-[194px]">
-      {confirmRemoval && item?.id && (
-        <div className="absolute left-0 top-0 z-10 flex h-full w-full flex-col items-center justify-center gap-8 bg-black p-2 text-white">
-          <p className="font-bold">Remove from List?</p>
-          {!removing && (
-            <button onClick={() => removeFromList({ id: item.id })}>
-              Remove
-            </button>
-          )}
-          {removing && (
-            <div>
-              <Loading />
-            </div>
-          )}
-
-          <button onClick={() => setConfirmRemoval(false)}>Close</button>
-        </div>
-      )}
-
-      {item && !item.watchLater && (
-        <button
-          onClick={() => setConfirmRemoval(true)}
-          className={likeBtnClasses}
-        >
-          <FaHeart size={iconSize} fill="red" />
-        </button>
-      )}
-      {item && item.watchLater && (
-        <>
-          <button
-            onClick={() => setConfirmRemoval(true)}
-            className={watchLaterBtnClasses}
-          >
-            <FaClockRotateLeft size={iconSize} fill="green" />
-          </button>
-          {!updating && (
-            <button
-              onClick={() =>
-                updateListItem({
-                  id: item.id,
-                  watchLater: false,
-                  lastSeen: "",
-                })
-              }
-              className={likeBtnClasses}
-            >
-              <FaRegHeart size={iconSize} color="white" />
-            </button>
-          )}
-          {updating && (
-            <div className={likeBtnClasses}>
-              <Loading />
-            </div>
-          )}
-        </>
-      )}
-      {!item && (
-        <>
-          {!adding && (
-            <button
-              onClick={() => {
-                objectToSend.media.watchLater = true;
-                addToList(objectToSend);
-                setConfirmRemoval(false);
-              }}
-              className={watchLaterBtnClasses}
-            >
-              <FaClockRotateLeft size={iconSize} />
-            </button>
-          )}
-          {adding && (
-            <div className={watchLaterBtnClasses}>
-              <Loading />
-            </div>
-          )}
-          {!adding && (
-            <button
-              onClick={() => {
-                addToList(objectToSend);
-                setConfirmRemoval(false);
-              }}
-              className={likeBtnClasses}
-            >
-              <FaRegHeart size={iconSize} color="white" />
-            </button>
-          )}
-          {adding && (
-            <div className={likeBtnClasses}>
-              <Loading />
-            </div>
-          )}
-        </>
-      )}
-
-      <div className="flex h-52 w-36 items-center bg-black lg:h-[264px] lg:w-44">
-        <Image
-          src={`${basePath}${media.poster}`}
-          alt=""
-          width={176}
-          height={264}
-          className="object-scale-down"
-        />
-      </div>
-      <div className="p-1">
-        <div className="mt-1 flex h-[40px] items-center">
-          <h3 className="text-md line-clamp-2 leading-[19px] lg:text-lg">
-            {media.title}
-          </h3>
-        </div>
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 pt-2">
-          <p className="rounded-full bg-black px-3 text-sm">action</p>
-          <p className="rounded-full bg-black px-3 text-sm">drama</p>
-          <p className="rounded-full bg-black px-3 text-sm">sci fi</p>
-        </div>
       </div>
     </div>
   );

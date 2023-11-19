@@ -51,6 +51,7 @@ export type APIResponse = {
     backdrop: string;
     description: string;
     createdAt?: Date;
+    genres?: number[];
 }
 
 export type ListItemPlusMedia=({
@@ -64,4 +65,5 @@ export type ListItem = {
   userId: string;
   mediaId: number;
   watchLater: boolean;
+  tags?: number[];
 }
