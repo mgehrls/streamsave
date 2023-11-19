@@ -15,7 +15,8 @@ export const listItemRouter = createTRPCRouter({
                      userId: ctx.userId
                 },
                 include:{
-                    media: true
+                    media:true,
+                    tags:true
                 }
               }).catch((err: string | undefined)=>{
                     throw new Error(err);
@@ -23,13 +24,17 @@ export const listItemRouter = createTRPCRouter({
                 return userList;
            }),
     addListItem: privateProcedure
-           .input(z.object({media: z.object({id: z.number(), title: z.string(), poster: z.string(), type: z.string(), backdrop: z.string(), description:z.string(), watchLater: z.boolean()})}))
+           .input(z.object({media: z.object({id: z.number(), title: z.string(), poster: z.string(), type: z.string(), backdrop: z.string(), description:z.string(), watchLater: z.boolean(), tags: z.array(z.number())})}))
            .mutation(async ({ ctx, input }) => {
             const {media} = input;
+            const tags = media.tags.map((tagId)=>{ return {id: tagId}})
             const listItem: Prisma.ListItemCreateInput = {
                 userId: ctx.userId,
                 lastSeen: "",
                 watchLater: media.watchLater,
+                tags: {
+                    connect: tags
+                },
                 media: {
                     connectOrCreate: {
                         where: {

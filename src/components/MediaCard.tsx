@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { FaHeart, FaRegHeart, FaPlus } from "react-icons/fa";
 import { FaClockRotateLeft } from "react-icons/fa6";
 import { api } from "~/utils/api";
 import type { ListItemPlusMedia, Media } from "~/utils/types";
@@ -9,11 +9,14 @@ import Image from "next/image";
 export default function MediaCard({
   media,
   item,
+  allTags,
 }: {
   media: Media;
   item?: ListItemPlusMedia;
+  allTags: { tags: { id: number; name: string }[] };
 }) {
   const ctx = api.useUtils();
+  let tagsToDisplay: { id: number; name: string }[] = [];
 
   const objectToSend: {
     media: {
@@ -24,15 +27,31 @@ export default function MediaCard({
       backdrop: string;
       description: string;
       watchLater: boolean;
-      tags?: number[];
+      tags: number[];
     };
   } = {
     media: {
       ...media,
       watchLater: item?.watchLater ?? false,
-      tags: item?.tags ?? media.genres,
+      tags: [],
     },
   };
+  if (item?.tags) {
+    objectToSend.media.tags = item.tags.map((tag) => tag.id);
+    tagsToDisplay = item.tags;
+  } else if (media.genres) {
+    objectToSend.media.tags = media.genres;
+    tagsToDisplay = media.genres.map((genre) => {
+      const tag = allTags.tags.find((tag) => tag.id === genre);
+      if (tag) {
+        return tag;
+      } else {
+        return { id: 0, name: "" };
+      }
+    });
+  } else {
+    objectToSend.media.tags = [];
+  }
 
   const likeBtnClasses =
     "absolute right-0 top-0 rounded-bl-lg bg-black p-2 text-white opacity-70 hover:opacity-100";
@@ -73,7 +92,7 @@ export default function MediaCard({
     });
 
   return (
-    <div className="relative mx-auto min-w-[160px] max-w-[160px] bg-slate-900 p-2 lg:min-w-[194px] lg:max-w-[194px]">
+    <div className="relative mx-auto min-w-[160px] max-w-[160px] bg-zinc-900 p-2 lg:min-w-[194px] lg:max-w-[194px]">
       {confirmRemoval && item?.id && (
         <div className="absolute left-0 top-0 z-10 flex h-full w-full flex-col items-center justify-center gap-8 bg-black p-2 text-white">
           <p className="font-bold">Remove from List?</p>
@@ -143,7 +162,7 @@ export default function MediaCard({
               <FaClockRotateLeft size={iconSize} />
             </button>
           )}
-          {addingFav && (
+          {addingWatchLater && (
             <div className={watchLaterBtnClasses}>
               <Loading />
             </div>
@@ -182,14 +201,14 @@ export default function MediaCard({
             {media.title}
           </h3>
         </div>
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 pt-2">
-          {media.genres?.map((genre) => {
+        <div className="flex max-h-[52px] min-h-[52px] flex-wrap items-start gap-x-2 gap-y-1 pt-2">
+          {tagsToDisplay.map((genre) => {
             return (
               <span
-                key={genre}
-                className="rounded-md bg-slate-800 px-1 py-0.5 text-xs"
+                key={genre.id}
+                className="rounded-md bg-slate-800 px-1 py-0.5 text-xs tracking-wider"
               >
-                {genre}
+                {genre.name}
               </span>
             );
           })}

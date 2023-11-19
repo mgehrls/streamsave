@@ -108,11 +108,27 @@ export default function Home() {
 }
 
 function Feed() {
-  const { data: apiData, isLoading, isError } = api.mDB.getTrending.useQuery();
-  const { data: listData } = api.listItem.getUserList.useQuery();
+  const {
+    data: apiData,
+    isLoading: trendingLoading,
+    isError: trendingError,
+  } = api.mDB.getTrending.useQuery();
+  const {
+    data: listData,
+    isLoading,
+    isError: listDataError,
+  } = api.listItem.getUserList.useQuery();
+  const {
+    data: tags,
+    isLoading: tagsLoading,
+    isError: tagError,
+  } = api.tags.getAllTags.useQuery();
 
-  if (isError) return <div>Something went wrong</div>;
-  if (isLoading) return <div>Loading...</div>;
+  if (trendingError || listDataError || tagError)
+    return <div>Something went wrong</div>;
+  if (trendingLoading || isLoading || tagsLoading) return <div>Loading...</div>;
+
+  console.log(listData);
 
   const { trendingShows, popularShows, popularMovies } = apiData;
 
@@ -121,27 +137,31 @@ function Feed() {
       {listData && (
         <MediaRow
           title={"Your List"}
-          bgColor="bg-slate-800"
+          bgColor="bg-zinc-800"
           listItems={listData}
+          allTags={tags}
         />
       )}
       <MediaRow
         title={"Trending Shows"}
         media={trendingShows}
-        bgColor="bg-zinc-800"
+        bgColor="bg-zinc-700"
         listItems={listData}
+        allTags={tags}
       />
       <MediaRow
         title={"Popular Shows"}
         media={popularShows}
-        bgColor="bg-zinc-700"
+        bgColor="bg-zinc-800"
         listItems={listData}
+        allTags={tags}
       />
       <MediaRow
         title={"Popular Movies"}
         media={popularMovies}
-        bgColor="bg-zinc-800"
+        bgColor="bg-zinc-700"
         listItems={listData}
+        allTags={tags}
       />
     </div>
   );
@@ -152,11 +172,13 @@ function MediaRow({
   media,
   bgColor,
   listItems,
+  allTags,
 }: {
   title: string;
   media?: Media[];
   bgColor?: string;
   listItems?: ListItemPlusMedia[];
+  allTags: { tags: { name: string; id: number }[] };
 }) {
   const size = useWindowSize();
 
@@ -191,12 +213,10 @@ function MediaRow({
           centeredSlidesBounds={true}
         >
           {media?.map((media) => {
-            const item: ListItemPlusMedia = listItems?.find(
-              (item) => item?.media.id === media.id,
-            );
+            const item = listItems?.find((item) => item?.media.id === media.id);
             return (
               <SwiperSlide key={media.id}>
-                <MediaCard media={media} item={item} />
+                <MediaCard media={media} item={item} allTags={allTags} />
               </SwiperSlide>
             );
           })}
@@ -206,7 +226,11 @@ function MediaRow({
               if (item)
                 return (
                   <SwiperSlide key={item.id}>
-                    <MediaCard media={item.media} item={item} />
+                    <MediaCard
+                      media={item.media}
+                      item={item}
+                      allTags={allTags}
+                    />
                   </SwiperSlide>
                 );
             })}
