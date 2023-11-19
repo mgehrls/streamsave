@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaHeart, FaRegHeart, FaPlus } from "react-icons/fa";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { FaClockRotateLeft } from "react-icons/fa6";
 import { api } from "~/utils/api";
 import type { ListItemPlusMedia, Media } from "~/utils/types";
