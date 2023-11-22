@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { FaClockRotateLeft } from "react-icons/fa6";
-import { api } from "~/utils/api";
 import type { ListItemPlusMedia, Media } from "~/utils/types";
 import Loading from "./Loading";
 import Image from "next/image";
+import Link from "next/link";
+import TagPill from "./TagPill";
+import useListActions from "~/utils/useListActions";
 
 export default function MediaCard({
   media,
@@ -15,7 +17,6 @@ export default function MediaCard({
   item?: ListItemPlusMedia;
   allTags: { tags: { id: number; name: string }[] };
 }) {
-  const ctx = api.useUtils();
   let tagsToDisplay: { id: number; name: string }[] = [];
 
   const objectToSend: {
@@ -61,35 +62,16 @@ export default function MediaCard({
   const basePath = "https://image.tmdb.org/t/p/w500";
 
   const [confirmRemoval, setConfirmRemoval] = useState(false);
-
-  const { mutate: addFavToList, isLoading: addingFav } =
-    api.listItem.addListItem.useMutation({
-      onSuccess: () => {
-        //invalidate the cache, void tells typescript that we don't care to await the promise. It can happen in the background.
-        void ctx.listItem.getUserList.invalidate();
-      },
-    });
-  const { mutate: addWatchLaterToList, isLoading: addingWatchLater } =
-    api.listItem.addListItem.useMutation({
-      onSuccess: () => {
-        //invalidate the cache, void tells typescript that we don't care to await the promise. It can happen in the background.
-        void ctx.listItem.getUserList.invalidate();
-      },
-    });
-
-  const { mutate: removeFromList, isLoading: removing } =
-    api.listItem.deleteListItem.useMutation({
-      onSuccess: () => {
-        void ctx.listItem.getUserList.invalidate();
-      },
-    });
-
-  const { mutate: updateListItem, isLoading: updating } =
-    api.listItem.updateListItem.useMutation({
-      onSuccess: () => {
-        void ctx.listItem.getUserList.invalidate();
-      },
-    });
+  const {
+    addFavToList,
+    addWatchLaterToList,
+    removeFromList,
+    updateListItem,
+    addingFav,
+    addingWatchLater,
+    removing,
+    updating,
+  } = useListActions();
 
   return (
     <div className="relative mx-auto min-w-[160px] max-w-[160px] bg-zinc-900 p-2 lg:min-w-[194px] lg:max-w-[194px]">
@@ -187,30 +169,27 @@ export default function MediaCard({
       )}
 
       <div className="flex h-52 w-36 items-center bg-black lg:h-[264px] lg:w-44">
-        <Image
-          src={`${basePath}${media.poster}`}
-          alt=""
-          width={176}
-          height={264}
-          className="object-scale-down"
-        />
+        <Link href={`/media/${media.type}/${media.id}`}>
+          <Image
+            src={`${basePath}${media.poster}`}
+            alt=""
+            width={176}
+            height={264}
+            className="object-scale-down"
+          />
+        </Link>
       </div>
       <div className="p-1">
         <div className="mt-1 flex h-[40px] items-center">
-          <h3 className="text-md line-clamp-2 leading-[19px] lg:text-lg">
-            {media.title}
-          </h3>
+          <Link href={`/media/${media.type}/${media.id}`}>
+            <h3 className="text-md line-clamp-2 leading-[19px] lg:text-lg">
+              {media.title}
+            </h3>
+          </Link>
         </div>
-        <div className="flex max-h-[52px] min-h-[52px] flex-wrap items-start gap-x-2 gap-y-1 pt-2">
+        <div className="flex max-h-[52px] min-h-[52px] flex-wrap items-start gap-y-1 pt-2">
           {tagsToDisplay.map((genre) => {
-            return (
-              <span
-                key={genre.id}
-                className="rounded-md bg-slate-800 px-1 py-0.5 text-xs tracking-wider"
-              >
-                {genre.name}
-              </span>
-            );
+            return <TagPill key={genre.id} tag={genre} />;
           })}
         </div>
       </div>

@@ -1,8 +1,7 @@
 import Head from "next/head";
-import { SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
+import { SignInButton, useUser } from "@clerk/nextjs";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import Loading from "~/components/Loading";
 import { api } from "~/utils/api";
 import type { ListItemPlusMedia, Media } from "~/utils/types";

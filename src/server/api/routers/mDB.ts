@@ -1,7 +1,7 @@
 
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import type { APIResponse, APIResult, Media } from "~/utils/types";
+import type { APIResponse, APIResult, Media, SingleMediaAPIUnity } from "~/utils/types";
 
 const API_KEY_SECRET = process.env.API_KEY_SECRET
 
@@ -41,7 +41,8 @@ export const mDBRouter = createTRPCRouter({
     .query(async ({input}: {input: {type:string, id:number}}) => {
       const {type, id} = input;
       const res = await fetch(`https://api.themoviedb.org/3/${type}/${id}?api_key=${API_KEY_SECRET}&language=en-US&adult=false`)
-      const mediaData = await res.json() as APIResult
-      return mediaData
+      const mediaData = await res.json() as SingleMediaAPIUnity
+      console.log(mediaData)
+      return {...mediaData, title: mediaData.name || mediaData.title}
     })
 });
