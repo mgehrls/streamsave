@@ -1,4 +1,5 @@
 
+import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import type { APIResponse, APIResult, Media } from "~/utils/types";
 
@@ -34,5 +35,13 @@ export const mDBRouter = createTRPCRouter({
       const [popularMovies, trendingShows, popularShows] = await Promise.all([fetchPopularMovies(), fetchTrendingShows(), fetchPopularShows()])
 	return {popularMovies, trendingShows, popularShows}
 
+    }),
+  getSingleMedia: publicProcedure
+    .input(z.object({type: z.string(), id: z.number()}))
+    .query(async ({input}: {input: {type:string, id:number}}) => {
+      const {type, id} = input;
+      const res = await fetch(`https://api.themoviedb.org/3/${type}/${id}?api_key=${API_KEY_SECRET}&language=en-US&adult=false`)
+      const mediaData = await res.json() as APIResult
+      return mediaData
     })
 });
