@@ -72,8 +72,6 @@ function Feed() {
     return <div>Something went wrong</div>;
   if (trendingLoading || isLoading || tagsLoading) return <div>Loading...</div>;
 
-  console.log(listData);
-
   const { trendingShows, popularShows, popularMovies } = apiData;
 
   return (

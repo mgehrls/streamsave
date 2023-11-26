@@ -110,8 +110,6 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
   if (isError || tagError)
     throw Error("Error fetching data, please try again.");
 
-  console.log(mediaFromAPI);
-
   return (
     <>
       <Head>
@@ -158,7 +156,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                         </button>
                       )}
                       {updating && (
-                        <div>
+                        <div className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold">
                           <Loading />
                         </div>
                       )}
@@ -172,7 +170,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                         </button>
                       )}
                       {removing && (
-                        <div>
+                        <div className="flex items-center justify-center gap-2 rounded-md bg-pink-600 px-8 py-4 text-lg font-semibold">
                           <Loading />
                         </div>
                       )}
@@ -202,7 +200,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                         </button>
                       )}
                       {removing && (
-                        <div>
+                        <div className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold">
                           <Loading />
                         </div>
                       )}
@@ -233,7 +231,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                       </button>
                     )}
                     {addingFav && (
-                      <div>
+                      <div className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold">
                         <Loading />
                       </div>
                     )}
@@ -252,7 +250,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                       </button>
                     )}
                     {addingWatchLater && (
-                      <div>
+                      <div className="flex items-center justify-center gap-2 rounded-md bg-pink-600 px-8 py-4 text-lg font-semibold">
                         <Loading />
                       </div>
                     )}
