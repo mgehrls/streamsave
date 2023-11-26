@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { FaHeart, FaRegHeart, FaStar } from "react-icons/fa";
 import { FaClockRotateLeft } from "react-icons/fa6";
 import type { ListItemPlusMedia, Media } from "~/utils/types";
 import Loading from "./Loading";
@@ -107,7 +107,7 @@ export default function MediaCard({
             onClick={() => setConfirmRemoval(true)}
             className={watchLaterBtnClasses}
           >
-            <FaClockRotateLeft size={iconSize} fill="green" />
+            <FaStar size={iconSize} fill="green" />
           </button>
           {!updating && (
             <button

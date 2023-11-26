@@ -6,7 +6,13 @@ import LayoutWrapper from "~/components/LayoutWrapper";
 import { useUser } from "@clerk/nextjs";
 import Loading from "~/components/Loading";
 import Image from "next/image";
-import { FaHeart, FaRegHeart, FaArrowLeft, FaSearch } from "react-icons/fa";
+import {
+  FaHeart,
+  FaRegHeart,
+  FaArrowLeft,
+  FaSearch,
+  FaStar,
+} from "react-icons/fa";
 import { FaClockRotateLeft } from "react-icons/fa6";
 import Link from "next/link";
 import TagPill from "~/components/TagPill";
@@ -25,7 +31,16 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
     type: type,
     id: id,
   });
-  //   const {  addFavToList, addWatchLaterToList, removeFromList, updateListItem, addingFav, addingWatchLater, removing, updating} = useListActions();
+  const {
+    addFavToList,
+    addWatchLaterToList,
+    removeFromList,
+    updateListItem,
+    addingFav,
+    addingWatchLater,
+    removing,
+    updating,
+  } = useListActions();
 
   const {
     data: userList,
@@ -38,17 +53,41 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
     isError: tagError,
   } = api.tags.getAllTags.useQuery();
 
+  const listItem = userList?.find((item) => item.media.id === id);
+
   useEffect(() => {
     setIsClient(true);
   }, []);
 
   if (!isClient) return;
 
-  console.log(mediaFromAPI);
-
   const basePath = "https://image.tmdb.org/t/p/w500";
 
   if (!mediaFromAPI) return <div>404</div>;
+
+  const objectToSend: {
+    media: {
+      id: number;
+      type: string;
+      title: string;
+      poster: string;
+      backdrop: string;
+      description: string;
+      watchLater: boolean;
+      tags: number[];
+    };
+  } = {
+    media: {
+      id: mediaFromAPI.id,
+      type: type,
+      title: mediaFromAPI.title,
+      poster: mediaFromAPI.poster_path,
+      backdrop: mediaFromAPI.backdrop_path,
+      description: mediaFromAPI.overview,
+      watchLater: listItem?.watchLater ?? false,
+      tags: [],
+    },
+  };
 
   const genres: { id: number; name: string }[] = mediaFromAPI.genres.map(
     (genre) => {
@@ -60,7 +99,6 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
       }
     },
   );
-  const listItem = userList?.find((item) => item.media.id === id);
 
   if (!user.isLoaded || isLoading || tagsLoading)
     return (
@@ -104,14 +142,40 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                   listItem.watchLater ? (
                     // in list, in watch later
                     <>
-                      <button className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold">
-                        <FaRegHeart size={20} />
-                        <span className="hidden lg:block">Favorited</span>
-                      </button>
-                      <button className="flex items-center justify-center gap-2 rounded-md bg-pink-600 px-8 py-4 text-lg font-semibold">
-                        <FaClockRotateLeft size={20} />
-                        <span className="hidden lg:block">Watch Later</span>
-                      </button>
+                      {!updating && (
+                        <button
+                          onClick={() =>
+                            updateListItem({
+                              id: listItem.id,
+                              watchLater: false,
+                              lastSeen: "",
+                            })
+                          }
+                          className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold"
+                        >
+                          <FaRegHeart size={20} />
+                          <span className="hidden lg:block">Favorited</span>
+                        </button>
+                      )}
+                      {updating && (
+                        <div>
+                          <Loading />
+                        </div>
+                      )}
+                      {!removing && (
+                        <button
+                          onClick={() => removeFromList({ id: listItem.id })}
+                          className="flex items-center justify-center gap-2 rounded-md bg-pink-600 px-8 py-4 text-lg font-semibold"
+                        >
+                          <FaStar fill="green" size={20} />
+                          <span className="hidden lg:block">Interested</span>
+                        </button>
+                      )}
+                      {removing && (
+                        <div>
+                          <Loading />
+                        </div>
+                      )}
                       {mediaFromAPI.external_ids.imdb_id && (
                         <Link
                           href={`https://www.imdb.com/title/${mediaFromAPI.external_ids.imdb_id}`}
@@ -128,10 +192,20 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                   ) : (
                     //in list, not watch later
                     <>
-                      <button className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold">
-                        <FaHeart fill="red" size={20} />
-                        <span>Favorited</span>
-                      </button>
+                      {!removing && (
+                        <button
+                          onClick={() => removeFromList({ id: listItem.id })}
+                          className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold"
+                        >
+                          <FaHeart fill="red" size={20} />
+                          <span>Favorited</span>
+                        </button>
+                      )}
+                      {removing && (
+                        <div>
+                          <Loading />
+                        </div>
+                      )}
                       {mediaFromAPI.external_ids.imdb_id && (
                         <Link
                           href={`https://www.imdb.com/title/${mediaFromAPI.external_ids.imdb_id}`}
@@ -149,16 +223,39 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                 ) : (
                   // not in list
                   <>
-                    <button className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold">
-                      <FaRegHeart size={20} />
-                      <span className="hidden lg:block">Favorited</span>
-                    </button>
-                    <button className="line-clamp-1 flex items-center justify-center gap-2 rounded-md bg-pink-600 px-8 py-4 text-lg font-semibold">
-                      <FaClockRotateLeft size={20} />
-                      <span className="line-clamp-1 hidden lg:block">
-                        Watch Later
-                      </span>
-                    </button>
+                    {!addingFav && (
+                      <button
+                        onClick={() => addFavToList(objectToSend)}
+                        className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold"
+                      >
+                        <FaRegHeart size={20} />
+                        <span className="hidden lg:block">Favorited</span>
+                      </button>
+                    )}
+                    {addingFav && (
+                      <div>
+                        <Loading />
+                      </div>
+                    )}
+                    {!addingWatchLater && (
+                      <button
+                        onClick={() => {
+                          objectToSend.media.watchLater = true;
+                          addWatchLaterToList(objectToSend);
+                        }}
+                        className="line-clamp-1 flex items-center justify-center gap-2 rounded-md bg-pink-600 px-8 py-4 text-lg font-semibold"
+                      >
+                        <FaClockRotateLeft size={20} />
+                        <span className="line-clamp-1 hidden lg:block">
+                          Watch Later
+                        </span>
+                      </button>
+                    )}
+                    {addingWatchLater && (
+                      <div>
+                        <Loading />
+                      </div>
+                    )}
                     {mediaFromAPI.external_ids.imdb_id && (
                       <Link
                         href={`https://www.imdb.com/title/${mediaFromAPI.external_ids.imdb_id}`}
@@ -190,7 +287,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                     ? `${mediaFromAPI.overview.slice(0, 200).trim()}...`
                     : mediaFromAPI.overview}
                 </p>
-                {listItem?.tags?.length && listItem.tags.length > 0 && (
+                {listItem?.tags && listItem.tags.length > 0 && (
                   <div className="bg-black p-2">
                     <h3 className="text-lg">Your Tags</h3>
                     <div className="flex gap-2 py-2">
@@ -232,15 +329,6 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
     </>
   );
 };
-
-// id: number;
-// title: string;
-// type: string;
-// poster: string;
-// backdrop: string;
-// description: string;
-// createdAt?: Date | undefined;
-// genres?: number[] | undefined;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const ssg = generateSSGHelper();
