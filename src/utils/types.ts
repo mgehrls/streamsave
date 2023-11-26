@@ -112,6 +112,17 @@ export type SingleMovieAPIResponse = {
   backdrop_path: string,
   belongs_to_collection: null,
   budget: number,
+  external_ids:{
+    facebook_id?: string,
+    freebase_id?: string,
+    freebase_mid?: string,
+    imdb_id?: string,
+    instagram_id?: string,
+    tvdb_id?: number,
+    tvrage_id?: number,
+    twitter_id?: string | null,
+    wikidata_id?: string,
+  },
   genres:{ id: number, name: string }[],
   homepage: string,
   id: number,
@@ -130,6 +141,12 @@ export type SingleMovieAPIResponse = {
     }[],
   production_countries: 
     { iso_3166_1: string, name: string }[],
+  recommendations:{
+    page:number,
+    results: APIResult[],
+    total_pages: number,
+    total_results: number
+  },
   release_date: string,
   revenue: number,
   runtime: number,
@@ -148,6 +165,17 @@ export type SingleShowAPIResponse = {
   backdrop_path: string,
   created_by: [],
   episode_run_time: number[],
+  external_ids:{
+    facebook_id?: string,
+    freebase_id?: string,
+    freebase_mid?: string,
+    imdb_id?: string,
+    instagram_id?: string,
+    tvdb_id?: number,
+    tvrage_id?: number,
+    twitter_id?: string | null,
+    wikidata_id?: string,
+  },
   first_air_date: string,
   genres: 
     { id: number, name: string}[],
@@ -196,6 +224,28 @@ export type SingleShowAPIResponse = {
       origin_country: string
     }[], 
   production_countries:  { iso_3166_1:string, name: string } [],
+  recommendations:{
+    page:number,
+    results: {
+      adult: boolean,
+      backdrop_path: string,
+      id: number,
+      name: string,
+      original_language: string,
+      original_name: string,
+      overview: string,
+      poster_path: string,
+      media_type: string,
+      genre_ids: number[],
+      popularity: number,
+      first_air_date: string,
+      vote_average: number,
+      vote_count: number,
+      origin_country: string[],
+    }[],
+    total_pages: number,
+    total_results: number
+  },
   seasons:
     {
       air_date: string,

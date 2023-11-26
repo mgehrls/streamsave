@@ -12,6 +12,8 @@ import Link from "next/link";
 import TagPill from "~/components/TagPill";
 import { useEffect, useState } from "react";
 import useListActions from "~/utils/useListActions";
+import MediaRow from "~/components/MediaRow";
+import type { Media } from "~/utils/types";
 
 const SinglePostPage: NextPage<{ type: string; id: number }> = ({
   type,
@@ -41,6 +43,8 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
   }, []);
 
   if (!isClient) return;
+
+  console.log(mediaFromAPI);
 
   const basePath = "https://image.tmdb.org/t/p/w500";
 
@@ -76,69 +80,167 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
         <title>{`${mediaFromAPI.title}`}</title>
       </Head>
       <LayoutWrapper user={user}>
-        <div className="relative w-full px-4">
+        <div className="relative w-full">
           <Link href={"/"}>
             <FaArrowLeft className="absolute left-6 top-6" size={32} />
           </Link>
           <FaSearch className="absolute right-6 top-6" size={32} />
-          <div className="flex w-full justify-center pb-8 pt-16">
-            <Image
-              src={`${basePath}${mediaFromAPI.poster_path}`}
-              alt=""
-              width={500}
-              height={264}
-              className="w-3/5 object-scale-down"
+          <div className="flex flex-col items-center justify-center pb-8 pt-16 sm:flex-row">
+            {/* image */}
+            <div className="flex w-full max-w-[300px] justify-center pb-8 sm:w-[50%] sm:pb-0 md:max-w-none">
+              <Image
+                src={`${basePath}${mediaFromAPI.poster_path}`}
+                alt=""
+                width={800}
+                height={400}
+                className="w-4/5 object-scale-down"
+              />
+            </div>
+            {/* info */}
+            <div className="flex flex-col justify-center px-4 sm:w-1/2 sm:flex-col-reverse">
+              {/* buttons */}
+              <div className="flex items-end gap-2 sm:pt-4">
+                {listItem ? (
+                  listItem.watchLater ? (
+                    // in list, in watch later
+                    <>
+                      <button className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold">
+                        <FaRegHeart size={20} />
+                        <span className="hidden lg:block">Favorited</span>
+                      </button>
+                      <button className="flex items-center justify-center gap-2 rounded-md bg-pink-600 px-8 py-4 text-lg font-semibold">
+                        <FaClockRotateLeft size={20} />
+                        <span className="hidden lg:block">Watch Later</span>
+                      </button>
+                      {mediaFromAPI.external_ids.imdb_id && (
+                        <Link
+                          href={`https://www.imdb.com/title/${mediaFromAPI.external_ids.imdb_id}`}
+                        >
+                          <Image
+                            src="/images/imdb.png"
+                            alt=""
+                            width={50}
+                            height={80}
+                          />
+                        </Link>
+                      )}
+                    </>
+                  ) : (
+                    //in list, not watch later
+                    <>
+                      <button className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold">
+                        <FaHeart fill="red" size={20} />
+                        <span>Favorited</span>
+                      </button>
+                      {mediaFromAPI.external_ids.imdb_id && (
+                        <Link
+                          href={`https://www.imdb.com/title/${mediaFromAPI.external_ids.imdb_id}`}
+                        >
+                          <Image
+                            src="/images/imdb.png"
+                            alt=""
+                            width={50}
+                            height={80}
+                          />
+                        </Link>
+                      )}
+                    </>
+                  )
+                ) : (
+                  // not in list
+                  <>
+                    <button className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold">
+                      <FaRegHeart size={20} />
+                      <span className="hidden lg:block">Favorited</span>
+                    </button>
+                    <button className="line-clamp-1 flex items-center justify-center gap-2 rounded-md bg-pink-600 px-8 py-4 text-lg font-semibold">
+                      <FaClockRotateLeft size={20} />
+                      <span className="line-clamp-1 hidden lg:block">
+                        Watch Later
+                      </span>
+                    </button>
+                    {mediaFromAPI.external_ids.imdb_id && (
+                      <Link
+                        href={`https://www.imdb.com/title/${mediaFromAPI.external_ids.imdb_id}`}
+                      >
+                        <Image
+                          src="/images/imdb.png"
+                          alt=""
+                          width={50}
+                          height={80}
+                        />
+                      </Link>
+                    )}
+                  </>
+                )}
+              </div>
+
+              {/* text area */}
+              <div className="max-w-[425px]">
+                <h1 className="pt-4 text-2xl font-semibold tracking-wide md:text-4xl">
+                  {mediaFromAPI.title}
+                </h1>
+                <div className="flex gap-2 py-2">
+                  {genres.map((genre) => {
+                    return <TagPill key={genre.id} tag={genre} />;
+                  })}
+                </div>
+                <p className="py-4 tracking-wider">
+                  {mediaFromAPI.overview.length > 200
+                    ? `${mediaFromAPI.overview.slice(0, 200).trim()}...`
+                    : mediaFromAPI.overview}
+                </p>
+                {listItem?.tags?.length && listItem.tags.length > 0 && (
+                  <div className="bg-black p-2">
+                    <h3 className="text-lg">Your Tags</h3>
+                    <div className="flex gap-2 py-2">
+                      {listItem.tags.map((genre) => {
+                        return <TagPill key={genre.id} tag={genre} />;
+                      })}
+                      <TagPill
+                        key={245}
+                        tag={{ id: 0, name: "add tag... +" }}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+          {mediaFromAPI.recommendations.results.length > 0 && (
+            <MediaRow
+              title={`
+              Shows like ${mediaFromAPI.title}`}
+              bgColor="bg-zinc-800"
+              listItems={userList}
+              media={mediaFromAPI.recommendations.results.map((result) => {
+                return {
+                  id: result.id,
+                  title: result.name ?? result.title,
+                  type: result.name ? "tv" : "movie",
+                  poster: result.poster_path,
+                  backdrop: result.backdrop_path,
+                  description: result.overview,
+                  genres: result.genre_ids,
+                } as Media;
+              })}
+              allTags={tags}
             />
-          </div>
-          <div className="flex justify-between">
-            {listItem ? (
-              listItem.watchLater ? (
-                // in list, in watch later
-                <>
-                  <button className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold">
-                    <FaRegHeart size={20} />
-                    Favorited
-                  </button>
-                  <button className="flex items-center justify-center gap-2 rounded-md bg-pink-600 px-8 py-4 text-lg font-semibold">
-                    <FaClockRotateLeft size={20} />
-                    Watch Later
-                  </button>
-                </>
-              ) : (
-                //in list, not watch later
-                <button className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold">
-                  <FaHeart fill="red" size={20} />
-                  Favorited
-                </button>
-              )
-            ) : (
-              // not in list
-              <>
-                <button className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold">
-                  <FaRegHeart size={20} />
-                  Favorited
-                </button>
-                <button className="flex items-center justify-center gap-2 rounded-md bg-pink-600 px-8 py-4 text-lg font-semibold">
-                  <FaClockRotateLeft size={20} />
-                  Watch Later
-                </button>
-              </>
-            )}
-          </div>
-          <h1 className="pt-4 text-2xl font-semibold tracking-wide">
-            {mediaFromAPI.title}
-          </h1>
-          <div>
-            {genres.map((genre) => {
-              return <TagPill key={genre.id} tag={genre} />;
-            })}
-          </div>
-          <p className="pt-2 tracking-wider">{mediaFromAPI.overview}</p>
+          )}
         </div>
       </LayoutWrapper>
     </>
   );
 };
+
+// id: number;
+// title: string;
+// type: string;
+// poster: string;
+// backdrop: string;
+// description: string;
+// createdAt?: Date | undefined;
+// genres?: number[] | undefined;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const ssg = generateSSGHelper();
