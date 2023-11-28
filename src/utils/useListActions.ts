@@ -26,13 +26,13 @@ export default function useListActions(){
       },
     });
 
-  const { mutate: updateListItem, isLoading: updating } =
-    api.listItem.updateListItem.useMutation({
+  const { mutate: changeWatchLaterValue, isLoading: updating } =
+    api.listItem.changeWatchLaterValue.useMutation({
       onSuccess: () => {
         void ctx.listItem.getUserList.invalidate();
       },
     });
 
-    return { addFavToList, addWatchLaterToList, removeFromList, updateListItem, addingFav, addingWatchLater, removing, updating}
+    return { addFavToList, addWatchLaterToList, removeFromList, changeWatchLaterValue, addingFav, addingWatchLater, removing, updating}
 
 }

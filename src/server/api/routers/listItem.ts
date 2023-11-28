@@ -69,7 +69,7 @@ export const listItemRouter = createTRPCRouter({
                 throw new Error(err);
             })
         }),
-    updateListItem: privateProcedure
+    changeWatchLaterValue: privateProcedure
         .input(z.object({id: z.string(), lastSeen: z.string(), watchLater: z.boolean()}))
         .mutation(async ({ ctx, input }) => {
             const {id, lastSeen, watchLater} = input;
@@ -85,5 +85,4 @@ export const listItemRouter = createTRPCRouter({
                 throw new Error(err);
             })
         }),
-
 });

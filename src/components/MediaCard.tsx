@@ -66,7 +66,7 @@ export default function MediaCard({
     addFavToList,
     addWatchLaterToList,
     removeFromList,
-    updateListItem,
+    changeWatchLaterValue,
     addingFav,
     addingWatchLater,
     removing,
@@ -112,7 +112,7 @@ export default function MediaCard({
           {!updating && (
             <button
               onClick={() =>
-                updateListItem({
+                changeWatchLaterValue({
                   id: item.id,
                   watchLater: false,
                   lastSeen: "",

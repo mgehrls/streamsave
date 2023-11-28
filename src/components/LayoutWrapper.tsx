@@ -24,7 +24,7 @@ export default function LayoutWrapper({
     <div className="min-h-screen w-full bg-zinc-900 text-slate-50">
       <div className="flex min-h-screen w-full items-start justify-center">
         <div className="flex min-h-screen w-full max-w-5xl flex-col justify-between border-x border-slate-900">
-          <header className="flex items-center justify-between bg-slate-800 px-8 py-4">
+          <header className="flex items-center justify-between bg-slate-800 px-4 py-4 lg:px-8">
             <div className="flex items-center">
               <Link
                 href="/"
@@ -38,7 +38,7 @@ export default function LayoutWrapper({
                   height={3330}
                   className="h-auto w-6"
                 />
-                <h1>treamSave</h1>
+                <h1 className="hidden sm:block">treamSave</h1>
               </Link>
             </div>
             {!user.isSignedIn && (
@@ -49,11 +49,21 @@ export default function LayoutWrapper({
               </SignInButton>
             )}
             {user.isSignedIn && (
-              <SignOutButton>
-                <button className="flex items-center justify-center bg-pink-700 px-6 py-2 transition-all hover:scale-105 hover:rounded-md">
-                  Sign Out
-                </button>
-              </SignOutButton>
+              <div>
+                <Image
+                  priority
+                  src={user.user.imageUrl}
+                  alt="User Profile Image"
+                  width={50}
+                  height={50}
+                  className="rounded-full"
+                />
+              </div>
+              // <SignOutButton>
+              //   <button className="flex items-center justify-center bg-pink-700 px-6 py-2 transition-all hover:scale-105 hover:rounded-md">
+              //     Sign Out
+              //   </button>
+              // </SignOutButton>
             )}
           </header>
           {children}

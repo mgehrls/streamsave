@@ -35,7 +35,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
     addFavToList,
     addWatchLaterToList,
     removeFromList,
-    updateListItem,
+    changeWatchLaterValue,
     addingFav,
     addingWatchLater,
     removing,
@@ -110,17 +110,18 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
   if (isError || tagError)
     throw Error("Error fetching data, please try again.");
 
+  console.log(mediaFromAPI.poster_path);
+
   return (
     <>
       <Head>
         <title>{`${mediaFromAPI.title}`}</title>
       </Head>
       <LayoutWrapper user={user}>
-        <div className="relative w-full">
+        <div className="relative w-full bg-zinc-800">
           <Link href={"/"}>
-            <FaArrowLeft className="absolute left-6 top-6" size={32} />
+            <FaArrowLeft className="absolute left-6 top-5" size={32} />
           </Link>
-          <FaSearch className="absolute right-6 top-6" size={32} />
           <div className="flex flex-col items-center justify-center pb-8 pt-16 sm:flex-row">
             {/* image */}
             <div className="flex w-full max-w-[300px] justify-center pb-8 sm:w-[50%] sm:pb-0 md:max-w-none">
@@ -129,7 +130,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                 alt=""
                 width={800}
                 height={400}
-                className="w-4/5 object-scale-down"
+                className="w-4/5 border-2 border-black object-scale-down shadow-xl"
               />
             </div>
             {/* info */}
@@ -143,7 +144,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                       {!updating && (
                         <button
                           onClick={() =>
-                            updateListItem({
+                            changeWatchLaterValue({
                               id: listItem.id,
                               watchLater: false,
                               lastSeen: "",
@@ -286,7 +287,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                     : mediaFromAPI.overview}
                 </p>
                 {listItem?.tags && listItem.tags.length > 0 && (
-                  <div className="bg-black p-2">
+                  <div className="rounded-md bg-black p-2">
                     <h3 className="text-lg">Your Tags</h3>
                     <div className="flex gap-2 py-2">
                       {listItem.tags.map((genre) => {
@@ -304,9 +305,8 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
           </div>
           {mediaFromAPI.recommendations.results.length > 0 && (
             <MediaRow
-              title={`
-              Shows like ${mediaFromAPI.title}`}
-              bgColor="bg-zinc-800"
+              title={`More Like ${mediaFromAPI.title}`}
+              bgColor="bg-zinc-600"
               listItems={userList}
               media={mediaFromAPI.recommendations.results.map((result) => {
                 return {
