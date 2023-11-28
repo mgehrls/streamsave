@@ -171,7 +171,11 @@ export default function MediaCard({
       <div className="flex h-52 w-36 items-center bg-black lg:h-[264px] lg:w-44">
         <Link href={`/media/${media.type}/${media.id}`}>
           <Image
-            src={`${basePath}${media.poster}`}
+            src={
+              media.poster
+                ? `${basePath}${media.poster}`
+                : "/images/posterunavailable.png"
+            }
             alt=""
             width={176}
             height={264}

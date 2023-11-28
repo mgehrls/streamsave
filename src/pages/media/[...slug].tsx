@@ -119,14 +119,21 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
       </Head>
       <LayoutWrapper user={user}>
         <div className="relative w-full bg-zinc-800">
-          <Link href={"/"}>
-            <FaArrowLeft className="absolute left-6 top-5" size={32} />
+          <Link
+            className="absolute left-2 flex h-16 w-16 items-center justify-center"
+            href={"/"}
+          >
+            <FaArrowLeft size={32} />
           </Link>
           <div className="flex flex-col items-center justify-center pb-8 pt-16 sm:flex-row">
             {/* image */}
             <div className="flex w-full max-w-[300px] justify-center pb-8 sm:w-[50%] sm:pb-0 md:max-w-none">
               <Image
-                src={`${basePath}${mediaFromAPI.poster_path}`}
+                src={
+                  mediaFromAPI.poster_path
+                    ? `${basePath}${mediaFromAPI.poster_path}`
+                    : "/images/posterunavailable.png"
+                }
                 alt=""
                 width={800}
                 height={400}
@@ -289,7 +296,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                 {listItem?.tags && listItem.tags.length > 0 && (
                   <div className="rounded-md bg-black p-2">
                     <h3 className="text-lg">Your Tags</h3>
-                    <div className="flex gap-2 py-2">
+                    <div className="flex flex-wrap gap-2 py-2">
                       {listItem.tags.map((genre) => {
                         return <TagPill key={genre.id} tag={genre} />;
                       })}
