@@ -45,7 +45,7 @@ export default function LayoutWrapper({
     timer = setTimeout(() => {
       setSearchLoading(true);
       // get search results;
-    }, 500);
+    }, 1000);
   };
 
   function checkSearchBarSticky() {
@@ -127,31 +127,35 @@ export default function LayoutWrapper({
               </div>
             )}
           </header>
-          <div
-            id="search-bar"
-            className="flex items-center hover:opacity-100 focus:opacity-100"
-          >
-            <input
-              type="text"
-              placeholder="Search for shows or movies..."
-              className="relative w-full bg-gray-600 px-4 py-1"
-              value={searchQuery}
-              onInput={debounce}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  // window.location.assign(`/search?query=${searchQuery}`);
-                }
-              }}
-            />
-            <button
-              className="flex h-8 w-10 items-center justify-center bg-slate-50"
-              disabled={searchQuery.length === 0}
-            >
-              <FaSearch fill="black" size={25} />
-            </button>
-          </div>
-          {searchLoading && <Loading />}
+          {user.isSignedIn && (
+            <>
+              <div
+                id="search-bar"
+                className="flex items-center hover:opacity-100 focus:opacity-100"
+              >
+                <input
+                  type="text"
+                  placeholder="Search for shows or movies..."
+                  className="relative w-full bg-gray-600 px-4 py-1"
+                  value={searchQuery}
+                  onInput={debounce}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      // window.location.assign(`/search?query=${searchQuery}`);
+                    }
+                  }}
+                />
+                <button
+                  className="flex h-8 w-10 items-center justify-center bg-slate-50"
+                  disabled={searchQuery.length === 0}
+                >
+                  <FaSearch fill="black" size={25} />
+                </button>
+              </div>
+              {searchLoading && <Loading />}
+            </>
+          )}
           {children}
 
           <footer className="mt-auto">
