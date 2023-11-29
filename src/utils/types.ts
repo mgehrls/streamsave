@@ -38,7 +38,7 @@ export type APIResult = MovieAPIResult & ShowAPIResult;
   
 export type APIResponse = {
     pages: number,
-    results: ShowAPIResult[] | MovieAPIResult[],
+    results: APIResult[],
     total_pages: number,
     total_results: number,
   }

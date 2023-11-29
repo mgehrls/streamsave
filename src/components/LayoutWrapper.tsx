@@ -2,10 +2,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { SignInButton, SignOutButton } from "@clerk/nextjs";
 import type { UserResource } from "@clerk/types/dist/user";
-import { useState } from "react";
-import Loading from "./Loading";
-import { FaSearch } from "react-icons/fa";
-import { doc } from "prettier";
+import { useEffect, useState } from "react";
+import SearchResults from "./SearchResults";
 
 export default function LayoutWrapper({
   children,
@@ -36,41 +34,36 @@ export default function LayoutWrapper({
       setSearchLoading(false);
       setShowMenu(false);
       setSearchQuery("");
+      if (document.activeElement) {
+        (document.activeElement as HTMLElement).blur();
+      }
     }
   });
   let timer: NodeJS.Timeout;
 
   const debounce = () => {
     clearTimeout(timer);
-    timer = setTimeout(() => {
-      setSearchLoading(true);
-      // get search results;
-    }, 1000);
+    if (searchQuery === "") {
+      setSearchLoading(false);
+      return;
+    } else {
+      timer = setTimeout(() => {
+        setSearchLoading(true);
+        // get search results;
+      }, 1000);
+    }
   };
 
-  function checkSearchBarSticky() {
-    const searchBar = document.getElementById("search-bar");
-    if (searchBar) {
-      const searchBarOffset = searchBar?.offsetTop;
-      if (window.scrollY > searchBarOffset) {
-        searchBar.classList.add("sticky");
-        searchBar.classList.add("top-0");
-        searchBar.classList.add("z-10");
-        searchBar.classList.add("rounded-md");
-      } else {
-        searchBar.classList.remove("sticky");
-        searchBar.classList.remove("top-0");
-        searchBar.classList.remove("z-10");
-        searchBar.classList.remove("rounded-md");
-      }
+  useEffect(() => {
+    if (searchQuery === "") {
+      setSearchLoading(false);
     }
-  }
-  document.addEventListener("scroll", checkSearchBarSticky);
+  }, [searchQuery]);
 
   return (
     <div className="min-h-screen w-full bg-zinc-900 text-slate-50">
       <div className="flex min-h-screen w-full items-start justify-center">
-        <div className="flex min-h-screen w-full max-w-5xl flex-col justify-between border-x border-slate-900">
+        <div className="flex min-h-screen w-full max-w-4xl flex-col justify-between border-x border-slate-900">
           <header className="relative flex items-center justify-between bg-slate-800 px-4 py-4 lg:px-8">
             <div className="flex items-center">
               <Link
@@ -129,31 +122,24 @@ export default function LayoutWrapper({
           </header>
           {user.isSignedIn && (
             <>
-              <div
-                id="search-bar"
-                className="flex items-center hover:opacity-100 focus:opacity-100"
-              >
-                <input
-                  type="text"
-                  placeholder="Search for shows or movies..."
-                  className="relative w-full bg-gray-600 px-4 py-1"
-                  value={searchQuery}
-                  onInput={debounce}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      // window.location.assign(`/search?query=${searchQuery}`);
-                    }
-                  }}
-                />
-                <button
-                  className="flex h-8 w-10 items-center justify-center bg-slate-50"
-                  disabled={searchQuery.length === 0}
-                >
-                  <FaSearch fill="black" size={25} />
-                </button>
-              </div>
-              {searchLoading && <Loading />}
+              <input
+                type="text"
+                placeholder="Search for shows or movies..."
+                className="sticky top-0 z-20 w-full bg-gray-600 px-4 py-1 duration-500 lg:focus:scale-110"
+                value={searchQuery}
+                onInput={debounce}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    // window.location.assign(`/search?query=${searchQuery}`);
+                  }
+                }}
+              />
+              {searchLoading && (
+                <div className="absolute left-0 top-0 z-10 flex h-screen w-screen flex-col overflow-y-scroll bg-black bg-opacity-50">
+                  <SearchResults searchQuery={searchQuery} />
+                </div>
+              )}
             </>
           )}
           {children}

@@ -74,7 +74,7 @@ export default function MediaCard({
   } = useListActions();
 
   return (
-    <div className="relative mx-auto min-w-[160px] max-w-[160px] bg-zinc-900 p-2 lg:min-w-[194px] lg:max-w-[194px]">
+    <div className="relative mx-auto min-w-[160px] max-w-[160px] bg-zinc-900 p-2">
       {confirmRemoval && item?.id && (
         <div className="absolute left-0 top-0 z-10 flex h-full w-full flex-col items-center justify-center gap-8 bg-black p-2 text-white">
           <p className="font-bold">Remove from List?</p>
@@ -168,7 +168,7 @@ export default function MediaCard({
         </>
       )}
 
-      <div className="flex h-52 w-36 items-center bg-black lg:h-[264px] lg:w-44">
+      <div className="flex h-52 w-36 items-center bg-black">
         <Link href={`/media/${media.type}/${media.id}`}>
           <Image
             src={
@@ -186,12 +186,12 @@ export default function MediaCard({
       <div className="p-1">
         <div className="mt-1 flex h-[40px] items-center">
           <Link href={`/media/${media.type}/${media.id}`}>
-            <h3 className="text-md line-clamp-2 leading-[19px] lg:text-lg">
+            <h3 className="text-md line-clamp-2 leading-[19px]">
               {media.title}
             </h3>
           </Link>
         </div>
-        <div className="flex max-h-[52px] min-h-[52px] flex-wrap items-start gap-y-1 pt-2">
+        <div className="flex max-h-[52px] min-h-[52px] flex-wrap items-start gap-y-1 overflow-hidden pt-2">
           {tagsToDisplay.map((genre) => {
             return <TagPill key={genre.id} tag={genre} />;
           })}

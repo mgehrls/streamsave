@@ -70,7 +70,12 @@ function Feed() {
 
   if (trendingError || listDataError || tagError)
     return <div>Something went wrong</div>;
-  if (trendingLoading || isLoading || tagsLoading) return <div>Loading...</div>;
+  if (trendingLoading || isLoading || tagsLoading)
+    return (
+      <div className="flex min-h-[20rem] w-full items-center justify-center">
+        <Loading />
+      </div>
+    );
 
   const { trendingShows, popularShows, popularMovies } = apiData;
 
@@ -172,7 +177,7 @@ function MiddleSection() {
           height={290}
         />
       </div>
-      <h2 className="line-clamp-2 text-center text-2xl font-bold leading-normal tracking-wider md:text-3xl lg:text-5xl">
+      <h2 className="line-clamp-2 text-center text-xl font-bold leading-normal tracking-wider md:text-3xl lg:text-4xl">
         Your Favorite Shows & Movies
       </h2>
     </section>
@@ -183,7 +188,7 @@ function BottomSection() {
   return (
     <section className="flex w-full items-center justify-center bg-gradient-to-bl from-sky-600 via-sky-900 to-zinc-900 px-12 py-4 text-white">
       <div className="flex w-2/3 flex-col items-start justify-center gap-8">
-        <h2 className="line-clamp-3 text-2xl font-bold leading-normal tracking-wider md:text-3xl lg:text-5xl  lg:leading-relaxed">
+        <h2 className="line-clamp-3 w-[13ch] text-xl font-bold leading-normal tracking-wider md:w-[17ch] md:text-3xl lg:text-4xl  lg:leading-relaxed">
           Organized The Way You Want
         </h2>
         <SignInButton>
