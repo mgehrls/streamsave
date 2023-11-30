@@ -4,10 +4,13 @@ import { SignInButton, SignOutButton } from "@clerk/nextjs";
 import type { UserResource } from "@clerk/types/dist/user";
 import { useEffect, useState } from "react";
 import SearchResults from "./SearchResults";
+import type { ListItemPlusMedia } from "~/utils/types";
 
 export default function LayoutWrapper({
   children,
   user,
+  listItems,
+  allTags,
 }: {
   children: React.ReactNode;
   user:
@@ -21,20 +24,37 @@ export default function LayoutWrapper({
         isSignedIn: true;
         user: UserResource;
       };
+  listItems: ListItemPlusMedia[];
+  allTags: { tags: { id: number; name: string }[] };
 }) {
   const [showMenu, setShowMenu] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchLoading, setSearchLoading] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
+
+  const searchBar = document.getElementById("search-bar");
+
+  if (searchBar) {
+    searchBar.addEventListener("focus", () => {
+      if (searchQuery !== "") {
+        setShowSearch(true);
+      } else {
+        setShowSearch(false);
+      }
+    });
+  }
+
   document.addEventListener("click", () => {
     setShowMenu(false);
+    setShowSearch(false);
   });
   document.addEventListener("keydown", (e) => {
-    setShowMenu(false);
     if (e.key === "Escape") {
-      setSearchLoading(false);
+      setShowSearch(false);
       setShowMenu(false);
       setSearchQuery("");
+      document.getElementById("search-bar")?.blur();
       if (document.activeElement) {
+        console.log("ran");
         (document.activeElement as HTMLElement).blur();
       }
     }
@@ -44,27 +64,26 @@ export default function LayoutWrapper({
   const debounce = () => {
     clearTimeout(timer);
     if (searchQuery === "") {
-      setSearchLoading(false);
+      setShowSearch(false);
       return;
     } else {
       timer = setTimeout(() => {
-        setSearchLoading(true);
-        // get search results;
+        setShowSearch(true);
       }, 1000);
     }
   };
 
   useEffect(() => {
     if (searchQuery === "") {
-      setSearchLoading(false);
+      setShowSearch(false);
     }
   }, [searchQuery]);
 
   return (
-    <div className="min-h-screen w-full bg-zinc-900 text-slate-50">
+    <div className="min-h-screen w-full bg-zinc-800 text-slate-50">
       <div className="flex min-h-screen w-full items-start justify-center">
-        <div className="flex min-h-screen w-full max-w-4xl flex-col justify-between border-x border-slate-900">
-          <header className="relative flex items-center justify-between bg-slate-800 px-4 py-4 lg:px-8">
+        <div className="flex min-h-screen w-full max-w-4xl flex-col justify-between">
+          <header className="relative flex items-center justify-between bg-black px-4 py-4 lg:px-8">
             <div className="flex items-center">
               <Link
                 href="/"
@@ -94,8 +113,8 @@ export default function LayoutWrapper({
                   id="user-menu"
                   className={
                     !showMenu
-                      ? "absolute -bottom-[74px] right-0 z-20 bg-zinc-900 px-4 py-4 opacity-0 transition-none"
-                      : "absolute -bottom-[74px] right-0 z-20 border-[1px] border-slate-400 bg-zinc-900 px-4 py-4 opacity-100 transition-none"
+                      ? "absolute -bottom-[74px] right-0 z-50 bg-zinc-900 px-4 py-4 opacity-0 transition-none"
+                      : "absolute -bottom-[74px] right-0 z-50 border-[1px] border-slate-400 bg-zinc-900 px-4 py-4 opacity-100 transition-none"
                   }
                 >
                   <SignOutButton>
@@ -121,11 +140,12 @@ export default function LayoutWrapper({
             )}
           </header>
           {user.isSignedIn && (
-            <>
+            <div onClick={(e) => e.stopPropagation()} className="relative">
               <input
                 type="text"
+                id="search-bar"
                 placeholder="Search for shows or movies..."
-                className="sticky top-0 z-20 w-full bg-gray-600 px-4 py-1 duration-500 lg:focus:scale-110"
+                className="sticky top-0 z-20 w-full bg-gray-200 px-4 py-1 text-black duration-500 lg:focus:scale-110"
                 value={searchQuery}
                 onInput={debounce}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -135,17 +155,22 @@ export default function LayoutWrapper({
                   }
                 }}
               />
-              {searchLoading && (
-                <div className="absolute left-0 top-0 z-10 flex h-screen w-screen flex-col overflow-y-scroll bg-black bg-opacity-50">
-                  <SearchResults searchQuery={searchQuery} />
+
+              {showSearch && (
+                <div className="absolute left-0 top-8 z-10 flex max-h-96 w-full flex-col overflow-y-scroll bg-black bg-opacity-50">
+                  <SearchResults
+                    listItems={listItems}
+                    allTags={allTags}
+                    searchQuery={searchQuery}
+                    setSearchQuery={setSearchQuery}
+                  />
                 </div>
               )}
-            </>
+            </div>
           )}
-          {children}
-
+          <div>{children}</div>
           <footer className="mt-auto">
-            <div className="flex flex-col items-center justify-center bg-slate-800 px-8 py-8">
+            <div className="flex flex-col items-center justify-center bg-black px-8 py-8">
               <p className="text-md text-slate-200">
                 &copy; 2023 StreamSave. All rights reserved.
               </p>

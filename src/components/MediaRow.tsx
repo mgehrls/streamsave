@@ -42,8 +42,10 @@ export default function MediaRow({
       : 5;
 
   return (
-    <div className={`p-4 ${bgColor}`}>
-      <h2 className="pb-2 text-xl font-bold tracking-wider">{title}</h2>
+    <div className={`p-4 py-6 ${bgColor}`}>
+      <h2 className="pb-2 text-xl font-bold tracking-wider shadow-md">
+        {title}
+      </h2>
       <div>
         <Swiper
           className="w-full"

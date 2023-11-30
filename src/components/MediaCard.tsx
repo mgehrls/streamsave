@@ -191,7 +191,7 @@ export default function MediaCard({
             </h3>
           </Link>
         </div>
-        <div className="flex max-h-[52px] min-h-[52px] flex-wrap items-start gap-y-1 overflow-hidden pt-2">
+        <div className="flex max-h-[52px] min-h-[52px] flex-wrap items-start gap-x-[2px] gap-y-1 overflow-hidden pt-2">
           {tagsToDisplay.map((genre) => {
             return <TagPill key={genre.id} tag={genre} />;
           })}

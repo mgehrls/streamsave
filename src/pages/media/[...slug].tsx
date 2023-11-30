@@ -6,13 +6,7 @@ import LayoutWrapper from "~/components/LayoutWrapper";
 import { useUser } from "@clerk/nextjs";
 import Loading from "~/components/Loading";
 import Image from "next/image";
-import {
-  FaHeart,
-  FaRegHeart,
-  FaArrowLeft,
-  FaSearch,
-  FaStar,
-} from "react-icons/fa";
+import { FaHeart, FaRegHeart, FaArrowLeft, FaStar } from "react-icons/fa";
 import { FaClockRotateLeft } from "react-icons/fa6";
 import Link from "next/link";
 import TagPill from "~/components/TagPill";
@@ -117,7 +111,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
       <Head>
         <title>{`${mediaFromAPI.title}`}</title>
       </Head>
-      <LayoutWrapper user={user}>
+      <LayoutWrapper allTags={tags} listItems={userList} user={user}>
         <div className="relative w-full bg-zinc-800">
           <Link
             className="absolute left-2 flex h-16 w-16 items-center justify-center"
@@ -228,14 +222,14 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                   )
                 ) : (
                   // not in list
-                  <>
+                  <div className="flex w-full items-center justify-between gap-2 md:items-end md:justify-start">
                     {!addingFav && (
                       <button
                         onClick={() => addFavToList(objectToSend)}
                         className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold"
                       >
                         <FaRegHeart size={20} />
-                        <span className="hidden lg:block">Favorited</span>
+                        <span className="">Favorited</span>
                       </button>
                     )}
                     {addingFav && (
@@ -252,9 +246,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                         className="line-clamp-1 flex items-center justify-center gap-2 rounded-md bg-pink-600 px-8 py-4 text-lg font-semibold"
                       >
                         <FaClockRotateLeft size={20} />
-                        <span className="line-clamp-1 hidden lg:block">
-                          Watch Later
-                        </span>
+                        <span>Later</span>
                       </button>
                     )}
                     {addingWatchLater && (
@@ -269,12 +261,12 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                         <Image
                           src="/images/imdb.png"
                           alt=""
-                          width={50}
-                          height={80}
+                          width={60}
+                          height={60}
                         />
                       </Link>
                     )}
-                  </>
+                  </div>
                 )}
               </div>
 
