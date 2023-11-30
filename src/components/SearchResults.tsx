@@ -11,7 +11,7 @@ import useListActions from "~/utils/useListActions";
 export default function SearchResults({
   searchQuery,
   listItems,
-  allTags,
+  // allTags,
   setSearchQuery,
 }: {
   searchQuery: string;

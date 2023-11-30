@@ -1,7 +1,7 @@
 
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import type { APIResponse, APIResult, Media, SingleMediaAPIUnity } from "~/utils/types";
+import type { APIResponse, Media, SingleMediaAPIUnity } from "~/utils/types";
 
 const API_KEY_SECRET = process.env.API_KEY_SECRET
 
@@ -15,7 +15,7 @@ const fetchPopularMovies = async ()=>{
 const fetchTrendingShows = async ()=>{
   const res = await fetch(`https://api.themoviedb.org/3/trending/tv/day?api_key=${API_KEY_SECRET}&language=en-US&adult=false`)
   const trendingShowsData = await res.json() as APIResponse
-  const trendingShows = trendingShowsData.results as APIResult[]
+  const trendingShows = trendingShowsData.results
   return trendingShows.map((result) => {
     return {id:result.id, title:result.name, type:"tv", poster:result.poster_path, backdrop:result.backdrop_path, description:result.overview, genres:result.genre_ids}
   }) as Array<Media>
@@ -23,7 +23,7 @@ const fetchTrendingShows = async ()=>{
 const fetchPopularShows = async ()=>{
 const res = await fetch(` https://api.themoviedb.org/3/tv/top_rated?api_key=${API_KEY_SECRET}&language=en-US&adult=false`)
 const popularShowsData = await res.json() as APIResponse
-const popularShows = popularShowsData.results as APIResult[]
+const popularShows = popularShowsData.results
 return popularShows.map((result) => {
   return {id:result.id, title:result.name, type:"tv", poster:result.poster_path, backdrop:result.backdrop_path, description:result.overview, genres:result.genre_ids}
 }) as Array<Media>

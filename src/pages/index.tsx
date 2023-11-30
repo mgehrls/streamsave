@@ -12,7 +12,7 @@ import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 import "swiper/css/a11y";
 import LayoutWrapper from "~/components/LayoutWrapper";
-import { ListItemPlusMedia } from "~/utils/types";
+import type { ListItemPlusMedia } from "~/utils/types";
 
 export default function Home() {
   const user = useUser();
