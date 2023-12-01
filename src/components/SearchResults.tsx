@@ -98,7 +98,11 @@ export default function SearchResults({
             backdrop: media.backdrop_path || "",
             description: media.overview,
             watchLater: false,
-            tags: [],
+            tags: listItem
+              ? listItem.tags.map((tag) => {
+                  return tag.id;
+                })
+              : media.genre_ids,
           },
         };
         return (
@@ -109,7 +113,11 @@ export default function SearchResults({
             <ImageSection media={media} resetSearch={resetSearch} />
             <div className="flex w-[60%] flex-col justify-center gap-2 p-2 lg:w-1/2 lg:p-8">
               <h3 className="font-bold lg:w-[28ch] lg:text-lg">
-                {media.name || media.title}
+                {media.name.length > 40
+                  ? media.name.slice(0, 39)
+                  : media.name || media.title.length > 40
+                  ? media.title.slice(0, 39)
+                  : media.title}
               </h3>
               <p className="lg:text-md wrap line-clamp-2 text-sm">
                 {media.overview?.slice(0, 100) + "..."}
