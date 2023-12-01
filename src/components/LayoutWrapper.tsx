@@ -4,13 +4,10 @@ import { SignInButton, SignOutButton } from "@clerk/nextjs";
 import type { UserResource } from "@clerk/types/dist/user";
 import { useEffect, useState } from "react";
 import SearchResults from "./SearchResults";
-import type { ListItemPlusMedia } from "~/utils/types";
 
 export default function LayoutWrapper({
   children,
   user,
-  listItems,
-  allTags,
 }: {
   children: React.ReactNode;
   user:
@@ -24,8 +21,6 @@ export default function LayoutWrapper({
         isSignedIn: true;
         user: UserResource;
       };
-  listItems: ListItemPlusMedia[];
-  allTags: { tags: { id: number; name: string }[] };
 }) {
   const [showMenu, setShowMenu] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -35,6 +30,7 @@ export default function LayoutWrapper({
 
   if (searchBar) {
     searchBar.addEventListener("focus", () => {
+      console.log("focus ran");
       if (searchQuery !== "") {
         setShowSearch(true);
       } else {
@@ -159,8 +155,6 @@ export default function LayoutWrapper({
               {showSearch && (
                 <div className="absolute left-0 top-8 z-10 flex max-h-96 w-full flex-col overflow-y-scroll bg-black bg-opacity-50">
                   <SearchResults
-                    listItems={listItems}
-                    allTags={allTags}
                     searchQuery={searchQuery}
                     setSearchQuery={setSearchQuery}
                   />
