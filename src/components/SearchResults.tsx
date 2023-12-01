@@ -12,9 +12,11 @@ import { imageFromAPIBasePath } from "~/utils/constants";
 export default function SearchResults({
   searchQuery,
   setSearchQuery,
+  setShowSearch,
 }: {
   searchQuery: string;
   setSearchQuery: Dispatch<SetStateAction<string>>;
+  setShowSearch: Dispatch<SetStateAction<boolean>>;
 }) {
   const { data, isLoading, isError } = api.mDB.search.useQuery({
     query: searchQuery,
@@ -45,11 +47,17 @@ export default function SearchResults({
   if (!data) return <div>No data</div>;
   if (!listData) return <div>No list data</div>;
   if (!tags) return <div>No tags</div>;
+  if (searchQuery === "") {
+    setShowSearch(false);
+  }
 
-  console.log(data);
+  const filteredData = data.filter(
+    (item: APIResult) => item.media_type !== "person",
+  );
 
   function resetSearch() {
     setSearchQuery("");
+    setShowSearch(false);
   }
 
   return (
@@ -63,13 +71,12 @@ export default function SearchResults({
           X
         </button>
       </div>
-      {data.length === 0 && (
+      {filteredData.length === 0 && (
         <div className="flex items-center justify-center bg-slate-600 p-8">
           <p className="text-xl">No results found</p>
         </div>
       )}
-      {data.map((media: APIResult) => {
-        if (media.media_type === "person") return null;
+      {filteredData.map((media: APIResult) => {
         const listItem = listData.find((item) => item.mediaId == media.id);
         const objectToSend: {
           media: {
@@ -112,7 +119,7 @@ export default function SearchResults({
           </div>
         );
       })}
-      {listData.length !== 0 && (
+      {filteredData.length !== 0 && (
         <div className="flex justify-between px-8">
           <p className="py-8 text-xl font-bold">End of results</p>
           <button

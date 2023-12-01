@@ -158,7 +158,10 @@ export default function LayoutWrapper({
               />
               {searchQuery !== "" && (
                 <button
-                  onClick={() => setSearchQuery("")}
+                  onClick={() => {
+                    setShowSearch(false);
+                    setSearchQuery("");
+                  }}
                   className="absolute -top-1 right-2 z-50 p-2 text-black"
                 >
                   X
@@ -170,6 +173,7 @@ export default function LayoutWrapper({
                   <SearchResults
                     searchQuery={searchQuery}
                     setSearchQuery={setSearchQuery}
+                    setShowSearch={setShowSearch}
                   />
                 </div>
               )}
