@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import TagPill from "./TagPill";
 import useListActions from "~/utils/useListActions";
+import { imageFromAPIBasePath } from "~/utils/constants";
 
 export default function MediaCard({
   media,
@@ -59,7 +60,6 @@ export default function MediaCard({
   const watchLaterBtnClasses =
     "absolute left-0 top-0 rounded-br-lg bg-black p-2 text-white opacity-70 hover:opacity-100";
   const iconSize = 20;
-  const basePath = "https://image.tmdb.org/t/p/w500";
 
   const [confirmRemoval, setConfirmRemoval] = useState(false);
   const {
@@ -173,7 +173,7 @@ export default function MediaCard({
           <Image
             src={
               media.poster
-                ? `${basePath}${media.poster}`
+                ? `${imageFromAPIBasePath}${media.poster}`
                 : "/images/posterunavailable.png"
             }
             alt=""

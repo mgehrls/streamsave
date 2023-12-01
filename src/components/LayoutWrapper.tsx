@@ -25,55 +25,67 @@ export default function LayoutWrapper({
   const [showMenu, setShowMenu] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearch, setShowSearch] = useState(false);
+  const [timer, setTimer] = useState<NodeJS.Timeout>();
 
-  const searchBar = document.getElementById("search-bar");
-
-  if (searchBar) {
-    searchBar.addEventListener("focus", () => {
-      console.log("focus ran");
+  useEffect(() => {
+    const handleFocus = () => {
       if (searchQuery !== "") {
         setShowSearch(true);
       } else {
         setShowSearch(false);
       }
-    });
-  }
+    };
 
-  document.addEventListener("click", () => {
-    setShowMenu(false);
-    setShowSearch(false);
-  });
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      setShowSearch(false);
+    const handleClick = () => {
       setShowMenu(false);
-      setSearchQuery("");
-      document.getElementById("search-bar")?.blur();
-      if (document.activeElement) {
-        console.log("ran");
-        (document.activeElement as HTMLElement).blur();
+      setShowSearch(false);
+    };
+
+    const handleKeydown = (e: { key: string }) => {
+      if (e.key === "Escape") {
+        setShowSearch(false);
+        setShowMenu(false);
+        setSearchQuery("");
+        const searchBar = document.getElementById(
+          "search-bar",
+        ) as HTMLInputElement;
+        searchBar?.blur();
+        if (document.activeElement) {
+          console.log("ran");
+          (document.activeElement as HTMLInputElement).blur();
+        }
       }
-    }
-  });
-  let timer: NodeJS.Timeout;
+    };
+
+    document.addEventListener("focus", handleFocus);
+    document.addEventListener("click", handleClick);
+    document.addEventListener("keydown", handleKeydown);
+
+    return () => {
+      document.removeEventListener("focus", handleFocus);
+      document.removeEventListener("click", handleClick);
+      document.removeEventListener("keydown", handleKeydown);
+      clearTimeout(timer);
+    };
+  }, [searchQuery, timer]);
 
   const debounce = () => {
-    clearTimeout(timer);
-    if (searchQuery === "") {
-      setShowSearch(false);
-      return;
-    } else {
-      timer = setTimeout(() => {
-        setShowSearch(true);
-      }, 1000);
+    if (timer) {
+      clearTimeout(timer);
     }
+
+    setTimer(
+      setTimeout(() => {
+        setShowSearch(true);
+      }, 1000),
+    );
   };
 
-  useEffect(() => {
-    if (searchQuery === "") {
-      setShowSearch(false);
-    }
-  }, [searchQuery]);
+  const getMenuClassNames = () => {
+    return !showMenu
+      ? "absolute -bottom-[74px] right-0 z-50 bg-zinc-900 px-4 py-4 opacity-0 transition-none"
+      : "absolute -bottom-[74px] right-0 z-50 border-[1px] border-slate-400 bg-zinc-900 px-4 py-4 opacity-100 transition-none";
+  };
 
   return (
     <div className="min-h-screen w-full bg-zinc-800 text-slate-50">
@@ -105,14 +117,7 @@ export default function LayoutWrapper({
             )}
             {user.isSignedIn && (
               <div onClick={(e) => e.stopPropagation()}>
-                <div
-                  id="user-menu"
-                  className={
-                    !showMenu
-                      ? "absolute -bottom-[74px] right-0 z-50 bg-zinc-900 px-4 py-4 opacity-0 transition-none"
-                      : "absolute -bottom-[74px] right-0 z-50 border-[1px] border-slate-400 bg-zinc-900 px-4 py-4 opacity-100 transition-none"
-                  }
-                >
+                <div id="user-menu" className={getMenuClassNames()}>
                   <SignOutButton>
                     <button
                       disabled={!showMenu}

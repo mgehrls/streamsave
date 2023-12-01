@@ -1,0 +1,1 @@
+export const imageFromAPIBasePath = "https://image.tmdb.org/t/p/w500";

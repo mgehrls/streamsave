@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import useListActions from "~/utils/useListActions";
 import MediaRow from "~/components/MediaRow";
 import type { Media } from "~/utils/types";
+import { imageFromAPIBasePath } from "~/utils/constants";
 
 const SinglePostPage: NextPage<{ type: string; id: number }> = ({
   type,
@@ -54,8 +55,6 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
   }, []);
 
   if (!isClient) return;
-
-  const basePath = "https://image.tmdb.org/t/p/w500";
 
   if (!mediaFromAPI) return <div>404</div>;
 
@@ -125,7 +124,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
               <Image
                 src={
                   mediaFromAPI.poster_path
-                    ? `${basePath}${mediaFromAPI.poster_path}`
+                    ? `${imageFromAPIBasePath}${mediaFromAPI.poster_path}`
                     : "/images/posterunavailable.png"
                 }
                 alt=""
