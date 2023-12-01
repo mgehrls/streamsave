@@ -141,7 +141,7 @@ export default function LayoutWrapper({
                 type="text"
                 id="search-bar"
                 placeholder="Search for shows or movies..."
-                className="sticky top-0 z-20 w-full bg-gray-200 px-4 py-1 text-black duration-500 lg:focus:scale-110"
+                className="relative top-0 z-20 w-full bg-gray-200 px-4 py-1 text-black duration-500 lg:focus:scale-110"
                 value={searchQuery}
                 onInput={debounce}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -151,6 +151,14 @@ export default function LayoutWrapper({
                   }
                 }}
               />
+              {searchQuery !== "" && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="absolute -top-1 right-2 z-50 p-2 text-black"
+                >
+                  X
+                </button>
+              )}
 
               {showSearch && (
                 <div className="absolute left-0 top-8 z-10 flex max-h-96 w-full flex-col overflow-y-scroll bg-black bg-opacity-50">
