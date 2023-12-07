@@ -71,7 +71,7 @@ export default function SearchResults({
           X
         </button>
       </div>
-      {filteredData.length === 0 && (
+      {!filteredData[0] && (
         <div className="flex items-center justify-center bg-slate-600 p-8">
           <p className="text-xl">No results found</p>
         </div>
@@ -113,9 +113,7 @@ export default function SearchResults({
             <ImageSection media={media} resetSearch={resetSearch} />
             <div className="flex w-[60%] flex-col justify-center gap-2 p-2 lg:w-1/2 lg:p-8">
               <h3 className="font-bold lg:w-[28ch] lg:text-lg">
-                {media.name.length > 40
-                  ? media.name.slice(0, 39)
-                  : media.name || media.title.length > 40
+                {media.title.length > 40
                   ? media.title.slice(0, 39)
                   : media.title}
               </h3>

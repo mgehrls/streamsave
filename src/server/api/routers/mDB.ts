@@ -50,6 +50,8 @@ export const mDBRouter = createTRPCRouter({
       const {query} = input;
       const res = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${API_KEY_SECRET}&language=en-US&query=${query}&page=1&include_adult=false&include_people=false`)
       const searchData = await res.json() as APIResponse
-      return searchData.results
+      return searchData.results.map((result) => {
+        return {...result, title:result.name || result.title}
+      })
     }),
 });
