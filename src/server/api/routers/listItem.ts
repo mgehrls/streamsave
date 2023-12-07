@@ -85,4 +85,35 @@ export const listItemRouter = createTRPCRouter({
                 throw new Error(err);
             })
         }),
+    addNewTag: privateProcedure
+        .input(z.object({name: z.string().toLowerCase().min(3).max(12)}))
+        .mutation(async ({ ctx, input }) => {
+            const {name} = input;
+            await ctx.db.tag.create({
+                data: {
+                    name: name
+                }
+            }).catch((err: string | undefined)=>{
+                throw new Error(err);
+            })
+        }),
+    addTagById: privateProcedure
+        .input(z.object({id: z.string(), tagId: z.number()}))
+        .mutation(async ({ ctx, input }) => {
+            const {id, tagId} = input;
+            await ctx.db.listItem.update({
+                where: {
+                    id: id
+                },
+                data: {
+                    tags: {
+                        connect: {
+                            id: tagId
+                        }
+                    }
+                }
+            }).catch((err: string | undefined)=>{
+                throw new Error(err);
+            })
+        }),
 });

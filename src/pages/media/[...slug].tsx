@@ -6,7 +6,7 @@ import LayoutWrapper from "~/components/LayoutWrapper";
 import { useUser } from "@clerk/nextjs";
 import Loading from "~/components/Loading";
 import Image from "next/image";
-import { FaHeart, FaRegHeart, FaArrowLeft, FaStar } from "react-icons/fa";
+import { FaHeart, FaRegHeart, FaArrowLeft, FaStar, FaPlus } from "react-icons/fa";
 import { FaClockRotateLeft } from "react-icons/fa6";
 import Link from "next/link";
 import TagPill from "~/components/TagPill";
@@ -21,11 +21,14 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
   id,
 }) => {
   const [isClient, setIsClient] = useState(false);
+  const [addTag, setAddTag] = useState(false);
+  const [tagSubmissionError, setTagSubmissionError] = useState("");
   const user = useUser();
   const { data: mediaFromAPI } = api.mDB.getSingleMedia.useQuery({
     type: type,
     id: id,
   });
+ 
   const {
     addFavToList,
     addWatchLaterToList,
@@ -52,7 +55,33 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
 
   useEffect(() => {
     setIsClient(true);
+
+    const handleInput = () => {
+      submitNewTag();
+    };
+
   }, []);
+
+  function submitNewTag() {
+    const newTagInput = document.getElementById("newTagInput") as HTMLInputElement;
+    if (!newTagInput) return;
+    if (newTagInput.value.length < 3) return;
+  
+    const enteredValue = newTagInput.value;
+  
+    // Check if the entered value exists in the list of options
+    const options = document.getElementById("newTag") as HTMLDataListElement;
+    if (!options) return;
+    const optionExists = Array.from(options.options).some(
+      (option) => option.value === enteredValue
+    );
+  
+    if (optionExists) {
+      console.log("Existing option selected:", enteredValue);
+    } else {
+      console.log("New option suggested:", enteredValue);
+    }
+  }
 
   if (!isClient) return;
 
@@ -102,8 +131,6 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
 
   if (isError || tagError)
     throw Error("Error fetching data, please try again.");
-
-  console.log(mediaFromAPI.poster_path);
 
   return (
     <>
@@ -291,10 +318,32 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                       {listItem.tags.map((genre) => {
                         return <TagPill key={genre.id} tag={genre} />;
                       })}
-                      <TagPill
-                        key={245}
-                        tag={{ id: 0, name: "add tag... +" }}
-                      />
+                      {addTag && (<>
+                      <input id="newTagInput" pattern="[a-z\/-]+" autoFocus onSelect={()=> console.log("selected")} onKeyDown={(e)=> console.log(e.key)} className="rounded-md bg-slate-200 px-1 py-0.5 text-xs tracking-wider text-black w-28" list="newTag"/>
+                        <datalist id="newTag">
+                          {/* go through tags and map the ones that aren't genres on this list item and returns an option with all tags not in the genre list */}
+                        {tags?.tags.map((tag)=> {
+                          if (!listItem?.tags.find((genre)=> genre.id === tag.id)) {
+                            return <option onClick={()=>console.log("clicked on option")} key={tag.id} value={tag.name}/>
+                          }
+                        })}
+                      </datalist>
+                      <button onClick={()=>{
+                        console.log(
+                          "add attempted"
+                        )
+                      }}><FaPlus/></button>
+                      </>)}
+                      {!addTag && (
+                        <button className="flex items-center" onClick={() => setAddTag(true)}>
+                          <TagPill
+                            key={245}
+                            tag={{ id: 0, name: "add tag... +" }}
+                          />
+
+                        </button>
+
+                      )}
                     </div>
                   </div>
                 )}
