@@ -4,7 +4,7 @@ import { authMiddleware } from "@clerk/nextjs";
 // Please edit this to allow other routes to be public as needed.
 // See https://clerk.com/docs/references/nextjs/auth-middleware for more information about configuring your Middleware
 export default authMiddleware({
-    publicRoutes: ["/", "/api/trpc/listItem.getUserList,tags.getAllTags"],
+    publicRoutes: ["/", "/api/trpc/listItem.getUserList,listItem.getAllTags"],
     apiRoutes: ["/api/trpc"],
     ignoredRoutes: ["/((?!api|trpc))(_next.*|.+\.[\w]+$)", "/api/trpc/post.hello"],
 });

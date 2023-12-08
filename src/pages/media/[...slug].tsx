@@ -6,7 +6,13 @@ import LayoutWrapper from "~/components/LayoutWrapper";
 import { useUser } from "@clerk/nextjs";
 import Loading from "~/components/Loading";
 import Image from "next/image";
-import { FaHeart, FaRegHeart, FaArrowLeft, FaStar, FaPlus } from "react-icons/fa";
+import {
+  FaHeart,
+  FaRegHeart,
+  FaArrowLeft,
+  FaStar,
+  FaPlus,
+} from "react-icons/fa";
 import { FaClockRotateLeft } from "react-icons/fa6";
 import Link from "next/link";
 import TagPill from "~/components/TagPill";
@@ -22,22 +28,25 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
 }) => {
   const [isClient, setIsClient] = useState(false);
   const [addTag, setAddTag] = useState(false);
-  const [tagSubmissionError, setTagSubmissionError] = useState("");
   const user = useUser();
   const { data: mediaFromAPI } = api.mDB.getSingleMedia.useQuery({
     type: type,
     id: id,
   });
- 
+
   const {
     addFavToList,
     addWatchLaterToList,
     removeFromList,
     changeWatchLaterValue,
+    addNewTag,
+    addTagById,
     addingFav,
     addingWatchLater,
     removing,
     updating,
+    addingExistingTag,
+    addingNewTag,
   } = useListActions();
 
   const {
@@ -49,39 +58,13 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
     data: tags,
     isLoading: tagsLoading,
     isError: tagError,
-  } = api.tags.getAllTags.useQuery();
+  } = api.listItem.getAllTags.useQuery();
 
   const listItem = userList?.find((item) => item.media.id === id);
 
   useEffect(() => {
     setIsClient(true);
-
-    const handleInput = () => {
-      submitNewTag();
-    };
-
   }, []);
-
-  function submitNewTag() {
-    const newTagInput = document.getElementById("newTagInput") as HTMLInputElement;
-    if (!newTagInput) return;
-    if (newTagInput.value.length < 3) return;
-  
-    const enteredValue = newTagInput.value;
-  
-    // Check if the entered value exists in the list of options
-    const options = document.getElementById("newTag") as HTMLDataListElement;
-    if (!options) return;
-    const optionExists = Array.from(options.options).some(
-      (option) => option.value === enteredValue
-    );
-  
-    if (optionExists) {
-      console.log("Existing option selected:", enteredValue);
-    } else {
-      console.log("New option suggested:", enteredValue);
-    }
-  }
 
   if (!isClient) return;
 
@@ -131,6 +114,30 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
 
   if (isError || tagError)
     throw Error("Error fetching data, please try again.");
+
+  function handleSubmitNewTag() {
+    const newTagInput = document.getElementById(
+      "newTagInput",
+    ) as HTMLInputElement;
+    if (!newTagInput) return;
+    if (newTagInput.value.length < 3) return;
+
+    const enteredValue = newTagInput.value;
+
+    // Check if the entered value exists in the list of options
+    const options = document.getElementById("newTag") as HTMLDataListElement;
+    if (!options) return;
+    const selectedOption = Array.from(options.options).find(
+      (option) => option.value === enteredValue,
+    );
+
+    if (selectedOption) {
+      if (listItem)
+        addTagById({ tagId: parseInt(selectedOption.id), id: listItem.id });
+    } else {
+      if (listItem) addNewTag({ name: enteredValue, listItemId: listItem.id });
+    }
+  }
 
   return (
     <>
@@ -318,31 +325,70 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                       {listItem.tags.map((genre) => {
                         return <TagPill key={genre.id} tag={genre} />;
                       })}
-                      {addTag && (<>
-                      <input id="newTagInput" pattern="[a-z\/-]+" autoFocus onSelect={()=> console.log("selected")} onKeyDown={(e)=> console.log(e.key)} className="rounded-md bg-slate-200 px-1 py-0.5 text-xs tracking-wider text-black w-28" list="newTag"/>
-                        <datalist id="newTag">
-                          {/* go through tags and map the ones that aren't genres on this list item and returns an option with all tags not in the genre list */}
-                        {tags?.tags.map((tag)=> {
-                          if (!listItem?.tags.find((genre)=> genre.id === tag.id)) {
-                            return <option onClick={()=>console.log("clicked on option")} key={tag.id} value={tag.name}/>
-                          }
-                        })}
-                      </datalist>
-                      <button onClick={()=>{
-                        console.log(
-                          "add attempted"
-                        )
-                      }}><FaPlus/></button>
-                      </>)}
+                      {addTag && (
+                        <>
+                          <input
+                            id="newTagInput"
+                            pattern="[a-z\/-]+"
+                            autoFocus
+                            onSelect={() => console.log("selected")}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                handleSubmitNewTag();
+                              }
+                              if (e.key === "Escape") {
+                                setAddTag(false);
+                              }
+                            }}
+                            className="w-28 rounded-md bg-slate-200 px-1 py-0.5 text-xs tracking-wider text-black"
+                            list="newTag"
+                          />
+                          <datalist id="newTag">
+                            {/* go through tags and map the ones that aren't genres on this list item and returns an option with all tags not in the genre list */}
+                            {tags?.tags.map((tag) => {
+                              if (
+                                !listItem?.tags.find(
+                                  (genre) => genre.id === tag.id,
+                                )
+                              ) {
+                                return (
+                                  <option
+                                    onClick={() =>
+                                      console.log("clicked on option")
+                                    }
+                                    key={tag.id}
+                                    id={tag.id.toString()}
+                                    value={tag.name}
+                                  />
+                                );
+                              }
+                            })}
+                          </datalist>
+                          {addingExistingTag || addingNewTag ? (
+                            <div className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold">
+                              <Loading />
+                            </div>
+                          ) : (
+                            <button
+                              onClick={() => {
+                                handleSubmitNewTag();
+                              }}
+                            >
+                              <FaPlus />
+                            </button>
+                          )}
+                        </>
+                      )}
                       {!addTag && (
-                        <button className="flex items-center" onClick={() => setAddTag(true)}>
+                        <button
+                          className="flex items-center"
+                          onClick={() => setAddTag(true)}
+                        >
                           <TagPill
                             key={245}
                             tag={{ id: 0, name: "add tag... +" }}
                           />
-
                         </button>
-
                       )}
                     </div>
                   </div>

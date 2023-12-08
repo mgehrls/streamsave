@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-import { createTRPCRouter, privateProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, privateProcedure, publicProcedure } from "~/server/api/trpc";
 import { z } from "zod";
 import type { Prisma } from "@prisma/client";
 
@@ -86,15 +86,30 @@ export const listItemRouter = createTRPCRouter({
             })
         }),
     addNewTag: privateProcedure
-        .input(z.object({name: z.string().toLowerCase().min(3).max(12)}))
+        .input(z.object({name: z.string().toLowerCase().min(3).max(12), listItemId: z.string()}))
         .mutation(async ({ ctx, input }) => {
-            const {name} = input;
+            const {name, listItemId} = input;
             await ctx.db.tag.create({
                 data: {
                     name: name
                 }
             }).catch((err: string | undefined)=>{
                 throw new Error(err);
+            }).then((tag)=>{
+                ctx.db.listItem.update({
+                    where: {
+                        id: listItemId
+                    },
+                    data: {
+                        tags: {
+                            connect: {
+                                id: tag.id
+                            }
+                        }
+                    }
+                }).catch((err: string | undefined)=>{
+                    throw new Error(err);
+                })
             })
         }),
     addTagById: privateProcedure
@@ -115,5 +130,12 @@ export const listItemRouter = createTRPCRouter({
             }).catch((err: string | undefined)=>{
                 throw new Error(err);
             })
+        }),
+        getAllTags: publicProcedure
+        .query(async ({ctx}) => {
+          const {db} = ctx;
+        const tags = await db.tag.findMany()
+        return {tags}
+    
         }),
 });

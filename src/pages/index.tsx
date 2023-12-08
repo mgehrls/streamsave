@@ -66,7 +66,7 @@ function Feed() {
     data: tags,
     isLoading: tagsLoading,
     isError: tagError,
-  } = api.tags.getAllTags.useQuery();
+  } = api.listItem.getAllTags.useQuery();
 
   if (trendingError) return <div>Error contacting api for trending data</div>;
   if (listDataError)
