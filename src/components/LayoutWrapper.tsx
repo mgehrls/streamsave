@@ -1,27 +1,16 @@
 import Link from "next/link";
 import Image from "next/image";
-import { SignInButton, SignOutButton } from "@clerk/nextjs";
-import type { UserResource } from "@clerk/types/dist/user";
+import { SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import SearchResults from "./SearchResults";
+import React from "react";
 
 export default function LayoutWrapper({
   children,
-  user,
 }: {
-  children: React.ReactNode;
-  user:
-    | {
-        isLoaded: true;
-        isSignedIn: false;
-        user: null;
-      }
-    | {
-        isLoaded: true;
-        isSignedIn: true;
-        user: UserResource;
-      };
+  children: React.ReactElement;
 }) {
+  const user = useUser();
   const [showMenu, setShowMenu] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearch, setShowSearch] = useState(false);
@@ -179,7 +168,7 @@ export default function LayoutWrapper({
               )}
             </div>
           )}
-          <div>{children}</div>
+          {React.cloneElement(children, { user: user })}
           <footer className="mt-auto">
             <div className="flex flex-col items-center justify-center bg-black px-8 py-8">
               <p className="text-md text-slate-200">

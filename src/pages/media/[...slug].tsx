@@ -149,7 +149,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
       <Head>
         <title>{`${mediaFromAPI.title}`}</title>
       </Head>
-      <LayoutWrapper user={user}>
+      <LayoutWrapper>
         <div className="relative w-full bg-zinc-800">
           <Link
             className="absolute left-2 flex h-16 w-16 items-center justify-center"
