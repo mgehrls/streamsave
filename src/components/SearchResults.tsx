@@ -31,7 +31,7 @@ export default function SearchResults({
     data: tags,
     isLoading: tagsLoading,
     isError: tagError,
-  } = api.tags.getAllTags.useQuery();
+  } = api.listItem.getAllTags.useQuery();
 
   if (isLoading || listLoading || tagsLoading)
     return (
