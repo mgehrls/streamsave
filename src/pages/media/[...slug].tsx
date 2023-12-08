@@ -13,7 +13,7 @@ import {
   FaStar,
   FaPlus,
 } from "react-icons/fa";
-import { FaClockRotateLeft } from "react-icons/fa6";
+import { FaClockRotateLeft, FaGear } from "react-icons/fa6";
 import Link from "next/link";
 import TagPill from "~/components/TagPill";
 import { useEffect, useState } from "react";
@@ -28,6 +28,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
 }) => {
   const [isClient, setIsClient] = useState(false);
   const [addTag, setAddTag] = useState(false);
+  const [deleteTags, setDeleteTags] = useState(false);
   const user = useUser();
   const { data: mediaFromAPI } = api.mDB.getSingleMedia.useQuery({
     type: type,
@@ -134,8 +135,12 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
     if (selectedOption) {
       if (listItem)
         addTagById({ tagId: parseInt(selectedOption.id), id: listItem.id });
+      setAddTag(false);
     } else {
-      if (listItem) addNewTag({ name: enteredValue, listItemId: listItem.id });
+      if (listItem) {
+        addNewTag({ name: enteredValue, listItemId: listItem.id });
+        setAddTag(false);
+      }
     }
   }
 
@@ -319,11 +324,30 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                     : mediaFromAPI.overview}
                 </p>
                 {listItem?.tags && listItem.tags.length > 0 && (
-                  <div className="rounded-md bg-black p-2">
-                    <h3 className="text-lg">Your Tags</h3>
+                  <div className="flex flex-col gap-2 rounded-md bg-black p-2">
+                    <div className="flex justify-between gap-4">
+                      <h3 className="text-lg">Your Tags</h3>
+                      <button
+                        onClick={() => {
+                          console.log(deleteTags);
+                          setDeleteTags(!deleteTags);
+                        }}
+                        className="flex items-center gap-1"
+                      >
+                        <FaGear />
+                      </button>
+                    </div>
+
                     <div className="flex flex-wrap gap-2 py-2">
                       {listItem.tags.map((genre) => {
-                        return <TagPill key={genre.id} tag={genre} />;
+                        return (
+                          <TagPill
+                            listItemId={listItem.id}
+                            key={genre.id}
+                            tag={genre}
+                            deletable={deleteTags}
+                          />
+                        );
                       })}
                       {addTag && (
                         <>
@@ -344,7 +368,6 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                             list="newTag"
                           />
                           <datalist id="newTag">
-                            {/* go through tags and map the ones that aren't genres on this list item and returns an option with all tags not in the genre list */}
                             {tags?.tags.map((tag) => {
                               if (
                                 !listItem?.tags.find(
@@ -365,7 +388,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                             })}
                           </datalist>
                           {addingExistingTag || addingNewTag ? (
-                            <div className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold">
+                            <div>
                               <Loading />
                             </div>
                           ) : (
@@ -379,7 +402,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                           )}
                         </>
                       )}
-                      {!addTag && (
+                      {!addTag && !deleteTags && (
                         <button
                           className="flex items-center"
                           onClick={() => setAddTag(true)}

@@ -47,8 +47,15 @@ export default function useListActions(){
         void ctx.listItem.getAllTags.invalidate();
       },
     });
+  
+    const { mutate: removeTagById, isLoading: removingTag} = 
+    api.listItem.removeTagById.useMutation({
+        onSuccess: () => {
+            void ctx.listItem.getUserList.invalidate();
+        }
+    })
 
 
-    return { addFavToList, addWatchLaterToList, removeFromList, changeWatchLaterValue, addTagById, addNewTag, addingFav, addingWatchLater, removing, updating, addingExistingTag, addingNewTag}
+    return { addFavToList, addWatchLaterToList, removeFromList, changeWatchLaterValue, addTagById, addNewTag, removeTagById, addingFav, addingWatchLater, removing, updating, addingExistingTag, addingNewTag, removingTag}
 
 }

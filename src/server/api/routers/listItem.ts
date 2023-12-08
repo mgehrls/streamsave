@@ -136,6 +136,24 @@ export const listItemRouter = createTRPCRouter({
           const {db} = ctx;
         const tags = await db.tag.findMany()
         return {tags}
-    
+        }),
+        removeTagById: privateProcedure
+        .input(z.object({id: z.string(), tagId: z.number()}))
+        .mutation(async ({ ctx, input }) => {
+            const {id, tagId} = input;
+            await ctx.db.listItem.update({
+                where: {
+                    id: id
+                },
+                data: {
+                    tags: {
+                        disconnect: {
+                            id: tagId
+                        }
+                    }
+                }
+            }).catch((err: string | undefined)=>{
+                throw new Error(err);
+            })
         }),
 });
