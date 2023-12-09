@@ -71,9 +71,12 @@ export default function LayoutWrapper({
   };
 
   const getMenuClassNames = () => {
+    const menuHeight = document.getElementById("user-menu")?.clientHeight;
+    console.log(menuHeight);
+    if (!menuHeight) console.log("no menu height");
     return !showMenu
-      ? "absolute -bottom-[74px] -right-[150px] z-50 bg-zinc-900 px-4 py-4 opacity-0 transition-none"
-      : "absolute -bottom-[74px] right-0 z-50 border-[1px] border-slate-400 bg-zinc-900 px-4 py-4 opacity-100 transition-none";
+      ? "absolute -top-[200px] right-0 z-50 bg-zinc-900 px-4 py-4 opacity-0 transition-none"
+      : `absolute top-[87px] flex flex-col gap-2 right-0 z-50 border-[1px] border-slate-400 bg-zinc-900 px-4 py-4 opacity-100 transition-none`;
   };
 
   return (
@@ -107,6 +110,16 @@ export default function LayoutWrapper({
             {user.isSignedIn && (
               <div onClick={(e) => e.stopPropagation()}>
                 <div id="user-menu" className={getMenuClassNames()}>
+                  <Link href="/">
+                    <button className="flex items-center justify-center py-2 transition-all hover:scale-105 hover:rounded-md hover:underline">
+                      Home
+                    </button>
+                  </Link>
+                  <Link href="/list">
+                    <button className="flex items-center justify-center py-2 transition-all hover:scale-105 hover:rounded-md hover:underline">
+                      List
+                    </button>
+                  </Link>
                   <SignOutButton>
                     <button
                       disabled={!showMenu}
@@ -116,23 +129,16 @@ export default function LayoutWrapper({
                     </button>
                   </SignOutButton>
                 </div>
-                <div className="flex items-end gap-4">
-                  <Link href="/list">
-                    <button className="flex items-center justify-center px-6 py-2 transition-all hover:scale-105 hover:rounded-md hover:underline">
-                      List
-                    </button>
-                  </Link>
-                  <button onClick={() => setShowMenu(!showMenu)}>
-                    <Image
-                      priority
-                      src={user.user.imageUrl}
-                      alt="User Profile Image"
-                      width={50}
-                      height={50}
-                      className="rounded-full"
-                    />
-                  </button>
-                </div>
+                <button onClick={() => setShowMenu(!showMenu)}>
+                  <Image
+                    priority
+                    src={user.user.imageUrl}
+                    alt="User Profile Image"
+                    width={50}
+                    height={50}
+                    className="rounded-full"
+                  />
+                </button>
               </div>
             )}
           </header>
