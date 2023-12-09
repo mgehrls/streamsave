@@ -72,7 +72,7 @@ export default function LayoutWrapper({
 
   const getMenuClassNames = () => {
     return !showMenu
-      ? "absolute -bottom-[74px] right-0 z-50 bg-zinc-900 px-4 py-4 opacity-0 transition-none"
+      ? "absolute -bottom-[74px] -right-[150px] z-50 bg-zinc-900 px-4 py-4 opacity-0 transition-none"
       : "absolute -bottom-[74px] right-0 z-50 border-[1px] border-slate-400 bg-zinc-900 px-4 py-4 opacity-100 transition-none";
   };
 
@@ -116,16 +116,23 @@ export default function LayoutWrapper({
                     </button>
                   </SignOutButton>
                 </div>
-                <button onClick={() => setShowMenu(!showMenu)}>
-                  <Image
-                    priority
-                    src={user.user.imageUrl}
-                    alt="User Profile Image"
-                    width={50}
-                    height={50}
-                    className="rounded-full"
-                  />
-                </button>
+                <div className="flex items-end gap-4">
+                  <Link href="/list">
+                    <button className="flex items-center justify-center px-6 py-2 transition-all hover:scale-105 hover:rounded-md hover:underline">
+                      List
+                    </button>
+                  </Link>
+                  <button onClick={() => setShowMenu(!showMenu)}>
+                    <Image
+                      priority
+                      src={user.user.imageUrl}
+                      alt="User Profile Image"
+                      width={50}
+                      height={50}
+                      className="rounded-full"
+                    />
+                  </button>
+                </div>
               </div>
             )}
           </header>

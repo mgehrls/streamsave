@@ -6,14 +6,8 @@ import LayoutWrapper from "~/components/LayoutWrapper";
 import { useUser } from "@clerk/nextjs";
 import Loading from "~/components/Loading";
 import Image from "next/image";
-import {
-  FaHeart,
-  FaRegHeart,
-  FaArrowLeft,
-  FaStar,
-  FaPlus,
-} from "react-icons/fa";
-import { FaClockRotateLeft, FaGear } from "react-icons/fa6";
+import { FaHeart, FaRegHeart, FaArrowLeft, FaStar } from "react-icons/fa";
+import { FaClockRotateLeft } from "react-icons/fa6";
 import Link from "next/link";
 import TagPill from "~/components/TagPill";
 import { useEffect, useState } from "react";
@@ -21,14 +15,13 @@ import useListActions from "~/utils/useListActions";
 import MediaRow from "~/components/MediaRow";
 import type { Media } from "~/utils/types";
 import { imageFromAPIBasePath } from "~/utils/constants";
+import TagSection from "~/components/TagSection";
 
 const SinglePostPage: NextPage<{ type: string; id: number }> = ({
   type,
   id,
 }) => {
   const [isClient, setIsClient] = useState(false);
-  const [addTag, setAddTag] = useState(false);
-  const [deleteTags, setDeleteTags] = useState(false);
   const user = useUser();
   const { data: mediaFromAPI } = api.mDB.getSingleMedia.useQuery({
     type: type,
@@ -40,14 +33,10 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
     addWatchLaterToList,
     removeFromList,
     changeWatchLaterValue,
-    addNewTag,
-    addTagById,
     addingFav,
     addingWatchLater,
     removing,
     updating,
-    addingExistingTag,
-    addingNewTag,
   } = useListActions();
 
   const {
@@ -115,34 +104,6 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
 
   if (isError || tagError)
     throw Error("Error fetching data, please try again.");
-
-  function handleSubmitNewTag() {
-    const newTagInput = document.getElementById(
-      "newTagInput",
-    ) as HTMLInputElement;
-    if (!newTagInput) return;
-    if (newTagInput.value.length < 3) return;
-
-    const enteredValue = newTagInput.value;
-
-    // Check if the entered value exists in the list of options
-    const options = document.getElementById("newTag") as HTMLDataListElement;
-    if (!options) return;
-    const selectedOption = Array.from(options.options).find(
-      (option) => option.value === enteredValue,
-    );
-
-    if (selectedOption) {
-      if (listItem)
-        addTagById({ tagId: parseInt(selectedOption.id), id: listItem.id });
-      setAddTag(false);
-    } else {
-      if (listItem) {
-        addNewTag({ name: enteredValue, listItemId: listItem.id });
-        setAddTag(false);
-      }
-    }
-  }
 
   return (
     <>
@@ -323,98 +284,8 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                     ? `${mediaFromAPI.overview.slice(0, 200).trim()}...`
                     : mediaFromAPI.overview}
                 </p>
-                {listItem?.tags && listItem.tags.length > 0 && (
-                  <div className="flex flex-col gap-2 rounded-md bg-black p-2">
-                    <div className="flex justify-between gap-4">
-                      <h3 className="text-lg">Your Tags</h3>
-                      <button
-                        onClick={() => {
-                          console.log(deleteTags);
-                          setDeleteTags(!deleteTags);
-                        }}
-                        className="flex items-center gap-1"
-                      >
-                        <FaGear />
-                      </button>
-                    </div>
-
-                    <div className="flex flex-wrap gap-2 py-2">
-                      {listItem.tags.map((genre) => {
-                        return (
-                          <TagPill
-                            listItemId={listItem.id}
-                            key={genre.id}
-                            tag={genre}
-                            deletable={deleteTags}
-                          />
-                        );
-                      })}
-                      {addTag && (
-                        <>
-                          <input
-                            id="newTagInput"
-                            pattern="[a-z\/-]+"
-                            autoFocus
-                            onSelect={() => console.log("selected")}
-                            onKeyDown={(e) => {
-                              if (e.key === "Enter") {
-                                handleSubmitNewTag();
-                              }
-                              if (e.key === "Escape") {
-                                setAddTag(false);
-                              }
-                            }}
-                            className="w-28 rounded-md bg-slate-200 px-1 py-0.5 text-xs tracking-wider text-black"
-                            list="newTag"
-                          />
-                          <datalist id="newTag">
-                            {tags?.tags.map((tag) => {
-                              if (
-                                !listItem?.tags.find(
-                                  (genre) => genre.id === tag.id,
-                                )
-                              ) {
-                                return (
-                                  <option
-                                    onClick={() =>
-                                      console.log("clicked on option")
-                                    }
-                                    key={tag.id}
-                                    id={tag.id.toString()}
-                                    value={tag.name}
-                                  />
-                                );
-                              }
-                            })}
-                          </datalist>
-                          {addingExistingTag || addingNewTag ? (
-                            <div>
-                              <Loading />
-                            </div>
-                          ) : (
-                            <button
-                              onClick={() => {
-                                handleSubmitNewTag();
-                              }}
-                            >
-                              <FaPlus />
-                            </button>
-                          )}
-                        </>
-                      )}
-                      {!addTag && !deleteTags && (
-                        <button
-                          className="flex items-center"
-                          onClick={() => setAddTag(true)}
-                        >
-                          <TagPill
-                            key={245}
-                            tag={{ id: 0, name: "add tag... +" }}
-                          />
-                        </button>
-                      )}
-                    </div>
-                  </div>
+                {listItem && listItem.tags.length > 0 && (
+                  <TagSection listItem={listItem} allTags={tags.tags} />
                 )}
               </div>
             </div>

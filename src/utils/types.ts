@@ -75,6 +75,28 @@ export type ListItemFull=({
   tags: {id:number, name:string}[]
 })[] | undefined
 
+export type FullListItem = {
+  media: {
+      id: number;
+      createdAt: Date;
+      title: string;
+      type: string;
+      poster: string;
+      backdrop: string;
+      description: string;
+  };
+} & {
+  id: string;
+  createdAt: Date;
+  lastSeen: string;
+  userId: string;
+  mediaId: number;
+  watchLater: boolean;
+} & {
+  tags: {id:number, name:string}[]
+}
+
+
 export interface ListItemPlusMedia{
   media: {
   id: number;
