@@ -15,8 +15,11 @@ export default function LayoutWrapper({
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearch, setShowSearch] = useState(false);
   const [timer, setTimer] = useState<NodeJS.Timeout>();
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    setIsClient(true);
+
     const handleFocus = () => {
       if (searchQuery !== "") {
         setShowSearch(true);
@@ -56,7 +59,7 @@ export default function LayoutWrapper({
       document.removeEventListener("keydown", handleKeydown);
       clearTimeout(timer);
     };
-  }, [searchQuery, timer]);
+  }, [searchQuery, timer, isClient]);
 
   const debounce = () => {
     if (timer) {
@@ -71,12 +74,16 @@ export default function LayoutWrapper({
   };
 
   const getMenuClassNames = () => {
-    const menuHeight = document.getElementById("user-menu")?.clientHeight;
-    console.log(menuHeight);
-    if (!menuHeight) console.log("no menu height");
-    return !showMenu
-      ? "absolute -top-[200px] right-0 z-50 bg-zinc-900 px-4 py-4 opacity-0 transition-none"
-      : `absolute top-[87px] flex flex-col gap-2 right-0 z-50 border-[1px] border-slate-400 bg-zinc-900 px-4 py-4 opacity-100 transition-none`;
+    if (!isClient) {
+      return "";
+    } else {
+      const menuHeight = document.getElementById("user-menu")?.clientHeight;
+      if (!menuHeight && isClient)
+        return "absolute -top-[200px] right-0 z-50 bg-zinc-900 px-4 py-4 opacity-0 transition-none";
+      return !showMenu
+        ? "absolute -top-[200px] right-0 z-50 bg-zinc-900 px-4 py-4 opacity-0 transition-none"
+        : `absolute top-[87px] flex flex-col gap-2 right-0 z-50 border-[1px] border-slate-400 bg-zinc-900 px-4 py-4 opacity-100 transition-none`;
+    }
   };
 
   return (
