@@ -47,7 +47,7 @@ export default function TagSection({
   }
 
   return (
-    <div className="flex w-full gap-2 rounded-md bg-black p-2">
+    <div className="flex w-full flex-wrap gap-2 rounded-md bg-black p-2">
       {listItem.tags.map((tag) => {
         return (
           <TagPill

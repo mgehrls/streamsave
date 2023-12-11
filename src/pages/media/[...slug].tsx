@@ -284,7 +284,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                     ? `${mediaFromAPI.overview.slice(0, 200).trim()}...`
                     : mediaFromAPI.overview}
                 </p>
-                {listItem && listItem.tags.length > 0 && (
+                {listItem && (
                   <TagSection listItem={listItem} allTags={tags.tags} />
                 )}
               </div>

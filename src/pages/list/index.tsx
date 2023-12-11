@@ -15,6 +15,9 @@ export default function List() {
     mediaType: string;
     tags: { id: number; name: string }[];
   }>({ mediaType: "all", tags: [] });
+  const [sort, setSort] = useState<
+    "alphaUp" | "alphaDown" | "dateAddedUp" | "dateAddedDown"
+  >("alphaUp");
   //filter and sort the list up here
   //pass the filtered and sorted list to the different views
 
@@ -77,6 +80,14 @@ export default function List() {
       }
     }
   });
+
+  const sortedList = filteredList.sort((a, b) => {
+    if (sort === "alphaUp") {
+      return a.media.title.localeCompare(b.media.title);
+    } else {
+      return b.media.title.localeCompare(a.media.title);
+    }
+  });
   const filterButtonClasses =
     "hover:bg-white px-4 py-2 rounded-md hover:text-black border-[1px] border-white transition-all";
 
@@ -85,35 +96,21 @@ export default function List() {
       <div>
         <div className="flex items-center justify-between bg-sky-600 p-4">
           <h1 className="text-xl">Your List</h1>
-          <div className="flex gap-3">
-            <button
-              className={filterButtonClasses}
-              onClick={() =>
-                setFilters({ mediaType: "all", tags: filters.tags })
-              }
-            >
-              All
-            </button>
-            <button
-              className={filterButtonClasses}
-              onClick={() =>
-                setFilters({ mediaType: "movie", tags: filters.tags })
-              }
-            >
-              Movies
-            </button>
-            <button
-              className={filterButtonClasses}
-              onClick={() =>
-                setFilters({ mediaType: "tv", tags: filters.tags })
-              }
-            >
-              Tv
-            </button>
-          </div>
+          <label htmlFor="mediaFilter">Filter by Media</label>
+          <select
+            onChange={(e) =>
+              setFilters({ mediaType: e.target.value, tags: filters.tags })
+            }
+            name="mediaFilter"
+            className="text-black"
+          >
+            <option value={"all"}>All</option>
+            <option value={"tv"}>TV</option>
+            <option value={"movie"}>Movies</option>
+          </select>
         </div>
-        <div className="my-2 flex flex-col gap-2 px-2">
-          {filteredList.map((item) => {
+        <div className="my-2 flex flex-col gap-2">
+          {sortedList.map((item) => {
             return <ListView item={item} allTags={allTags} key={item.id} />;
           })}
         </div>
@@ -131,15 +128,15 @@ const ListView = ({ item, allTags }: ListViewProps) => {
   if (!item) return <div>Loading...</div>;
 
   return (
-    <div className="flex">
+    <div className="flex bg-zinc-600">
       <div
-        className="bg flex w-[25%] justify-center"
+        className="bg flex min-w-[25%] justify-center"
         style={{
           backgroundImage: `url(${imageFromAPIBasePath}${item.media.backdrop})`,
           backgroundSize: "cover",
         }}
       >
-        <div className="flex w-full items-center justify-center bg-black lg:bg-opacity-50">
+        <div className="flex w-full items-center justify-center bg-black bg-opacity-50">
           <Link href={`/media/${item.media.type}/${item.media.id}`}>
             <div className="max-h-[150px]">
               <Image
@@ -157,7 +154,7 @@ const ListView = ({ item, allTags }: ListViewProps) => {
           </Link>
         </div>
       </div>
-      <div className="flex w-full flex-col gap-1 p-4">
+      <div className="flex w-full flex-col gap-1 overflow-hidden p-4">
         <span className="text-2xl">{item.media.title}</span>
         <TagSection listItem={item} allTags={allTags.tags} />
       </div>
