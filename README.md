@@ -2,9 +2,10 @@
 # Streamsave
 ### Fill your show hole
 
-**Check it out:** [Streamsave](https://streamsave-eta.vercel.app/)
 
 ![Streamsave landing page](/public/images/desktop-landing.png)
+
+**Check it out:** [Streamsave](https://streamsave-eta.vercel.app/)
 
 ## Features
 
@@ -20,7 +21,7 @@
     <img src="https://github.com/devicons/devicon/blob/master/icons/typescript/typescript-plain.svg" alt="typescript" width="40" height="40" /> </a>
   <a href="https://nextjs.org/">
   <a href="https://clerk.com/">
-    <img src="/public/images/clerk.svg" alt="clerk" width="40" height="40" /> </a>
+    <img src="/public/images/clerk-logo.svg" alt="clerk" width="40" height="40" /> </a>
   <a href="https://nextjs.org/">
     <img src="https://assets.vercel.com/image/upload/v1662130559/nextjs/Icon_dark_background.png" alt="next.js" width="40" height="40"/>
   </a>
