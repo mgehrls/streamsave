@@ -2,18 +2,15 @@
 # Streamsave
 ### Fill your show hole
 
-**Check it out:** [JamStats](https://jam-stats.vercel.app/)
+**Check it out:** [Streamsave](https://streamsave-eta.vercel.app/)
 
 ![Streamsave landing page](/public/images/desktop-landing.png)
-![Streamsave trending page on mobile](/public/images/mobile-trending.png)
-![Streamsave list page on mobile](/public/images/mobile-list.png)
 
 ## Features
 
-- Next-Auth for user login authentication
-- Spotify stats (top artists, tracks and podcasts)
-- OpenAI recommendations
-- Responsive design
+- Clerk for user login authentication
+- TMDB [The movie database api](https://www.themoviedb.org/)
+- Mobile first responsive design
 
 
 ## Tech Stack
@@ -22,13 +19,22 @@
   <a href="https://www.typescriptlang.org/">
     <img src="https://github.com/devicons/devicon/blob/master/icons/typescript/typescript-plain.svg" alt="typescript" width="40" height="40" /> </a>
   <a href="https://nextjs.org/">
+  <a href="https://clerk.com/">
+    <img src="/public/images/clerk.svg" alt="clerk" width="40" height="40" /> </a>
+  <a href="https://nextjs.org/">
     <img src="https://assets.vercel.com/image/upload/v1662130559/nextjs/Icon_dark_background.png" alt="next.js" width="40" height="40"/>
+  </a>
+  <a href="https://planetscale.com/">
+    <img src="/public/images/planetscale.svg" alt="planetscale logo" width="40" height="40"/>
+  </a>
+  <a href="https://trpc.io/">
+    <img src="/public/images/trpc.svg" alt="t r p c logo" width="40" height="40"/>
+  </a>
+  <a href="https://www.prisma.io/">
+    <img src="/public/images/prisma.svg" alt="prisma logo" width="40" height="40"/>
   </a>
   <a href="https://tailwindcss.com/">
     <img src="https://github.com/devicons/devicon/blob/master/icons/tailwindcss/tailwindcss-plain.svg" alt="tailwind css" width="40" height="40"/>
-  </a>
-  <a href="https://next-auth.js.org/">
-    <img src="https://authjs.dev/img/logo/logo-sm.png" alt="next-auth" width="40" height="40"/>
   </a>
 </p>
 
