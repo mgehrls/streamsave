@@ -112,7 +112,6 @@ export default function List() {
                 className="w-28 rounded-md bg-slate-200 px-1 py-0.5 text-xs tracking-wider text-black"
                 id="tagFilter"
                 onChange={(e) => {
-                  console.log(e.target.value);
                   setFilters({
                     mediaType: filters.mediaType,
                     tag: e.target.value,
