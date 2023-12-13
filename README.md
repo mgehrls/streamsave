@@ -1,28 +1,70 @@
-# Create T3 App
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+# Streamsave
+### Fill your show hole
 
-## What's next? How do I make an app with this?
+**Check it out:** [JamStats](https://jam-stats.vercel.app/)
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+![Streamsave landing page](/public/images/desktop-landing.png)
+![Streamsave trending page on mobile](/public/images/mobile-trending.png)
+![Streamsave list page on mobile](/public/images/mobile-list.png)
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+## Features
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+- Next-Auth for user login authentication
+- Spotify stats (top artists, tracks and podcasts)
+- OpenAI recommendations
+- Responsive design
 
-## Learn More
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+## Tech Stack
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+<p>
+  <a href="https://www.typescriptlang.org/">
+    <img src="https://github.com/devicons/devicon/blob/master/icons/typescript/typescript-plain.svg" alt="typescript" width="40" height="40" /> </a>
+  <a href="https://nextjs.org/">
+    <img src="https://assets.vercel.com/image/upload/v1662130559/nextjs/Icon_dark_background.png" alt="next.js" width="40" height="40"/>
+  </a>
+  <a href="https://tailwindcss.com/">
+    <img src="https://github.com/devicons/devicon/blob/master/icons/tailwindcss/tailwindcss-plain.svg" alt="tailwind css" width="40" height="40"/>
+  </a>
+  <a href="https://next-auth.js.org/">
+    <img src="https://authjs.dev/img/logo/logo-sm.png" alt="next-auth" width="40" height="40"/>
+  </a>
+</p>
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+## Getting Started
 
-## How do I deploy this?
+Clone the repo
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+```bash
+  git clone https://github.com/trroev/jam-stats
+```
+
+Update .env file
+
+```bash
+  cp .env.example .env
+```
+
+Install dependencies
+
+```bash
+  npm install
+```
+
+Start development server
+
+```bash
+  npm run dev
+```
+
+## Contributors ✨
+
+<p>
+  <a href="https://www.mattgehrls.com/">
+    <img src="https://github.com/mgehrls.png" alt="Matt Gehrls" width="50" height="50" />
+  </a>
+</p>
+
+
+
