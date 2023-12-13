@@ -13,7 +13,7 @@
 
 ## Tech Stack
 
-<p>
+<div style={{background-color: "#fff"}}>
   <a href="https://www.typescriptlang.org/">
     <img src="https://github.com/devicons/devicon/blob/master/icons/typescript/typescript-plain.svg" alt="typescript" width="40" height="40" /> </a>
   <a href="https://nextjs.org/">
@@ -34,7 +34,7 @@
   <a href="https://tailwindcss.com/">
     <img src="https://github.com/devicons/devicon/blob/master/icons/tailwindcss/tailwindcss-plain.svg" alt="tailwind css" width="40" height="40"/>
   </a>
-</p>
+</div>
 
 ## Getting Started
 
