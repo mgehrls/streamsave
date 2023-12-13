@@ -1,8 +1,5 @@
 
 # Streamsave
-### Fill your show hole
-
-
 ![Streamsave landing page](/public/images/desktop-landing.png)
 
 **Check it out:** [Streamsave](https://streamsave-eta.vercel.app/)
