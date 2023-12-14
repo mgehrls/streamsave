@@ -30,6 +30,7 @@ export default function LayoutWrapper({
 
     const handleClick = () => {
       setShowMenu(false);
+      setSearchQuery("");
       setShowSearch(false);
     };
 
@@ -150,7 +151,10 @@ export default function LayoutWrapper({
             )}
           </header>
           {user.isSignedIn && (
-            <div onClick={(e) => e.stopPropagation()} className="relative">
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="relative bg-pink-500"
+            >
               <input
                 type="text"
                 id="search-bar"
@@ -178,7 +182,7 @@ export default function LayoutWrapper({
               )}
 
               {showSearch && (
-                <div className="absolute left-0 top-8 z-10 flex max-h-96 w-full flex-col overflow-y-scroll bg-black bg-opacity-50">
+                <div className="absolute left-0 top-8 z-10 mx-auto ml-2 flex max-h-96 min-w-[896] flex-col overflow-y-scroll bg-opacity-50">
                   <SearchResults
                     searchQuery={searchQuery}
                     setSearchQuery={setSearchQuery}

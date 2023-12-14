@@ -61,8 +61,8 @@ export default function SearchResults({
   }
 
   return (
-    <div className="z-40 flex max-w-4xl flex-col gap-6 overflow-x-hidden bg-black p-4">
-      <div className="flex gap-2">
+    <div className="z-40 flex w-full max-w-4xl flex-col gap-6 overflow-x-hidden border-2 border-white bg-black p-4">
+      <div className="flex w-full gap-2">
         <h2 className="text-xl">{`Search results for "${searchQuery}"`}</h2>
         <button
           className="text-md border-[1px] px-2"
@@ -72,7 +72,7 @@ export default function SearchResults({
         </button>
       </div>
       {!filteredData[0] && (
-        <div className="flex items-center justify-center bg-slate-600 p-8">
+        <div className="flex w-full items-center justify-center bg-slate-600 p-8">
           <p className="text-xl">No results found</p>
         </div>
       )}
@@ -149,7 +149,7 @@ const ImageSection = ({
 }) => {
   return (
     <div
-      className="bg flex w-[40%] justify-center lg:w-1/2"
+      className="flex w-[40%] justify-center lg:w-1/2"
       style={{
         backgroundImage: `url(${imageFromAPIBasePath}${media.backdrop_path})`,
         backgroundSize: "cover",

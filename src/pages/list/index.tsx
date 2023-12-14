@@ -6,6 +6,7 @@ import { imageFromAPIBasePath } from "~/utils/constants";
 import Image from "next/image";
 import Link from "next/link";
 import TagSection from "~/components/TagSection";
+import Head from "next/head";
 
 export default function List() {
   const { data: list } = api.listItem.getUserList.useQuery();
@@ -90,6 +91,14 @@ export default function List() {
   return (
     <LayoutWrapper>
       <div>
+        <Head>
+          <title>Your List</title>
+          <meta
+            name="description"
+            content="the page where you sort and filter your list"
+          />
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
         <div className="flex items-center justify-between bg-sky-600 p-4">
           <h1 className="text-xl">Your List</h1>
           <div className="flex flex-col gap-2">
@@ -109,6 +118,7 @@ export default function List() {
             </div>
             <div className="flex">
               <select
+                defaultValue={"none"}
                 className="w-28 rounded-md bg-slate-200 px-1 py-0.5 text-xs tracking-wider text-black"
                 id="tagFilter"
                 onChange={(e) => {
@@ -118,6 +128,7 @@ export default function List() {
                   });
                 }}
               >
+                <option value={""}>Filter by Tag</option>
                 {allTags.tags.map((tag) => {
                   return (
                     <option
