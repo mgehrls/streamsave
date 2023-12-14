@@ -35,7 +35,8 @@ export default function SearchResults({
 
   if (isLoading || listLoading || tagsLoading)
     return (
-      <div>
+      <div className="bg-black px-20 py-8">
+        loading
         <Loading />
       </div>
     );
