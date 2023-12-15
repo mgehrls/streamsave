@@ -41,7 +41,7 @@
 Clone the repo
 
 ```bash
-  git clone https://github.com/trroev/jam-stats
+  git clone https://github.com/mgehrls/streamsave
 ```
 
 Update .env file
