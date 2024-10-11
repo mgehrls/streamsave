@@ -1,23 +1,22 @@
-import { useState } from "react";
-import { FaHeart, FaRegHeart, FaStar } from "react-icons/fa";
-import { FaClockRotateLeft } from "react-icons/fa6";
+// import { useState } from "react";
+// import { FaHeart, FaRegHeart, FaStar } from "react-icons/fa";
+// import { FaClockRotateLeft } from "react-icons/fa6";
 import type { ListItemPlusMedia, Media } from "~/utils/types";
-import Loading from "./Loading";
+// import Loading from "./Loading";
 import Image from "next/image";
 import Link from "next/link";
 import TagPill from "./TagPill";
-import useListActions from "~/utils/useListActions";
+// import useListActions from "~/utils/useListActions";
 import { imageFromAPIBasePath } from "~/utils/constants";
 import { genresFromAPI } from "~/utils/genres";
 
 export default function MediaCard({
   media,
-  item,
-  allTags,
+  item, // allTags,
 }: {
   media: Media;
   item?: ListItemPlusMedia;
-  allTags?: { tags: { id: number; name: string }[] };
+  // allTags?: { tags: { id: number; name: string }[] };
 }) {
   let tagsToDisplay: { id: number; name: string }[] = [];
 
@@ -56,23 +55,23 @@ export default function MediaCard({
     objectToSend.media.tags = [];
   }
 
-  const likeBtnClasses =
-    "absolute right-0 top-0 rounded-bl-lg bg-black p-2 text-white opacity-70 hover:opacity-100";
-  const watchLaterBtnClasses =
-    "absolute left-0 top-0 rounded-br-lg bg-black p-2 text-white opacity-70 hover:opacity-100";
-  const iconSize = 20;
+  // const likeBtnClasses =
+  //   "absolute right-0 top-0 rounded-bl-lg bg-black p-2 text-white opacity-70 hover:opacity-100";
+  // const watchLaterBtnClasses =
+  //   "absolute left-0 top-0 rounded-br-lg bg-black p-2 text-white opacity-70 hover:opacity-100";
+  // const iconSize = 20;
 
-  const [confirmRemoval, setConfirmRemoval] = useState(false);
-  const {
-    addFavToList,
-    addWatchLaterToList,
-    removeFromList,
-    changeWatchLaterValue,
-    addingFav,
-    addingWatchLater,
-    removing,
-    updating,
-  } = useListActions();
+  // const [confirmRemoval, setConfirmRemoval] = useState(false);
+  // const {
+  //   addFavToList,
+  //   addWatchLaterToList,
+  //   removeFromList,
+  //   changeWatchLaterValue,
+  //   addingFav,
+  //   addingWatchLater,
+  //   removing,
+  //   updating,
+  // } = useListActions();
 
   return (
     <div className="relative mx-auto min-w-[160px] max-w-[160px] bg-zinc-900 p-2">
