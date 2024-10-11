@@ -8,6 +8,7 @@ import Link from "next/link";
 import TagPill from "./TagPill";
 import useListActions from "~/utils/useListActions";
 import { imageFromAPIBasePath } from "~/utils/constants";
+import { genresFromAPI } from "~/utils/genres";
 
 export default function MediaCard({
   media,
@@ -16,7 +17,7 @@ export default function MediaCard({
 }: {
   media: Media;
   item?: ListItemPlusMedia;
-  allTags: { tags: { id: number; name: string }[] };
+  allTags?: { tags: { id: number; name: string }[] };
 }) {
   let tagsToDisplay: { id: number; name: string }[] = [];
 
@@ -44,7 +45,7 @@ export default function MediaCard({
   } else if (media.genres) {
     objectToSend.media.tags = media.genres;
     tagsToDisplay = media.genres.map((genre) => {
-      const tag = allTags.tags.find((tag) => tag.id === genre);
+      const tag = genresFromAPI.find((tag) => tag.id === genre);
       if (tag) {
         return tag;
       } else {
@@ -75,7 +76,7 @@ export default function MediaCard({
 
   return (
     <div className="relative mx-auto min-w-[160px] max-w-[160px] bg-zinc-900 p-2">
-      {confirmRemoval && item?.id && (
+      {/* {confirmRemoval && item?.id && (
         <div className="absolute left-0 top-0 z-10 flex h-full w-full flex-col items-center justify-center gap-8 bg-black p-2 text-white">
           <p className="font-bold">Remove from List?</p>
           {!removing && (
@@ -166,7 +167,7 @@ export default function MediaCard({
             </div>
           )}
         </>
-      )}
+      )} */}
 
       <div className="flex h-52 w-36 items-center bg-black">
         <Link href={`/media/${media.type}/${media.id}`}>

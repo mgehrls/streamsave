@@ -20,7 +20,7 @@ export default function MediaRow({
   media?: Media[];
   bgColor?: string;
   listItems?: ListItemPlusMedia[];
-  allTags: { tags: { name: string; id: number }[] };
+  allTags?: { tags: { name: string; id: number }[] };
 }) {
   const size = useWindowSize();
 
@@ -58,7 +58,7 @@ export default function MediaRow({
             const item = listItems?.find((item) => item?.media.id === media.id);
             return (
               <SwiperSlide key={media.id}>
-                <MediaCard media={media} item={item} allTags={allTags} />
+                <MediaCard media={media} item={item} />
               </SwiperSlide>
             );
           })}
@@ -68,11 +68,7 @@ export default function MediaRow({
               if (item)
                 return (
                   <SwiperSlide key={item.id}>
-                    <MediaCard
-                      media={item.media}
-                      item={item}
-                      allTags={allTags}
-                    />
+                    <MediaCard media={item.media} />
                   </SwiperSlide>
                 );
             })}

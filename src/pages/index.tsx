@@ -12,11 +12,12 @@ import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 import "swiper/css/a11y";
 import LayoutWrapper from "~/components/LayoutWrapper";
+import Modal from "~/components/Modal/Modal";
 
 export default function Home() {
   const user = useUser();
   const [isClient, setIsClient] = useState(false);
-
+  const [open, setOpen] = useState(true);
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -31,7 +32,8 @@ export default function Home() {
     );
 
   return (
-    <div className="min-w-screen flex flex-col items-center justify-center bg-black text-slate-50">
+    <div className="min-w-screen relative flex flex-col items-center justify-center bg-black text-slate-50">
+      <Modal open={open} onClose={() => setOpen(false)} />
       <Head>
         <title>StreamSave</title>
         <meta
@@ -62,22 +64,22 @@ function Feed() {
     isLoading: trendingLoading,
     isError: trendingError,
   } = api.mDB.getTrending.useQuery();
-  const {
-    data: listData,
-    isLoading,
-    isError: listDataError,
-  } = api.listItem.getUserList.useQuery();
-  const {
-    data: tags,
-    isLoading: tagsLoading,
-    isError: tagError,
-  } = api.listItem.getAllTags.useQuery();
+  // const {
+  //   data: listData,
+  //   isLoading,
+  //   isError: listDataError,
+  // } = api.listItem.getUserList.useQuery();
+  // const {
+  //   data: tags,
+  //   isLoading: tagsLoading,
+  //   isError: tagError,
+  // } = api.listItem.getAllTags.useQuery();
 
   if (trendingError) return <div>Error contacting api for trending data</div>;
-  if (listDataError)
-    return <div>Error contacting our database to find your list</div>;
-  if (tagError) return <div>Error contacting our database for tags</div>;
-  if (trendingLoading || isLoading || tagsLoading)
+  // if (listDataError)
+  //   return <div>Error contacting our database to find your list</div>;
+  // if (tagError) return <div>Error contacting our database for tags</div>;
+  if (trendingLoading)
     return (
       <div className="flex min-h-[20rem] w-full items-center justify-center">
         <Loading />
@@ -88,34 +90,34 @@ function Feed() {
 
   return (
     <div>
-      {listData && (
+      {/* {listData && (
         <MediaRow
           title={"Your List"}
           bgColor="bg-zinc-600"
           listItems={listData}
           allTags={tags}
         />
-      )}
+      )} */}
       <MediaRow
         title={"Trending Shows"}
         media={trendingShows}
         bgColor="bg-zinc-500"
-        listItems={listData}
-        allTags={tags}
+        // listItems={listData}
+        // allTags={tags}
       />
       <MediaRow
         title={"Popular Shows"}
         media={popularShows}
         bgColor="bg-zinc-600"
-        listItems={listData}
-        allTags={tags}
+        // listItems={listData}
+        // allTags={tags}
       />
       <MediaRow
         title={"Popular Movies"}
         media={popularMovies}
         bgColor="bg-zinc-500"
-        listItems={listData}
-        allTags={tags}
+        // listItems={listData}
+        // allTags={tags}
       />
     </div>
   );
