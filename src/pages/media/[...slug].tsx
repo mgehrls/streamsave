@@ -15,6 +15,7 @@ import useListActions from "~/utils/useListActions";
 import MediaRow from "~/components/MediaRow";
 import type { Media } from "~/utils/types";
 import { imageFromAPIBasePath } from "~/utils/constants";
+import { genresFromAPI } from "~/utils/genres";
 import TagSection from "~/components/TagSection";
 
 const SinglePostPage: NextPage<{ type: string; id: number }> = ({
@@ -27,34 +28,56 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
     type: type,
     id: id,
   });
+ 
+  // const {
+  //   addFavToList,
+  //   addWatchLaterToList,
+  //   removeFromList,
+  //   changeWatchLaterValue,
+  //   addingFav,
+  //   addingWatchLater,
+  //   removing,
+  //   updating,
+  // } = useListActions();
 
-  const {
-    addFavToList,
-    addWatchLaterToList,
-    removeFromList,
-    changeWatchLaterValue,
-    addingFav,
-    addingWatchLater,
-    removing,
-    updating,
-  } = useListActions();
+  // const {
+  //   data: userList,
+  //   isLoading,
+  //   isError,
+  // } = api.listItem.getUserList.useQuery();
+  // const {
+  //   data: tags,
+  //   isLoading: tagsLoading,
+  //   isError: tagError,
+  // } = api.tags.getAllTags.useQuery();
 
-  const {
-    data: userList,
-    isLoading,
-    isError,
-  } = api.listItem.getUserList.useQuery();
-  const {
-    data: tags,
-    isLoading: tagsLoading,
-    isError: tagError,
-  } = api.listItem.getAllTags.useQuery();
-
-  const listItem = userList?.find((item) => item.media.id === id);
+  // const listItem = userList?.find((item) => item.media.id === id);
 
   useEffect(() => {
     setIsClient(true);
+
   }, []);
+
+  // function submitNewTag() {
+  //   const newTagInput = document.getElementById("newTagInput") as HTMLInputElement;
+  //   if (!newTagInput) return;
+  //   if (newTagInput.value.length < 3) return;
+  
+  //   const enteredValue = newTagInput.value;
+  
+  //   // Check if the entered value exists in the list of options
+  //   const options = document.getElementById("newTag") as HTMLDataListElement;
+  //   if (!options) return;
+  //   const optionExists = Array.from(options.options).some(
+  //     (option) => option.value === enteredValue
+  //   );
+  
+  //   if (optionExists) {
+  //     console.log("Existing option selected:", enteredValue);
+  //   } else {
+  //     console.log("New option suggested:", enteredValue);
+  //   }
+  // }
 
   if (!isClient) return;
 
@@ -79,14 +102,14 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
       poster: mediaFromAPI.poster_path,
       backdrop: mediaFromAPI.backdrop_path,
       description: mediaFromAPI.overview,
-      watchLater: listItem?.watchLater ?? false,
+      watchLater: false,
       tags: [],
     },
   };
 
   const genres: { id: number; name: string }[] = mediaFromAPI.genres.map(
     (genre) => {
-      const tag = tags?.tags.find((tag) => tag.id === genre.id);
+      const tag = genresFromAPI.find((tag) => tag.id === genre.id);
       if (tag) {
         return tag;
       } else {
@@ -95,15 +118,15 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
     },
   );
 
-  if (!user.isLoaded || isLoading || tagsLoading)
+  if (!user.isLoaded)
     return (
       <div className="flex min-h-screen w-full items-center justify-center bg-zinc-900 text-slate-50">
         <Loading />
       </div>
     );
 
-  if (isError || tagError)
-    throw Error("Error fetching data, please try again.");
+  // if (isError || tagError)
+  //   throw Error("Error fetching data, please try again.");
 
   return (
     <>
@@ -136,7 +159,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
             {/* info */}
             <div className="flex flex-col justify-center px-4 sm:w-1/2 sm:flex-col-reverse">
               {/* buttons */}
-              <div className="flex items-end gap-2 sm:pt-4">
+              {/* <div className="flex items-end gap-2 sm:pt-4">
                 {listItem ? (
                   listItem.watchLater ? (
                     // in list, in watch later
@@ -267,7 +290,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                     )}
                   </div>
                 )}
-              </div>
+              </div> */}
 
               {/* text area */}
               <div className="max-w-[425px]">
@@ -284,9 +307,39 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                     ? `${mediaFromAPI.overview.slice(0, 200).trim()}...`
                     : mediaFromAPI.overview}
                 </p>
-                {listItem && (
-                  <TagSection listItem={listItem} allTags={tags.tags} />
-                )}
+                {/* {listItem?.tags && listItem.tags.length > 0 && (
+                  <div className="rounded-md bg-black p-2">
+                    <h3 className="text-lg">Your Tags</h3>
+                    <div className="flex flex-wrap gap-2 py-2">
+                      {listItem.tags.map((genre) => {
+                        return <TagPill key={genre.id} tag={genre} />;
+                      })}
+                      {addTag && (<>
+                      <input id="newTagInput" pattern="[a-z\/-]+" autoFocus onSelect={()=> console.log("selected")} onKeyDown={(e)=> console.log(e.key)} className="rounded-md bg-slate-200 px-1 py-0.5 text-xs tracking-wider text-black w-28" list="newTag"/>
+                        <datalist id="newTag">
+                        {tags?.tags.map((tag)=> {
+                          if (!listItem?.tags.find((genre)=> genre.id === tag.id)) {
+                            return <option onClick={()=>console.log("clicked on option")} key={tag.id} value={tag.name}/>
+                          }
+                        })}
+                      </datalist>
+                      <button onClick={()=>{
+                        console.log(
+                          "add attempted"
+                        )
+                      }}><FaPlus/></button>
+                      </>)}
+                      {!addTag && (
+                        <button className="flex items-center" onClick={() => setAddTag(true)}>
+                          <TagPill
+                            key={245}
+                            tag={{ id: 0, name: "add tag... +" }}
+                          />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                )} */}
               </div>
             </div>
           </div>
@@ -294,7 +347,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
             <MediaRow
               title={`More Like ${mediaFromAPI.title}`}
               bgColor="bg-zinc-600"
-              listItems={userList}
+              // listItems={userList}
               media={mediaFromAPI.recommendations.results.map((result) => {
                 return {
                   id: result.id,
@@ -306,7 +359,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                   genres: result.genre_ids,
                 } as Media;
               })}
-              allTags={tags}
+              allTags={{tags:genresFromAPI}}
             />
           )}
         </div>
