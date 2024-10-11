@@ -88,7 +88,7 @@ export default function LayoutWrapper({
   };
 
   return (
-    <div className="min-h-screen w-full bg-zinc-800 text-slate-50">
+    <div className="relative min-h-screen w-full bg-zinc-800 text-slate-50">
       <div className="flex min-h-screen w-full items-start justify-center">
         <div className="flex min-h-screen w-full max-w-4xl flex-col justify-between">
           <header className="relative flex items-center justify-between bg-black px-4 py-4 lg:px-8">

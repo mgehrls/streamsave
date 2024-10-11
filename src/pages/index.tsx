@@ -32,8 +32,7 @@ export default function Home() {
     );
 
   return (
-    <div className="min-w-screen relative flex flex-col items-center justify-center bg-black text-slate-50">
-      <Modal open={open} onClose={() => setOpen(false)} />
+    <div className="min-w-screen flex flex-col items-center justify-center bg-black text-slate-50">
       <Head>
         <title>StreamSave</title>
         <meta
@@ -44,7 +43,12 @@ export default function Home() {
       </Head>
       <LayoutWrapper>
         <>
-          {user.isSignedIn && <Feed />}
+          {user.isSignedIn && (
+            <>
+              <Modal open={open} onClose={() => setOpen(false)} />
+              <Feed />
+            </>
+          )}
           {!user.isSignedIn && user.isLoaded && (
             <>
               <TopSection />
