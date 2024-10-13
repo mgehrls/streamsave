@@ -2,7 +2,7 @@ import type { GetStaticProps, NextPage } from "next";
 import Head from "next/head";
 import { api } from "~/utils/api";
 import { generateSSGHelper } from "~/server/helpers/ssgHelper";
-import LayoutWrapper from "~/components/LayoutWrapper";
+import LayoutWrapper from "~/components/Layout/LayoutWrapper";
 import { useUser } from "@clerk/nextjs";
 import Loading from "~/components/Loading";
 import Image from "next/image";
@@ -133,7 +133,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
       <Head>
         <title>{`${mediaFromAPI.title}`}</title>
       </Head>
-      <LayoutWrapper>
+      <LayoutWrapper user={user}>
         <div className="relative w-full bg-zinc-800">
           <Link
             className="absolute left-2 flex h-16 w-16 items-center justify-center"

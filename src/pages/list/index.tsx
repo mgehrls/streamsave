@@ -1,4 +1,4 @@
-import LayoutWrapper from "~/components/LayoutWrapper";
+import LayoutWrapper from "~/components/Layout/LayoutWrapper";
 import { api } from "~/utils/api";
 import type { FullListItem } from "~/utils/types";
 import { useState } from "react";

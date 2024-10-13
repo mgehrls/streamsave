@@ -1,3 +1,11 @@
+import type { UserResource } from '@clerk/types';
+
+export type User =  {
+  isLoaded: boolean;
+  isSignedIn: boolean | undefined;
+  user: UserResource | null | undefined;
+}
+
 export type MovieAPIResult = {
     adult: boolean,
     backdrop_path: string,
