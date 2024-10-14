@@ -159,131 +159,131 @@ const ImageSection = ({
   );
 };
 
-const Buttons = ({
-  listItem,
-  objectToSend,
-}: {
-  listItem?: ListItemPlusMedia;
-  objectToSend: {
-    media: {
-      id: number;
-      type: string;
-      title: string;
-      poster: string;
-      backdrop: string;
-      description: string;
-      watchLater: boolean;
-      tags: number[];
-    };
-  };
-}) => {
-  const {
-    addFavToList,
-    addWatchLaterToList,
-    removeFromList,
-    changeWatchLaterValue,
-    addingFav,
-    addingWatchLater,
-    removing,
-    updating,
-  } = useListActions();
+// const Buttons = ({
+//   listItem,
+//   objectToSend,
+// }: {
+//   listItem?: ListItemPlusMedia;
+//   objectToSend: {
+//     media: {
+//       id: number;
+//       type: string;
+//       title: string;
+//       poster: string;
+//       backdrop: string;
+//       description: string;
+//       watchLater: boolean;
+//       tags: number[];
+//     };
+//   };
+// }) => {
+//   const {
+//     addFavToList,
+//     addWatchLaterToList,
+//     removeFromList,
+//     changeWatchLaterValue,
+//     addingFav,
+//     addingWatchLater,
+//     removing,
+//     updating,
+//   } = useListActions();
 
-  return (
-    <div className="flex items-end gap-2 sm:pt-4">
-      {listItem ? (
-        listItem.watchLater ? (
-          // in list, in watch later
-          <>
-            {!updating && (
-              <button
-                onClick={() =>
-                  changeWatchLaterValue({
-                    id: listItem.id,
-                    watchLater: false,
-                    lastSeen: "",
-                  })
-                }
-                className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold"
-              >
-                <FaRegHeart size={20} />
-                <span className="hidden lg:block">Favorited</span>
-              </button>
-            )}
-            {updating && (
-              <div className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold">
-                <Loading />
-              </div>
-            )}
-            {!removing && (
-              <button
-                onClick={() => removeFromList({ id: listItem.id })}
-                className="flex items-center justify-center gap-2 rounded-md bg-pink-600 px-8 py-4 text-lg font-semibold"
-              >
-                <FaStar fill="green" size={20} />
-                <span className="hidden lg:block">Interested</span>
-              </button>
-            )}
-            {removing && (
-              <div className="flex items-center justify-center gap-2 rounded-md bg-pink-600 px-8 py-4 text-lg font-semibold">
-                <Loading />
-              </div>
-            )}
-          </>
-        ) : (
-          //in list, not watch later
-          <>
-            {!removing && (
-              <button
-                onClick={() => removeFromList({ id: listItem.id })}
-                className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold"
-              >
-                <FaHeart fill="red" size={20} />
-                <span>Favorited</span>
-              </button>
-            )}
-            {removing && (
-              <div className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold">
-                <Loading />
-              </div>
-            )}
-          </>
-        )
-      ) : (
-        // not in list
-        <div className="flex w-full items-center justify-between gap-2 md:items-end md:justify-start">
-          {!addingFav && (
-            <button
-              onClick={() => addFavToList(objectToSend)}
-              className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold"
-            >
-              <FaRegHeart size={20} />
-              <span className="hidden lg:block">Favorited</span>
-            </button>
-          )}
-          {addingFav && (
-            <div className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold">
-              <Loading />
-            </div>
-          )}
-          {!addingWatchLater && (
-            <button
-              onClick={() => {
-                objectToSend.media.watchLater = true;
-                addWatchLaterToList(objectToSend);
-              }}
-              className="line-clamp-1 flex items-center justify-center gap-2 rounded-md bg-pink-600 px-8 py-4 text-lg font-semibold"
-            >
-              <FaClockRotateLeft size={20} />
-              <span className="hidden lg:block">Later</span>
-            </button>
-          )}
-          {addingWatchLater && (
-            <div className="flex items-center justify-center gap-2 rounded-md bg-pink-600 px-8 py-4 text-lg font-semibold">
-              <Loading />
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
-};
+//   return (
+//     <div className="flex items-end gap-2 sm:pt-4">
+//       {listItem ? (
+//         listItem.watchLater ? (
+//           // in list, in watch later
+//           <>
+//             {!updating && (
+//               <button
+//                 onClick={() =>
+//                   changeWatchLaterValue({
+//                     id: listItem.id,
+//                     watchLater: false,
+//                     lastSeen: "",
+//                   })
+//                 }
+//                 className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold"
+//               >
+//                 <FaRegHeart size={20} />
+//                 <span className="hidden lg:block">Favorited</span>
+//               </button>
+//             )}
+//             {updating && (
+//               <div className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold">
+//                 <Loading />
+//               </div>
+//             )}
+//             {!removing && (
+//               <button
+//                 onClick={() => removeFromList({ id: listItem.id })}
+//                 className="flex items-center justify-center gap-2 rounded-md bg-pink-600 px-8 py-4 text-lg font-semibold"
+//               >
+//                 <FaStar fill="green" size={20} />
+//                 <span className="hidden lg:block">Interested</span>
+//               </button>
+//             )}
+//             {removing && (
+//               <div className="flex items-center justify-center gap-2 rounded-md bg-pink-600 px-8 py-4 text-lg font-semibold">
+//                 <Loading />
+//               </div>
+//             )}
+//           </>
+//         ) : (
+//           //in list, not watch later
+//           <>
+//             {!removing && (
+//               <button
+//                 onClick={() => removeFromList({ id: listItem.id })}
+//                 className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold"
+//               >
+//                 <FaHeart fill="red" size={20} />
+//                 <span>Favorited</span>
+//               </button>
+//             )}
+//             {removing && (
+//               <div className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold">
+//                 <Loading />
+//               </div>
+//             )}
+//           </>
+//         )
+//       ) : (
+//         // not in list
+//         <div className="flex w-full items-center justify-between gap-2 md:items-end md:justify-start">
+//           {!addingFav && (
+//             <button
+//               onClick={() => addFavToList(objectToSend)}
+//               className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold"
+//             >
+//               <FaRegHeart size={20} />
+//               <span className="hidden lg:block">Favorited</span>
+//             </button>
+//           )}
+//           {addingFav && (
+//             <div className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold">
+//               <Loading />
+//             </div>
+//           )}
+//           {!addingWatchLater && (
+//             <button
+//               onClick={() => {
+//                 objectToSend.media.watchLater = true;
+//                 addWatchLaterToList(objectToSend);
+//               }}
+//               className="line-clamp-1 flex items-center justify-center gap-2 rounded-md bg-pink-600 px-8 py-4 text-lg font-semibold"
+//             >
+//               <FaClockRotateLeft size={20} />
+//               <span className="hidden lg:block">Later</span>
+//             </button>
+//           )}
+//           {addingWatchLater && (
+//             <div className="flex items-center justify-center gap-2 rounded-md bg-pink-600 px-8 py-4 text-lg font-semibold">
+//               <Loading />
+//             </div>
+//           )}
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
