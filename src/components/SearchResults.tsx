@@ -1,12 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Dispatch, SetStateAction } from "react";
-import { FaRegHeart, FaStar, FaHeart } from "react-icons/fa";
-import { FaClockRotateLeft } from "react-icons/fa6";
+// import { FaRegHeart, FaStar, FaHeart } from "react-icons/fa";
+// import { FaClockRotateLeft } from "react-icons/fa6";
 import { api } from "~/utils/api";
-import type { APIResult, ListItemPlusMedia } from "~/utils/types";
+import type { APIResult } from "~/utils/types";
 import Loading from "./Loading";
-import useListActions from "~/utils/useListActions";
+// import useListActions from "~/utils/useListActions";
 import { imageFromAPIBasePath } from "~/utils/constants";
 
 export default function SearchResults({
@@ -146,7 +146,7 @@ const ImageSection = ({
               src={
                 media.poster_path
                   ? `${imageFromAPIBasePath}${media.poster_path}`
-                  : "/images/posterunavailable.png"
+                  : "/images/posterUnavailable.png"
               }
               width={150}
               height={300}

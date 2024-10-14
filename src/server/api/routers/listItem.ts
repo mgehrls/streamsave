@@ -1,159 +1,134 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-import { createTRPCRouter, privateProcedure, publicProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, privateProcedure } from "~/server/api/trpc";
 import { z } from "zod";
-import type { Prisma } from "@prisma/client";
+import type { MongoListItem } from "~/utils/types";
+
 
 export const listItemRouter = createTRPCRouter({
     getUserList: privateProcedure 
         .query(async ({ ctx }) => {
-           const { db } = ctx;
-           const userList = await db.listItem.findMany({
-                where:{
-                     userId: ctx.userId
-                },
-                include:{
-                    media:true,
-                    tags:true
-                }
-              }).catch((err: string | undefined)=>{
-                    throw new Error(err);
-                })
-                return userList;
+           const { db, userId } = ctx;
+           const collection = db.db('streamsave').collection<MongoListItem>('listItem');
+           const userList = await collection.find({userId: userId}).toArray();
+            return userList;
            }),
     addListItem: privateProcedure
-           .input(z.object({media: z.object({id: z.number(), title: z.string(), poster: z.string(), type: z.string(), backdrop: z.string(), description:z.string(), watchLater: z.boolean(), tags: z.array(z.number())})}))
+        .input(z.object({media: z.object({id: z.number(), title: z.string(), poster: z.string(), type: z.string(), backdrop: z.string(), description:z.string(), watchLater: z.boolean(), tags: z.array(z.object({id: z.number(), name: z.string()}))})}))
            .mutation(async ({ ctx, input }) => {
+            const { db, userId} = ctx;
             const {media} = input;
-            const tags = media.tags.map((tagId)=>{ return {id: tagId}})
-            const listItem: Prisma.ListItemCreateInput = {
-                userId: ctx.userId,
-                lastSeen: "",
-                watchLater: media.watchLater,
-                tags: {
-                    connect: tags
-                },
-                media: {
-                    connectOrCreate: {
-                        where: {
-                            id: media.id
-                        },
-                        create: {
-                            id: media.id,
-                            title: media.title,
-                            poster: media.poster,
-                            type: media.type,
-                            backdrop: media.backdrop,
-                            description: media.description,
-                        }
-                    }
+            const listItem : MongoListItem = {
+                userId: userId,
+                createdAt: new Date(),
+                media: { 
+                    watchLater: media.watchLater,
+                    id: media.id,
+                    title: media.title,
+                    type: media.type,
+                    poster: media.poster,
+                    backdrop: media.backdrop,
+                    description: media.description,
+                    tags: media.tags,
                 }
             }
-            await ctx.db.listItem.create({
-                data: listItem
-                }).catch((err: string | undefined)=>{
-                throw new Error(err);
-            })
+            await db.db('streamsave').collection<MongoListItem>('listItem').insertOne(listItem);
         }),
-    deleteListItem: privateProcedure
-        .input(z.object({id: z.string()}))
-        .mutation(async ({ ctx, input }) => {
-            const {id} = input;
-            await ctx.db.listItem.delete({
-                where: {
-                    id: id
-                }
-            }).catch((err: string | undefined)=>{
-                throw new Error(err);
-            })
-        }),
-    changeWatchLaterValue: privateProcedure
-        .input(z.object({id: z.string(), lastSeen: z.string(), watchLater: z.boolean()}))
-        .mutation(async ({ ctx, input }) => {
-            const {id, lastSeen, watchLater} = input;
-            await ctx.db.listItem.update({
-                where: {
-                    id: id
-                },
-                data: {
-                    lastSeen: lastSeen,
-                    watchLater: watchLater
-                }
-            }).catch((err: string | undefined)=>{
-                throw new Error(err);
-            })
-        }),
-    addNewTag: privateProcedure
-        .input(z.object({name: z.string().toLowerCase().min(3).max(12), listItemId: z.string()}))
-        .mutation(async ({ ctx, input }) => {
-            const {name, listItemId} = input;
-            await ctx.db.tag.create({
-                data: {
-                    name: name
-                }
-            }).catch((err: string | undefined)=>{
-                throw new Error(err);
-            }).then((tag)=>{
-                ctx.db.listItem.update({
-                    where: {
-                        id: listItemId
-                    },
-                    data: {
-                        tags: {
-                            connect: {
-                                id: tag.id
-                            }
-                        }
-                    }
-                }).catch((err: string | undefined)=>{
-                    throw new Error(err);
-                })
-            })
-        }),
-    addTagById: privateProcedure
-        .input(z.object({id: z.string(), tagId: z.number()}))
-        .mutation(async ({ ctx, input }) => {
-            const {id, tagId} = input;
-            await ctx.db.listItem.update({
-                where: {
-                    id: id
-                },
-                data: {
-                    tags: {
-                        connect: {
-                            id: tagId
-                        }
-                    }
-                }
-            }).catch((err: string | undefined)=>{
-                throw new Error(err);
-            })
-        }),
-        getAllTags: publicProcedure
-        .query(async ({ctx}) => {
-          const {db} = ctx;
-        const tags = await db.tag.findMany()
-        return {tags}
-        }),
-        removeTagById: privateProcedure
-        .input(z.object({id: z.string(), tagId: z.number()}))
-        .mutation(async ({ ctx, input }) => {
-            const {id, tagId} = input;
-            await ctx.db.listItem.update({
-                where: {
-                    id: id
-                },
-                data: {
-                    tags: {
-                        disconnect: {
-                            id: tagId
-                        }
-                    }
-                }
-            }).catch((err: string | undefined)=>{
-                throw new Error(err);
-            })
-        }),
+    // deleteListItem: privateProcedure
+    //     .input(z.object({id: z.string()}))
+    //     .mutation(async ({ ctx, input }) => {
+    //         const {id} = input;
+    //         await ctx.db.listItem.delete({
+    //             where: {
+    //                 id: id
+    //             }
+    //         }).catch((err: string | undefined)=>{
+    //             throw new Error(err);
+    //         })
+    //     }),
+    // changeWatchLaterValue: privateProcedure
+    //     .input(z.object({id: z.string(), lastSeen: z.string(), watchLater: z.boolean()}))
+    //     .mutation(async ({ ctx, input }) => {
+    //         const {id, lastSeen, watchLater} = input;
+    //         await ctx.db.listItem.update({
+    //             where: {
+    //                 id: id
+    //             },
+    //             data: {
+    //                 lastSeen: lastSeen,
+    //                 watchLater: watchLater
+    //             }
+    //         }).catch((err: string | undefined)=>{
+    //             throw new Error(err);
+    //         })
+    //     }),
+    // addNewTag: privateProcedure
+    //     .input(z.object({name: z.string().toLowerCase().min(3).max(12), listItemId: z.string()}))
+    //     .mutation(async ({ ctx, input }) => {
+    //         const {name, listItemId} = input;
+    //         await ctx.db.tag.create({
+    //             data: {
+    //                 name: name
+    //             }
+    //         }).catch((err: string | undefined)=>{
+    //             throw new Error(err);
+    //         }).then((tag)=>{
+    //             ctx.db.listItem.update({
+    //                 where: {
+    //                     id: listItemId
+    //                 },
+    //                 data: {
+    //                     tags: {
+    //                         connect: {
+    //                             id: tag.id
+    //                         }
+    //                     }
+    //                 }
+    //             }).catch((err: string | undefined)=>{
+    //                 throw new Error(err);
+    //             })
+    //         })
+    //     }),
+    // addTagById: privateProcedure
+    //     .input(z.object({id: z.string(), tagId: z.number()}))
+    //     .mutation(async ({ ctx, input }) => {
+    //         const {id, tagId} = input;
+    //         await ctx.db.listItem.update({
+    //             where: {
+    //                 id: id
+    //             },
+    //             data: {
+    //                 tags: {
+    //                     connect: {
+    //                         id: tagId
+    //                     }
+    //                 }
+    //             }
+    //         }).catch((err: string | undefined)=>{
+    //             throw new Error(err);
+    //         })
+    //     }),
+    //     getAllTags: publicProcedure
+    //     .query(async ({ctx}) => {
+    //       const {db} = ctx;
+    //     const tags = await db.tag.findMany()
+    //     return {tags}
+    //     }),
+    //     removeTagById: privateProcedure
+    //     .input(z.object({id: z.string(), tagId: z.number()}))
+    //     .mutation(async ({ ctx, input }) => {
+    //         const {id, tagId} = input;
+    //         await ctx.db.listItem.update({
+    //             where: {
+    //                 id: id
+    //             },
+    //             data: {
+    //                 tags: {
+    //                     disconnect: {
+    //                         id: tagId
+    //                     }
+    //                 }
+    //             }
+    //         }).catch((err: string | undefined)=>{
+    //             throw new Error(err);
+    //         })
+    //     }),
 });

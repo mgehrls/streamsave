@@ -1,4 +1,4 @@
-import type { ListItemPlusMedia, Media } from "~/utils/types";
+import type { Media, MongoListItem } from "~/utils/types";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
 import useWindowSize from "~/utils/useWindowSize";
@@ -14,13 +14,11 @@ export default function MediaRow({
   media,
   bgColor,
   listItems,
-  allTags,
 }: {
   title: string;
   media?: Media[];
   bgColor?: string;
-  listItems?: ListItemPlusMedia[];
-  allTags?: { tags: { name: string; id: number }[] };
+  listItems?: MongoListItem[];
 }) {
   const size = useWindowSize();
 
@@ -67,7 +65,7 @@ export default function MediaRow({
             listItems?.map((item) => {
               if (item)
                 return (
-                  <SwiperSlide key={item.id}>
+                  <SwiperSlide key={item.media.id}>
                     <MediaCard media={item.media} />
                   </SwiperSlide>
                 );

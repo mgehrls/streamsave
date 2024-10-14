@@ -62,6 +62,22 @@ export type APIResponse = {
     genres?: number[];
 }
 
+export type MongoListItem = {
+  createdAt: Date;
+  userId: string;
+  media: MongoMedia
+}
+export type MongoMedia = {
+  id: number;
+  title: string;
+  type: string;
+  poster: string;
+  backdrop: string;
+  description: string;
+  watchLater: boolean;
+  tags: {id:number, name:string}[];
+}
+
 export type ListItemFull=({
   media: {
       id: number;
