@@ -7,8 +7,10 @@ import Image from "next/image";
 import Link from "next/link";
 import TagSection from "~/components/TagSection";
 import Head from "next/head";
+import { useUser } from "@clerk/nextjs";
 
 export default function List() {
+  const user = useUser();
   const { data: list } = api.listItem.getUserList.useQuery();
   const { data: allTags } = api.listItem.getAllTags.useQuery();
   //create filters, sort, and view state,
@@ -89,7 +91,7 @@ export default function List() {
   });
 
   return (
-    <LayoutWrapper>
+    <LayoutWrapper user={user}>
       <div>
         <Head>
           <title>Your List</title>
