@@ -21,19 +21,8 @@ export default function SearchResults({
   const { data, isLoading, isError } = api.mDB.search.useQuery({
     query: searchQuery,
   });
-  const {
-    data: listData,
-    isLoading: listLoading,
-    isError: listDataError,
-  } = api.listItem.getUserList.useQuery();
 
-  const {
-    data: tags,
-    isLoading: tagsLoading,
-    isError: tagError,
-  } = api.listItem.getAllTags.useQuery();
-
-  if (isLoading || listLoading || tagsLoading)
+  if (isLoading)
     return (
       <div className="bg-black px-20 py-8">
         loading
@@ -42,12 +31,7 @@ export default function SearchResults({
     );
   if (isError)
     return <div>An error occurred when searching for your request</div>;
-  if (listDataError)
-    return <div>An error occurred when searching for your list</div>;
-  if (tagError) return <div>An error occurred when searching for tags</div>;
   if (!data) return <div>No data</div>;
-  if (!listData) return <div>No list data</div>;
-  if (!tags) return <div>No tags</div>;
   if (searchQuery === "") {
     setShowSearch(false);
   }
@@ -62,7 +46,7 @@ export default function SearchResults({
   }
 
   return (
-    <div className="z-40 flex w-full max-w-4xl flex-col gap-6 overflow-x-hidden border-2 border-white bg-black p-4">
+    <div className="z-40 flex w-full max-w-5xl flex-col gap-6 overflow-x-hidden border-2 border-white bg-black p-4">
       <div className="flex w-full gap-2">
         <h2 className="text-xl">{`Search results for "${searchQuery}"`}</h2>
         <button
@@ -78,7 +62,6 @@ export default function SearchResults({
         </div>
       )}
       {filteredData.map((media: APIResult) => {
-        const listItem = listData.find((item) => item.mediaId == media.id);
         const objectToSend: {
           media: {
             id: number;
@@ -99,11 +82,7 @@ export default function SearchResults({
             backdrop: media.backdrop_path || "",
             description: media.overview,
             watchLater: false,
-            tags: listItem
-              ? listItem.tags.map((tag) => {
-                  return tag.id;
-                })
-              : media.genre_ids,
+            tags: media.genre_ids,
           },
         };
         return (
@@ -121,7 +100,7 @@ export default function SearchResults({
               <p className="lg:text-md wrap line-clamp-2 text-sm">
                 {media.overview?.slice(0, 100) + "..."}
               </p>
-              <Buttons listItem={listItem} objectToSend={objectToSend} />
+              {/* <Buttons listItem={listItem} objectToSend={objectToSend} /> */}
             </div>
           </div>
         );
