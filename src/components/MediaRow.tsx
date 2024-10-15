@@ -8,6 +8,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 import "swiper/css/a11y";
+import type { WithId } from "mongodb";
 
 export default function MediaRow({
   title,
@@ -18,7 +19,7 @@ export default function MediaRow({
   title: string;
   media?: Media[];
   bgColor?: string;
-  listItems?: MongoListItem[];
+  listItems?: WithId<MongoListItem>[];
 }) {
   const size = useWindowSize();
 

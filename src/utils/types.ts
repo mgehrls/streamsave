@@ -1,4 +1,5 @@
 import type { UserResource } from '@clerk/types';
+import { ObjectId } from 'mongodb';
 
 export type User =  {
   isLoaded: boolean;
@@ -63,6 +64,7 @@ export type APIResponse = {
 }
 
 export type MongoListItem = {
+  _id?: string | ObjectId;
   createdAt: Date;
   userId: string;
   media: MongoMedia

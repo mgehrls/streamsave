@@ -10,13 +10,14 @@ import useListActions from "~/utils/useListActions";
 import { imageFromAPIBasePath } from "~/utils/constants";
 import { genresFromAPI } from "~/utils/genres";
 import { useState } from "react";
+import type { WithId } from "mongodb";
 
 export default function MediaCard({
   media,
   item,
 }: {
   media: Media;
-  item?: MongoListItem;
+  item?: WithId<MongoListItem>;
 }) {
   let tagsToDisplay: { id: number; name: string }[] = [];
 
@@ -70,11 +71,11 @@ export default function MediaCard({
   const {
     addFavToList,
     addWatchLaterToList,
-    //   removeFromList,
+    removeFromList,
     //   changeWatchLaterValue,
     addingFav,
     addingWatchLater,
-    // removing,
+    removing,
     // updating,
   } = useListActions();
 
@@ -83,8 +84,13 @@ export default function MediaCard({
       {confirmRemoval && item?.media.id && (
         <div className="absolute left-0 top-0 z-10 flex h-full w-full flex-col items-center justify-center gap-8 bg-black p-2 text-white">
           <p className="font-bold">Remove from List?</p>
-          {/* {!removing && (
-            <button onClick={() => removeFromList({ id: item.id })}>
+          {!removing && (
+            <button
+              onClick={() => {
+                console.log("removing", typeof item._id);
+                removeFromList(item._id as string);
+              }}
+            >
               Remove
             </button>
           )}
@@ -92,7 +98,7 @@ export default function MediaCard({
             <div>
               <Loading />
             </div>
-          )} */}
+          )}
 
           <button onClick={() => setConfirmRemoval(false)}>Close</button>
         </div>

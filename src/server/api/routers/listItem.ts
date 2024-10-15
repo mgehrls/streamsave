@@ -1,6 +1,7 @@
 import { createTRPCRouter, privateProcedure } from "~/server/api/trpc";
 import { z } from "zod";
 import type { MongoListItem } from "~/utils/types";
+import { ObjectId } from "mongodb";
 
 
 export const listItemRouter = createTRPCRouter({
@@ -30,20 +31,20 @@ export const listItemRouter = createTRPCRouter({
                     tags: media.tags,
                 }
             }
-            await db.db('streamsave').collection<MongoListItem>('listItem').insertOne(listItem);
+            await db.db('streamsave').collection<MongoListItem>('listItem').insertOne(listItem).catch((err: string | undefined)=>{
+                throw new Error(err);
+            });
         }),
-    // deleteListItem: privateProcedure
-    //     .input(z.object({id: z.string()}))
-    //     .mutation(async ({ ctx, input }) => {
-    //         const {id} = input;
-    //         await ctx.db.listItem.delete({
-    //             where: {
-    //                 id: id
-    //             }
-    //         }).catch((err: string | undefined)=>{
-    //             throw new Error(err);
-    //         })
-    //     }),
+    deleteListItem: privateProcedure
+        .input(z.string())
+        .mutation(async ({ ctx, input }) => {
+            console.log('input', input);
+            const { db } = ctx;
+            const result = await db.db('streamsave').collection<MongoListItem>('listItem').deleteOne({ _id: new ObjectId(input) }).catch((err: string | undefined)=>{
+                throw new Error(err);
+            });
+            console.log('result', result);
+        }),
     // changeWatchLaterValue: privateProcedure
     //     .input(z.object({id: z.string(), lastSeen: z.string(), watchLater: z.boolean()}))
     //     .mutation(async ({ ctx, input }) => {
