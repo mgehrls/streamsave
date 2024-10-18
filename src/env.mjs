@@ -19,6 +19,7 @@ export const env = createEnv({
       .default("development"),
     CLERK_SECRET_KEY: z.string(),
     API_KEY_SECRET: z.string(),
+    MONGODB_URI: z.string(),
   },
 
   /**
@@ -39,6 +40,7 @@ export const env = createEnv({
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
     CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
     API_KEY_SECRET: process.env.API_KEY_SECRET,
+    MONGODB_URI: process.env.MONGODB_URI,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
   /**

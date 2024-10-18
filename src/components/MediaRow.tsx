@@ -1,4 +1,4 @@
-import type { ListItemPlusMedia, Media } from "~/utils/types";
+import type { Media, MongoListItem } from "~/utils/types";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
 import useWindowSize from "~/utils/useWindowSize";
@@ -8,19 +8,18 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 import "swiper/css/a11y";
+import type { WithId } from "mongodb";
 
 export default function MediaRow({
   title,
   media,
   bgColor,
   listItems,
-  allTags,
 }: {
   title: string;
   media?: Media[];
   bgColor?: string;
-  listItems?: ListItemPlusMedia[];
-  allTags?: { tags: { name: string; id: number }[] };
+  listItems?: WithId<MongoListItem>[];
 }) {
   const size = useWindowSize();
 
@@ -64,11 +63,11 @@ export default function MediaRow({
           })}
           {listItems &&
             !media &&
-            listItems?.map((item) => {
+            listItems.map((item) => {
               if (item)
                 return (
-                  <SwiperSlide key={item.id}>
-                    <MediaCard media={item.media} />
+                  <SwiperSlide key={item.media.id}>
+                    <MediaCard item={item} />
                   </SwiperSlide>
                 );
             })}

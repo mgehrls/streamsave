@@ -12,7 +12,7 @@ import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
-import { db } from "~/server/db";
+import client from "~/server/db";
 
 /**
  * 1. CONTEXT
@@ -44,11 +44,11 @@ type CreateContextOptions = Record<string, never>;
  */
 export const createTRPCContext = (opts: CreateNextContextOptions) => {
   const {req} = opts;
-  const sesh = getAuth(req);
+  const session = getAuth(req);
 
-  const userId = sesh?.userId ?? null;
+  const userId = session?.userId ?? null;
   return {
-    db,
+    db: client,
     userId,
   };
 };
@@ -57,7 +57,7 @@ export const createTRPCContext = (opts: CreateNextContextOptions) => {
  * 2. INITIALIZATION
  *
  * This is where the tRPC API is initialized, connecting the context and transformer. We also parse
- * ZodErrors so that you get typesafety on the frontend if your procedure fails due to validation
+ * ZodErrors so that you get type safety on the frontend if your procedure fails due to validation
  * errors on the backend.
  */
 
@@ -98,7 +98,7 @@ export const createTRPCRouter = t.router;
  */
 export const publicProcedure = t.procedure;
 
-const enforceUserIsAuthed = t.middleware(async ({ ctx, next }) => {
+const enforceUserIsAuthenticated = t.middleware(async ({ ctx, next }) => {
   if (!ctx.userId) {
     throw new TRPCError({code: "UNAUTHORIZED", message: "You must be logged in to do that."});
   }
@@ -109,4 +109,4 @@ const enforceUserIsAuthed = t.middleware(async ({ ctx, next }) => {
   });
 });
 
-export const privateProcedure = t.procedure.use(enforceUserIsAuthed);
+export const privateProcedure = t.procedure.use(enforceUserIsAuthenticated);

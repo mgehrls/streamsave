@@ -13,38 +13,38 @@ export default function TagSection({
   listItem: FullListItem;
   allTags: { id: number; name: string }[];
 }) {
-  const [addTag, setAddTag] = useState(false);
-  const [deleteTags, setDeleteTags] = useState(false);
-  const { addNewTag, addTagById, addingExistingTag, addingNewTag } =
-    useListActions();
+  // const [addTag, setAddTag] = useState(false);
+  // const [deleteTags, setDeleteTags] = useState(false);
+  // const { addNewTag, addTagById, addingExistingTag, addingNewTag } =
+  //   useListActions();
 
-  function handleSubmitNewTag() {
-    const newTagInput = document.getElementById(
-      "newTagInput",
-    ) as HTMLInputElement;
-    if (!newTagInput) return;
-    if (newTagInput.value.length < 3) return;
+  // function handleSubmitNewTag() {
+  //   const newTagInput = document.getElementById(
+  //     "newTagInput",
+  //   ) as HTMLInputElement;
+  //   if (!newTagInput) return;
+  //   if (newTagInput.value.length < 3) return;
 
-    const enteredValue = newTagInput.value;
+  //   const enteredValue = newTagInput.value;
 
-    // Check if the entered value exists in the list of options
-    const options = document.getElementById("newTag") as HTMLDataListElement;
-    if (!options) return;
-    const selectedOption = Array.from(options.options).find(
-      (option) => option.value === enteredValue,
-    );
+  //   // Check if the entered value exists in the list of options
+  //   const options = document.getElementById("newTag") as HTMLDataListElement;
+  //   if (!options) return;
+  //   const selectedOption = Array.from(options.options).find(
+  //     (option) => option.value === enteredValue,
+  //   );
 
-    if (selectedOption) {
-      if (listItem)
-        addTagById({ tagId: parseInt(selectedOption.id), id: listItem.id });
-      setAddTag(false);
-    } else {
-      if (listItem) {
-        addNewTag({ name: enteredValue, listItemId: listItem.id });
-        setAddTag(false);
-      }
-    }
-  }
+  //   if (selectedOption) {
+  //     if (listItem)
+  //       addTagById({ tagId: parseInt(selectedOption.id), id: listItem.id });
+  //     setAddTag(false);
+  //   } else {
+  //     if (listItem) {
+  //       // addNewTag({ name: enteredValue, listItemId: listItem.id });
+  //       setAddTag(false);
+  //     }
+  //   }
+  // }
 
   return (
     <div className="flex w-full flex-wrap gap-2 rounded-md bg-black p-2">
@@ -54,11 +54,11 @@ export default function TagSection({
             listItemId={listItem.id}
             key={tag.id}
             tag={tag}
-            deletable={deleteTags}
+            // deletable={deleteTags}
           />
         );
       })}
-      {addTag && (
+      {/* {addTag && (
         <>
           <input
             id="newTagInput"
@@ -132,7 +132,7 @@ export default function TagSection({
         <button onClick={() => setDeleteTags(true)} className="ml-auto">
           <FaGear />
         </button>
-      )}
+      )} */}
     </div>
   );
 }

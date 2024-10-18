@@ -1,48 +1,82 @@
 // import { useState } from "react";
-// import { FaHeart, FaRegHeart, FaStar } from "react-icons/fa";
-// import { FaClockRotateLeft } from "react-icons/fa6";
-import type { ListItemPlusMedia, Media } from "~/utils/types";
-// import Loading from "./Loading";
+import { FaHeart, FaRegHeart, FaStar } from "react-icons/fa";
+import { FaClockRotateLeft } from "react-icons/fa6";
+import type { Media, MongoListItem, MongoMedia } from "~/utils/types";
+import Loading from "./Loading";
 import Image from "next/image";
 import Link from "next/link";
 import TagPill from "./TagPill";
-// import useListActions from "~/utils/useListActions";
+import useListActions from "~/utils/useListActions";
 import { imageFromAPIBasePath } from "~/utils/constants";
 import { genresFromAPI } from "~/utils/genres";
+import { useState } from "react";
+import type { WithId } from "mongodb";
+import { link } from "fs";
 
 export default function MediaCard({
   media,
-  item, // allTags,
+  item,
 }: {
-  media: Media;
-  item?: ListItemPlusMedia;
-  // allTags?: { tags: { id: number; name: string }[] };
+  media?: Media;
+  item?: WithId<MongoListItem>;
 }) {
-  let tagsToDisplay: { id: number; name: string }[] = [];
+  const [confirmRemoval, setConfirmRemoval] = useState(false);
+  const {
+    addFavToList,
+    addWatchLaterToList,
+    removeFromList,
+    changeWatchLaterValue,
+    addingFav,
+    addingWatchLater,
+    removing,
+    updating,
+  } = useListActions();
 
-  const objectToSend: {
-    media: {
-      id: number;
-      type: string;
-      title: string;
-      poster: string;
-      backdrop: string;
-      description: string;
-      watchLater: boolean;
-      tags: number[];
-    };
-  } = {
-    media: {
-      ...media,
-      watchLater: item?.watchLater ?? false,
-      tags: [],
-    },
+  if (!media && !item) return null;
+
+  let tagsToDisplay: { id: number; name: string }[] = [];
+  let objectToSend: {
+    media: MongoMedia;
   };
-  if (item?.tags) {
-    objectToSend.media.tags = item.tags.map((tag) => tag.id);
-    tagsToDisplay = item.tags;
-  } else if (media.genres) {
-    objectToSend.media.tags = media.genres;
+
+  if (media) {
+    objectToSend = {
+      media: {
+        id: media.id,
+        title: media.title,
+        type: media.type,
+        poster: media.poster,
+        backdrop: media.backdrop,
+        description: media.description,
+        watchLater: false,
+        tags: [],
+      },
+    };
+  } else {
+    objectToSend = {
+      media: {
+        id: item!.media.id,
+        title: item!.media.title,
+        type: item!.media.type,
+        poster: item!.media.poster,
+        backdrop: item!.media.backdrop,
+        description: item!.media.description,
+        watchLater: item!.media.watchLater,
+        tags: [],
+      },
+    };
+  }
+
+  if (item?.media.tags) {
+    objectToSend.media.tags = item.media.tags;
+    tagsToDisplay = item.media.tags;
+  } else if (media?.genres) {
+    objectToSend.media.tags = media.genres.map((genre) => {
+      return {
+        id: genre,
+        name: genresFromAPI.find((tag) => tag.id === genre)?.name ?? "",
+      };
+    });
     tagsToDisplay = media.genres.map((genre) => {
       const tag = genresFromAPI.find((tag) => tag.id === genre);
       if (tag) {
@@ -55,31 +89,24 @@ export default function MediaCard({
     objectToSend.media.tags = [];
   }
 
-  // const likeBtnClasses =
-  //   "absolute right-0 top-0 rounded-bl-lg bg-black p-2 text-white opacity-70 hover:opacity-100";
-  // const watchLaterBtnClasses =
-  //   "absolute left-0 top-0 rounded-br-lg bg-black p-2 text-white opacity-70 hover:opacity-100";
-  // const iconSize = 20;
-
-  // const [confirmRemoval, setConfirmRemoval] = useState(false);
-  // const {
-  //   addFavToList,
-  //   addWatchLaterToList,
-  //   removeFromList,
-  //   changeWatchLaterValue,
-  //   addingFav,
-  //   addingWatchLater,
-  //   removing,
-  //   updating,
-  // } = useListActions();
+  const likeBtnClasses =
+    "absolute right-0 top-0 rounded-bl-lg bg-black p-2 text-white opacity-70 hover:opacity-100";
+  const watchLaterBtnClasses =
+    "absolute left-0 top-0 rounded-br-lg bg-black p-2 text-white opacity-70 hover:opacity-100";
+  const iconSize = 20;
 
   return (
     <div className="relative mx-auto min-w-[160px] max-w-[160px] bg-zinc-900 p-2">
-      {/* {confirmRemoval && item?.id && (
+      {confirmRemoval && item?.media.id && (
         <div className="absolute left-0 top-0 z-10 flex h-full w-full flex-col items-center justify-center gap-8 bg-black p-2 text-white">
           <p className="font-bold">Remove from List?</p>
           {!removing && (
-            <button onClick={() => removeFromList({ id: item.id })}>
+            <button
+              onClick={() => {
+                console.log("removing", typeof item._id);
+                removeFromList(item._id as string);
+              }}
+            >
               Remove
             </button>
           )}
@@ -93,7 +120,7 @@ export default function MediaCard({
         </div>
       )}
 
-      {item && !item.watchLater && (
+      {item && !item.media.watchLater && (
         <button
           onClick={() => setConfirmRemoval(true)}
           className={likeBtnClasses}
@@ -101,7 +128,7 @@ export default function MediaCard({
           <FaHeart size={iconSize} fill="red" />
         </button>
       )}
-      {item && item.watchLater && (
+      {item && item.media.watchLater && (
         <>
           <button
             onClick={() => setConfirmRemoval(true)}
@@ -113,7 +140,7 @@ export default function MediaCard({
             <button
               onClick={() =>
                 changeWatchLaterValue({
-                  id: item.id,
+                  id: item._id as string,
                   watchLater: false,
                   lastSeen: "",
                 })
@@ -166,15 +193,17 @@ export default function MediaCard({
             </div>
           )}
         </>
-      )} */}
+      )}
 
       <div className="flex h-52 w-36 items-center bg-black">
-        <Link href={`/media/${media.type}/${media.id}`}>
+        <Link
+          href={`/media/${objectToSend.media.type}/${objectToSend.media.id}`}
+        >
           <Image
             src={
-              media.poster
-                ? `${imageFromAPIBasePath}${media.poster}`
-                : "/images/posterunavailable.png"
+              objectToSend.media.poster
+                ? `${imageFromAPIBasePath}${objectToSend.media.poster}`
+                : "/images/posterUnavailable.png"
             }
             alt=""
             width={176}
@@ -185,9 +214,11 @@ export default function MediaCard({
       </div>
       <div className="p-1">
         <div className="mt-1 flex h-[40px] items-center">
-          <Link href={`/media/${media.type}/${media.id}`}>
+          <Link
+            href={`/media/${objectToSend.media.type}/${objectToSend.media.id}`}
+          >
             <h3 className="text-md line-clamp-2 leading-[19px]">
-              {media.title}
+              {objectToSend.media.title}
             </h3>
           </Link>
         </div>
