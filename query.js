@@ -1,13 +1,13 @@
 const { MongoClient } = require('mongodb');
 
-const uri = process.env.MONGODB_URI; // Your MongoDB connection string
+const uri = process.env.MONGODB_URI;
 const client = new MongoClient(uri);
 
 async function run() {
     try {
         await client.connect();
-        const database = client.db('yourDatabase'); // Replace with your database name
-        const collection = database.collection('yourCollection'); // Replace with your collection name
+        const database = client.db('streamsave');
+        const collection = database.collection('listItem');
 
         // Perform your query here
         const results = await collection.find({}).toArray();
