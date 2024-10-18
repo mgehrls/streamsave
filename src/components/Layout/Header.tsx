@@ -37,7 +37,7 @@ function Header({ user }: { user: User }) {
                   : `absolute right-0 top-[87px] z-50 flex flex-col gap-2 border-[1px] border-slate-400 bg-zinc-900 px-4 py-4 opacity-100 transition-none`
               }
             >
-              <Link href="/">
+              {/* <Link href="/">
                 <button className="flex items-center justify-center py-2 transition-all hover:scale-105 hover:rounded-md hover:underline">
                   Home
                 </button>
@@ -46,7 +46,7 @@ function Header({ user }: { user: User }) {
                 <button className="flex items-center justify-center py-2 transition-all hover:scale-105 hover:rounded-md hover:underline">
                   List
                 </button>
-              </Link>
+              </Link> */}
               <SignOutButton>
                 <button
                   disabled={!showMenu}
