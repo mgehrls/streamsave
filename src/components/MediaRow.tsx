@@ -63,11 +63,11 @@ export default function MediaRow({
           })}
           {listItems &&
             !media &&
-            listItems?.map((item) => {
+            listItems.map((item) => {
               if (item)
                 return (
                   <SwiperSlide key={item.media.id}>
-                    <MediaCard media={item.media} />
+                    <MediaCard item={item} />
                   </SwiperSlide>
                 );
             })}

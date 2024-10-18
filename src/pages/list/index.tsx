@@ -12,7 +12,7 @@ import { useUser } from "@clerk/nextjs";
 export default function List() {
   const user = useUser();
   const { data: list } = api.listItem.getUserList.useQuery();
-  const { data: allTags } = api.listItem.getAllTags.useQuery();
+  // const { data: allTags } = api.listItem.getAllTags.useQuery();
   //create filters, sort, and view state,
   const [filters, setFilters] = useState<{
     mediaType: string;
@@ -24,7 +24,7 @@ export default function List() {
   //filter and sort the list up here
   //pass the filtered and sorted list to the different views
 
-  if (!list || !allTags) return <div>Loading...</div>;
+  if (!list) return <div>Loading...</div>;
 
   function isTagPresentInListItem(
     item: {
@@ -59,36 +59,36 @@ export default function List() {
     return commonTags;
   }
 
-  const filteredList = list.filter((item) => {
-    if (filters.mediaType === "all") {
-      if (filters.tag === "") return true;
-      if (filters.tag) {
-        return isTagPresentInListItem(item, filters);
-      }
-    } else if (filters.mediaType === "movie") {
-      if (item.media.type === "movie") {
-        if (filters.tag === "") return true;
-        if (filters.tag) {
-          return isTagPresentInListItem(item, filters);
-        }
-      }
-    } else if (filters.mediaType === "tv") {
-      if (item.media.type === "tv") {
-        if (filters.tag === "") return true;
-        if (filters.tag) {
-          return isTagPresentInListItem(item, filters);
-        }
-      }
-    }
-  });
+  // const filteredList = list.filter((item) => {
+  //   if (filters.mediaType === "all") {
+  //     if (filters.tag === "") return true;
+  //     if (filters.tag) {
+  //       return isTagPresentInListItem(item, filters);
+  //     }
+  //   } else if (filters.mediaType === "movie") {
+  //     if (item.media.type === "movie") {
+  //       if (filters.tag === "") return true;
+  //       if (filters.tag) {
+  //         return isTagPresentInListItem(item, filters);
+  //       }
+  //     }
+  //   } else if (filters.mediaType === "tv") {
+  //     if (item.media.type === "tv") {
+  //       if (filters.tag === "") return true;
+  //       if (filters.tag) {
+  //         return isTagPresentInListItem(item, filters);
+  //       }
+  //     }
+  //   }
+  // });
 
-  const sortedList = filteredList.sort((a, b) => {
-    if (sort === "alphaUp") {
-      return a.media.title.localeCompare(b.media.title);
-    } else {
-      return b.media.title.localeCompare(a.media.title);
-    }
-  });
+  // const sortedList = filteredList.sort((a, b) => {
+  //   if (sort === "alphaUp") {
+  //     return a.media.title.localeCompare(b.media.title);
+  //   } else {
+  //     return b.media.title.localeCompare(a.media.title);
+  //   }
+  // });
 
   return (
     <LayoutWrapper user={user}>
@@ -101,7 +101,7 @@ export default function List() {
           />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-        <div className="flex items-center justify-between bg-sky-600 p-4">
+        {/*  <div className="flex items-center justify-between bg-sky-600 p-4">
           <h1 className="text-xl">Your List</h1>
           <div className="flex flex-col gap-2">
             <div>
@@ -151,7 +151,8 @@ export default function List() {
           {sortedList.map((item) => {
             return <ListView item={item} allTags={allTags} key={item.id} />;
           })}
-        </div>
+        </div> */}
+        <h1>Under Construction</h1>
       </div>
     </LayoutWrapper>
   );

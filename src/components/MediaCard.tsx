@@ -1,7 +1,7 @@
 // import { useState } from "react";
 import { FaHeart, FaRegHeart, FaStar } from "react-icons/fa";
 import { FaClockRotateLeft } from "react-icons/fa6";
-import type { Media, MongoListItem } from "~/utils/types";
+import type { Media, MongoListItem, MongoMedia } from "~/utils/types";
 import Loading from "./Loading";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,38 +11,66 @@ import { imageFromAPIBasePath } from "~/utils/constants";
 import { genresFromAPI } from "~/utils/genres";
 import { useState } from "react";
 import type { WithId } from "mongodb";
+import { link } from "fs";
 
 export default function MediaCard({
   media,
   item,
 }: {
-  media: Media;
+  media?: Media;
   item?: WithId<MongoListItem>;
 }) {
-  let tagsToDisplay: { id: number; name: string }[] = [];
+  const [confirmRemoval, setConfirmRemoval] = useState(false);
+  const {
+    addFavToList,
+    addWatchLaterToList,
+    removeFromList,
+    changeWatchLaterValue,
+    addingFav,
+    addingWatchLater,
+    removing,
+    updating,
+  } = useListActions();
 
-  const objectToSend: {
-    media: {
-      id: number;
-      type: string;
-      title: string;
-      poster: string;
-      backdrop: string | null;
-      description: string;
-      watchLater: boolean;
-      tags: { id: number; name: string }[];
-    };
-  } = {
-    media: {
-      ...media,
-      watchLater: item?.media.watchLater ?? false,
-      tags: [],
-    },
+  if (!media && !item) return null;
+
+  let tagsToDisplay: { id: number; name: string }[] = [];
+  let objectToSend: {
+    media: MongoMedia;
   };
+
+  if (media) {
+    objectToSend = {
+      media: {
+        id: media.id,
+        title: media.title,
+        type: media.type,
+        poster: media.poster,
+        backdrop: media.backdrop,
+        description: media.description,
+        watchLater: false,
+        tags: [],
+      },
+    };
+  } else {
+    objectToSend = {
+      media: {
+        id: item!.media.id,
+        title: item!.media.title,
+        type: item!.media.type,
+        poster: item!.media.poster,
+        backdrop: item!.media.backdrop,
+        description: item!.media.description,
+        watchLater: item!.media.watchLater,
+        tags: [],
+      },
+    };
+  }
+
   if (item?.media.tags) {
     objectToSend.media.tags = item.media.tags;
     tagsToDisplay = item.media.tags;
-  } else if (media.genres) {
+  } else if (media?.genres) {
     objectToSend.media.tags = media.genres.map((genre) => {
       return {
         id: genre,
@@ -66,18 +94,6 @@ export default function MediaCard({
   const watchLaterBtnClasses =
     "absolute left-0 top-0 rounded-br-lg bg-black p-2 text-white opacity-70 hover:opacity-100";
   const iconSize = 20;
-
-  const [confirmRemoval, setConfirmRemoval] = useState(false);
-  const {
-    addFavToList,
-    addWatchLaterToList,
-    removeFromList,
-    changeWatchLaterValue,
-    addingFav,
-    addingWatchLater,
-    removing,
-    updating,
-  } = useListActions();
 
   return (
     <div className="relative mx-auto min-w-[160px] max-w-[160px] bg-zinc-900 p-2">
@@ -180,11 +196,13 @@ export default function MediaCard({
       )}
 
       <div className="flex h-52 w-36 items-center bg-black">
-        <Link href={`/media/${media.type}/${media.id}`}>
+        <Link
+          href={`/media/${objectToSend.media.type}/${objectToSend.media.id}`}
+        >
           <Image
             src={
-              media.poster
-                ? `${imageFromAPIBasePath}${media.poster}`
+              objectToSend.media.poster
+                ? `${imageFromAPIBasePath}${objectToSend.media.poster}`
                 : "/images/posterUnavailable.png"
             }
             alt=""
@@ -196,9 +214,11 @@ export default function MediaCard({
       </div>
       <div className="p-1">
         <div className="mt-1 flex h-[40px] items-center">
-          <Link href={`/media/${media.type}/${media.id}`}>
+          <Link
+            href={`/media/${objectToSend.media.type}/${objectToSend.media.id}`}
+          >
             <h3 className="text-md line-clamp-2 leading-[19px]">
-              {media.title}
+              {objectToSend.media.title}
             </h3>
           </Link>
         </div>

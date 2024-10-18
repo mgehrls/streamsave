@@ -12,7 +12,7 @@ import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
-import db from "~/db/db";
+import client from "~/server/db";
 
 /**
  * 1. CONTEXT
@@ -48,7 +48,7 @@ export const createTRPCContext = (opts: CreateNextContextOptions) => {
 
   const userId = session?.userId ?? null;
   return {
-    db,
+    db: client,
     userId,
   };
 };

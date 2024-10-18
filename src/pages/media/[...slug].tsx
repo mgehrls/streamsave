@@ -28,7 +28,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
     type: type,
     id: id,
   });
- 
+
   // const {
   //   addFavToList,
   //   addWatchLaterToList,
@@ -55,23 +55,22 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
 
   useEffect(() => {
     setIsClient(true);
-
   }, []);
 
   // function submitNewTag() {
   //   const newTagInput = document.getElementById("newTagInput") as HTMLInputElement;
   //   if (!newTagInput) return;
   //   if (newTagInput.value.length < 3) return;
-  
+
   //   const enteredValue = newTagInput.value;
-  
+
   //   // Check if the entered value exists in the list of options
   //   const options = document.getElementById("newTag") as HTMLDataListElement;
   //   if (!options) return;
   //   const optionExists = Array.from(options.options).some(
   //     (option) => option.value === enteredValue
   //   );
-  
+
   //   if (optionExists) {
   //     console.log("Existing option selected:", enteredValue);
   //   } else {
@@ -359,7 +358,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                   genres: result.genre_ids,
                 } as Media;
               })}
-              allTags={{tags:genresFromAPI}}
+              // allTags={{tags:genresFromAPI}}
             />
           )}
         </div>
