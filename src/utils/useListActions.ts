@@ -31,12 +31,12 @@ export default function useListActions(){
       },
     });
 
-  // const { mutate: changeWatchLaterValue, isLoading: updating } =
-  //   api.listItem.changeWatchLaterValue.useMutation({
-  //     onSuccess: () => {
-  //       void ctx.listItem.getUserList.invalidate();
-  //     },
-  //   });
+  const { mutate: changeWatchLaterValue, isLoading: updating } =
+    api.listItem.changeWatchLaterValue.useMutation({
+      onSuccess: () => {
+        void ctx.listItem.getUserList.invalidate();
+      },
+    });
 
   // const { mutate: addTagById, isLoading: addingExistingTag } =
   //   api.listItem.addTagById.useMutation({
@@ -61,6 +61,6 @@ export default function useListActions(){
   //   })
 
 
-    return { addFavToList, addWatchLaterToList, addingFav, addingWatchLater, removeFromList, removing }
+    return { addFavToList, addWatchLaterToList, addingFav, addingWatchLater, removeFromList, removing, changeWatchLaterValue, updating }
 
 }

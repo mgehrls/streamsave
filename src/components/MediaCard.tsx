@@ -27,7 +27,7 @@ export default function MediaCard({
       type: string;
       title: string;
       poster: string;
-      backdrop: string;
+      backdrop: string | null;
       description: string;
       watchLater: boolean;
       tags: { id: number; name: string }[];
@@ -72,11 +72,11 @@ export default function MediaCard({
     addFavToList,
     addWatchLaterToList,
     removeFromList,
-    //   changeWatchLaterValue,
+    changeWatchLaterValue,
     addingFav,
     addingWatchLater,
     removing,
-    // updating,
+    updating,
   } = useListActions();
 
   return (
@@ -120,11 +120,11 @@ export default function MediaCard({
           >
             <FaStar size={iconSize} fill="green" />
           </button>
-          {/* {!updating && (
+          {!updating && (
             <button
               onClick={() =>
                 changeWatchLaterValue({
-                  id: item.id,
+                  id: item._id as string,
                   watchLater: false,
                   lastSeen: "",
                 })
@@ -138,7 +138,7 @@ export default function MediaCard({
             <div className={likeBtnClasses}>
               <Loading />
             </div>
-          )} */}
+          )}
         </>
       )}
       {!item && (
