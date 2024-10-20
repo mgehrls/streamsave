@@ -23,6 +23,7 @@ function Header({ user }: { user: User }) {
             aria-label="Streamsave"
             className="hidden text-xl font-bold tracking-wide sm:block"
           >
+            {/* Not a typo. The image is the S for users without visual impairment. */}
             treamSave
           </h1>
         </Link>
