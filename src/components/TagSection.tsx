@@ -1,18 +1,7 @@
-import { FaPlus } from "react-icons/fa";
-import { FaGear, FaX } from "react-icons/fa6";
-import Loading from "./Loading";
 import TagPill from "./TagPill";
-import { useState } from "react";
-import useListActions from "~/utils/useListActions";
-import type { FullListItem } from "~/utils/types";
+import type { MongoListItem } from "~/utils/types";
 
-export default function TagSection({
-  listItem,
-  allTags,
-}: {
-  listItem: FullListItem;
-  allTags: { id: number; name: string }[];
-}) {
+export default function TagSection({ listItem }: { listItem: MongoListItem }) {
   // const [addTag, setAddTag] = useState(false);
   // const [deleteTags, setDeleteTags] = useState(false);
   // const { addNewTag, addTagById, addingExistingTag, addingNewTag } =
@@ -47,11 +36,10 @@ export default function TagSection({
   // }
 
   return (
-    <div className="flex w-full flex-wrap gap-2 rounded-md bg-black p-2">
-      {listItem.tags.map((tag) => {
+    <div className="flex w-full flex-wrap gap-2 p-2">
+      {listItem.media.tags.map((tag) => {
         return (
           <TagPill
-            listItemId={listItem.id}
             key={tag.id}
             tag={tag}
             // deletable={deleteTags}
