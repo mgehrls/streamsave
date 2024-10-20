@@ -11,7 +11,7 @@ import Modal from "../Modal/Modal";
 function Home() {
     const user = useUser();
     const [isClient, setIsClient] = useState(false);
-    const [open, setOpen] = useState(true);
+    
     useEffect(() => {
       setIsClient(true);
     }, []);
@@ -27,7 +27,6 @@ function Home() {
     } else if(user.isSignedIn){
         return (
             <LayoutWrapper user={user}>
-                <Modal open={open} onClose={() => setOpen(false)} />
                 <Feed />
             </LayoutWrapper>
         )
