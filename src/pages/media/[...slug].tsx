@@ -13,10 +13,9 @@ import TagPill from "~/components/TagPill";
 import { useEffect, useState } from "react";
 import useListActions from "~/utils/useListActions";
 import MediaRow from "~/components/MediaRow";
-import type { Media } from "~/utils/types";
+import type { Media, MongoMedia } from "~/utils/types";
 import { imageFromAPIBasePath } from "~/utils/constants";
 import { genresFromAPI } from "~/utils/genres";
-import TagSection from "~/components/TagSection";
 
 const SinglePostPage: NextPage<{ type: string; id: number }> = ({
   type,
@@ -29,29 +28,24 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
     id: id,
   });
 
-  // const {
-  //   addFavToList,
-  //   addWatchLaterToList,
-  //   removeFromList,
-  //   changeWatchLaterValue,
-  //   addingFav,
-  //   addingWatchLater,
-  //   removing,
-  //   updating,
-  // } = useListActions();
+  const {
+    addFavToList,
+    addWatchLaterToList,
+    removeFromList,
+    changeWatchLaterValue,
+    addingFav,
+    addingWatchLater,
+    removing,
+    updating,
+  } = useListActions();
 
-  // const {
-  //   data: userList,
-  //   isLoading,
-  //   isError,
-  // } = api.listItem.getUserList.useQuery();
-  // const {
-  //   data: tags,
-  //   isLoading: tagsLoading,
-  //   isError: tagError,
-  // } = api.tags.getAllTags.useQuery();
+  const {
+    data: userList,
+    // isLoading,
+    // isError,
+  } = api.listItem.getUserList.useQuery();
 
-  // const listItem = userList?.find((item) => item.media.id === id);
+  const listItem = userList?.find((item) => item.media.id === id);
 
   useEffect(() => {
     setIsClient(true);
@@ -82,22 +76,15 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
 
   if (!mediaFromAPI) return <div>404</div>;
 
+  console.log("mediaFromAPI", mediaFromAPI);
+
   const objectToSend: {
-    media: {
-      id: number;
-      type: string;
-      title: string;
-      poster: string;
-      backdrop: string;
-      description: string;
-      watchLater: boolean;
-      tags: number[];
-    };
+    media: MongoMedia;
   } = {
     media: {
       id: mediaFromAPI.id,
-      type: type,
       title: mediaFromAPI.title,
+      type: mediaFromAPI.name ? "tv" : "movie",
       poster: mediaFromAPI.poster_path,
       backdrop: mediaFromAPI.backdrop_path,
       description: mediaFromAPI.overview,
@@ -126,14 +113,14 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
 
   // if (isError || tagError)
   //   throw Error("Error fetching data, please try again.");
-
+  console.log("type", objectToSend.media.type);
   return (
     <>
       <Head>
         <title>{`${mediaFromAPI.title}`}</title>
       </Head>
       <LayoutWrapper user={user}>
-        <div className="relative w-full bg-zinc-800">
+        <div className="relative w-full bg-zinc-800 text-white">
           <Link
             className="absolute left-2 flex h-16 w-16 items-center justify-center"
             href={"/"}
@@ -147,7 +134,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                 src={
                   mediaFromAPI.poster_path
                     ? `${imageFromAPIBasePath}${mediaFromAPI.poster_path}`
-                    : "/images/posterunavailable.png"
+                    : "/images/posterUnavailable.png"
                 }
                 alt=""
                 width={800}
@@ -158,16 +145,16 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
             {/* info */}
             <div className="flex flex-col justify-center px-4 sm:w-1/2 sm:flex-col-reverse">
               {/* buttons */}
-              {/* <div className="flex items-end gap-2 sm:pt-4">
+              <div className="flex items-end gap-2 sm:pt-4">
                 {listItem ? (
-                  listItem.watchLater ? (
+                  listItem.media.watchLater ? (
                     // in list, in watch later
                     <>
                       {!updating && (
                         <button
                           onClick={() =>
                             changeWatchLaterValue({
-                              id: listItem.id,
+                              id: listItem._id as string,
                               watchLater: false,
                               lastSeen: "",
                             })
@@ -185,7 +172,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                       )}
                       {!removing && (
                         <button
-                          onClick={() => removeFromList({ id: listItem.id })}
+                          onClick={() => removeFromList(listItem._id as string)} // listItem.id
                           className="flex items-center justify-center gap-2 rounded-md bg-pink-600 px-8 py-4 text-lg font-semibold"
                         >
                           <FaStar fill="green" size={20} />
@@ -215,7 +202,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                     <>
                       {!removing && (
                         <button
-                          onClick={() => removeFromList({ id: listItem.id })}
+                          onClick={() => removeFromList(listItem._id as string)}
                           className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold"
                         >
                           <FaHeart fill="red" size={20} />
@@ -289,7 +276,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                     )}
                   </div>
                 )}
-              </div> */}
+              </div>
 
               {/* text area */}
               <div className="max-w-[425px]">
@@ -306,39 +293,66 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                     ? `${mediaFromAPI.overview.slice(0, 200).trim()}...`
                     : mediaFromAPI.overview}
                 </p>
-                {/* {listItem?.tags && listItem.tags.length > 0 && (
+                {listItem?.media.tags && listItem.media.tags.length > 0 && (
                   <div className="rounded-md bg-black p-2">
                     <h3 className="text-lg">Your Tags</h3>
                     <div className="flex flex-wrap gap-2 py-2">
-                      {listItem.tags.map((genre) => {
+                      {listItem.media.tags.map((genre) => {
                         return <TagPill key={genre.id} tag={genre} />;
                       })}
-                      {addTag && (<>
-                      <input id="newTagInput" pattern="[a-z\/-]+" autoFocus onSelect={()=> console.log("selected")} onKeyDown={(e)=> console.log(e.key)} className="rounded-md bg-slate-200 px-1 py-0.5 text-xs tracking-wider text-black w-28" list="newTag"/>
-                        <datalist id="newTag">
-                        {tags?.tags.map((tag)=> {
-                          if (!listItem?.tags.find((genre)=> genre.id === tag.id)) {
-                            return <option onClick={()=>console.log("clicked on option")} key={tag.id} value={tag.name}/>
-                          }
-                        })}
-                      </datalist>
-                      <button onClick={()=>{
-                        console.log(
-                          "add attempted"
-                        )
-                      }}><FaPlus/></button>
-                      </>)}
+                      {/* {addTag && (
+                        <>
+                          <input
+                            id="newTagInput"
+                            pattern="[a-z\/-]+"
+                            autoFocus
+                            onSelect={() => console.log("selected")}
+                            onKeyDown={(e) => console.log(e.key)}
+                            className="w-28 rounded-md bg-slate-200 px-1 py-0.5 text-xs tracking-wider text-black"
+                            list="newTag"
+                          />
+                          <datalist id="newTag">
+                            {tags?.tags.map((tag) => {
+                              if (
+                                !listItem?.tags.find(
+                                  (genre) => genre.id === tag.id,
+                                )
+                              ) {
+                                return (
+                                  <option
+                                    onClick={() =>
+                                      console.log("clicked on option")
+                                    }
+                                    key={tag.id}
+                                    value={tag.name}
+                                  />
+                                );
+                              }
+                            })}
+                          </datalist>
+                          <button
+                            onClick={() => {
+                              console.log("add attempted");
+                            }}
+                          >
+                            <FaPlus />
+                          </button>
+                        </>
+                      )}
                       {!addTag && (
-                        <button className="flex items-center" onClick={() => setAddTag(true)}>
+                        <button
+                          className="flex items-center"
+                          onClick={() => setAddTag(true)}
+                        >
                           <TagPill
                             key={245}
                             tag={{ id: 0, name: "add tag... +" }}
                           />
                         </button>
-                      )}
+                      )} */}
                     </div>
                   </div>
-                )} */}
+                )}
               </div>
             </div>
           </div>
