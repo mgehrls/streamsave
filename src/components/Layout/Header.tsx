@@ -8,7 +8,7 @@ function Header({ user }: { user: User }) {
   const [showMenu, setShowMenu] = useState(false);
 
   return (
-    <div className="flex w-full flex-col items-center justify-center bg-[#15181c]">
+    <div className="flex w-full flex-col items-center justify-center bg-[#15181c] text-white">
       <header className="relative flex w-full max-w-5xl items-center justify-between px-4 py-4 lg:px-2">
         <Link href="/" className="flex items-end gap-1">
           <Image
