@@ -15,7 +15,7 @@ export default function LayoutWrapper({
     <div className="w-full bg-[#0b0b0b]">
       <Header user={user} />
       <div className="flex justify-center">
-        <div className="flex max-w-full flex-col lg:max-w-5xl">
+        <div className="flex min-h-screen w-full flex-col lg:max-w-5xl">
           <SearchBar />
           {children}
         </div>
