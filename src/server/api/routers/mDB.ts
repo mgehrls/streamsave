@@ -13,7 +13,7 @@ const fetchPopularMovies = async ()=>{
   }) as Array<Media>
 }
 const fetchTrendingShows = async ()=>{
-  const res = await fetch(`https://api.themoviedb.org/3/trending/tv/day?api_key=${API_KEY_SECRET}&language=en-US&adult=false`)
+  const res = await fetch(`https://api.themoviedb.org/3/trending/tv/week?api_key=${API_KEY_SECRET}&language=en-US&adult=false`)
   const trendingShowsData = await res.json() as APIResponse
   const trendingShows = trendingShowsData.results
   return trendingShows.map((result) => {
