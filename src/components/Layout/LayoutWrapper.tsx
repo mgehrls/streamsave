@@ -12,12 +12,14 @@ export default function LayoutWrapper({
   children: React.ReactNode;
 }) {
   return (
-    <div className="w-full bg-[#0b0b0b]">
-      <Header user={user} />
-      <div className="flex justify-center">
-        <div className="flex min-h-screen w-full flex-col lg:max-w-5xl">
-          <SearchBar />
-          {children}
+    <div className="flex min-h-screen w-full flex-col justify-between bg-[#0b0b0b]">
+      <div>
+        <Header user={user} />
+        <div className="flex h-auto justify-center">
+          <div className="flex w-full flex-col lg:max-w-5xl">
+            <SearchBar />
+            {children}
+          </div>
         </div>
       </div>
       <Footer />
