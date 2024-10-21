@@ -10,7 +10,11 @@ function Header({ user }: { user: User }) {
   return (
     <div className="flex w-full flex-col items-center justify-center bg-[#15181c] text-white">
       <header className="relative flex w-full max-w-5xl items-center justify-between px-4 py-4 lg:px-2">
-        <Link href="/" className="flex items-end gap-1">
+        <Link
+          aria-label="Go to homepage for Stream save."
+          href="/"
+          className="flex items-end gap-1"
+        >
           <Image
             priority
             src="/images/Streamsave.svg"
@@ -28,19 +32,33 @@ function Header({ user }: { user: User }) {
           </h1>
         </Link>
         <div className="flex items-center gap-8 lg:gap-16">
-          <Link href="/list">
-            <button className="flex items-center justify-center py-2 text-lg tracking-wide transition-all hover:scale-105 hover:rounded-md hover:underline">
-              My List
-            </button>
+          <Link
+            className="flex items-center justify-center py-2 text-lg tracking-wide transition-all hover:scale-105 hover:rounded-md hover:underline"
+            aria-label="Go to your list."
+            href="/list"
+          >
+            My List
           </Link>
           {user.user && (
             <div onClick={(e) => e.stopPropagation()}>
+              <button
+                aria-label="Toggles a menu with a sign out button."
+                onClick={() => setShowMenu(!showMenu)}
+              >
+                <Image
+                  priority
+                  src={user.user.imageUrl}
+                  alt="User Profile Image"
+                  width={50}
+                  height={50}
+                  className="rounded-full"
+                />
+              </button>
               <div
-                id="user-menu"
                 className={
-                  !showMenu
-                    ? "absolute -top-[200px] right-0 z-50 bg-zinc-900 px-4 py-4 opacity-0 transition-none"
-                    : `absolute right-0 top-[87px] z-50 flex flex-col gap-2 border-[1px] border-slate-400 bg-zinc-900 px-4 py-4 opacity-100 transition-none`
+                  showMenu
+                    ? `absolute right-0 top-[87px] z-50 flex flex-col gap-2 border-[1px] border-slate-400 bg-zinc-900 px-4 py-4 opacity-100 transition-none`
+                    : "hidden"
                 }
               >
                 <SignOutButton>
@@ -52,16 +70,6 @@ function Header({ user }: { user: User }) {
                   </button>
                 </SignOutButton>
               </div>
-              <button onClick={() => setShowMenu(!showMenu)}>
-                <Image
-                  priority
-                  src={user.user.imageUrl}
-                  alt="User Profile Image"
-                  width={50}
-                  height={50}
-                  className="rounded-full"
-                />
-              </button>
             </div>
           )}
         </div>

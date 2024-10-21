@@ -101,8 +101,8 @@ export default function MediaCard({
           <p className="font-bold">Remove from List?</p>
           {!removing && (
             <button
+              aria-label={`Confirm removal of ${item.media.title}.`}
               onClick={() => {
-                console.log("removing", typeof item._id);
                 removeFromList(item._id as string);
               }}
             >
@@ -115,12 +115,18 @@ export default function MediaCard({
             </div>
           )}
 
-          <button onClick={() => setConfirmRemoval(false)}>Close</button>
+          <button
+            aria-label={`Cancel deletion. Keep ${item.media.title}.`}
+            onClick={() => setConfirmRemoval(false)}
+          >
+            Close
+          </button>
         </div>
       )}
 
       {item && !item.media.watchLater && (
         <button
+          aria-label={`Delete ${item.media.title}. Requires confirmation.`}
           onClick={() => setConfirmRemoval(true)}
           className={likeBtnClasses}
         >
@@ -130,6 +136,7 @@ export default function MediaCard({
       {item && item.media.watchLater && (
         <>
           <button
+            aria-label={`Delete ${item.media.title}. Requires confirmation.`}
             onClick={() => setConfirmRemoval(true)}
             className={watchLaterBtnClasses}
           >
@@ -137,6 +144,7 @@ export default function MediaCard({
           </button>
           {!updating && (
             <button
+              aria-label={`Change ${item.media.title} from something you want to watch later to a favorite of yours.`}
               onClick={() =>
                 changeWatchLaterValue({
                   id: item._id as string,
@@ -160,6 +168,7 @@ export default function MediaCard({
         <>
           {!addingWatchLater && (
             <button
+              aria-label={`Add ${objectToSend.media.title} to your watch later list.`}
               onClick={() => {
                 objectToSend.media.watchLater = true;
                 addWatchLaterToList(objectToSend);
@@ -177,6 +186,7 @@ export default function MediaCard({
           )}
           {!addingFav && (
             <button
+              aria-label={`Add ${objectToSend.media.title} to your favorites list.`}
               onClick={() => {
                 addFavToList(objectToSend);
                 setConfirmRemoval(false);
@@ -194,10 +204,11 @@ export default function MediaCard({
         </>
       )}
 
-      <div className="flex h-52 w-36 items-center bg-black">
-        <Link
-          href={`/media/${objectToSend.media.type}/${objectToSend.media.id}`}
-        >
+      <Link
+        aria-label={`Go to ${objectToSend.media.title}'s page.`}
+        href={`/media/${objectToSend.media.type}/${objectToSend.media.id}`}
+      >
+        <div className="flex h-52 w-36 items-center bg-black">
           <Image
             src={
               objectToSend.media.poster
@@ -209,24 +220,20 @@ export default function MediaCard({
             height={264}
             className="object-scale-down"
           />
-        </Link>
-      </div>
-      <div className="p-1">
-        <div className="mt-1 flex h-[40px] items-center">
-          <Link
-            href={`/media/${objectToSend.media.type}/${objectToSend.media.id}`}
-          >
+        </div>
+        <div className="p-1">
+          <div className="mt-1 flex h-[40px] items-center">
             <h3 className="text-md line-clamp-2 leading-[19px]">
               {objectToSend.media.title}
             </h3>
-          </Link>
+          </div>
+          <div className="flex max-h-[52px] min-h-[52px] flex-wrap items-start gap-x-[2px] gap-y-1 overflow-hidden pt-2">
+            {tagsToDisplay.map((genre) => {
+              return <TagPill key={genre.id} tag={genre} />;
+            })}
+          </div>
         </div>
-        <div className="flex max-h-[52px] min-h-[52px] flex-wrap items-start gap-x-[2px] gap-y-1 overflow-hidden pt-2">
-          {tagsToDisplay.map((genre) => {
-            return <TagPill key={genre.id} tag={genre} />;
-          })}
-        </div>
-      </div>
+      </Link>
     </div>
   );
 }

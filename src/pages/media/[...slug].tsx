@@ -122,6 +122,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
       <LayoutWrapper user={user}>
         <div className="relative w-full bg-zinc-800 text-white">
           <Link
+            aria-label="Go back to home page."
             className="absolute left-2 flex h-16 w-16 items-center justify-center"
             href={"/"}
           >
@@ -152,6 +153,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                     <>
                       {!updating && (
                         <button
+                          aria-label={`Change ${listItem.media.title} from something you want to watch later to a favorite of yours.`}
                           onClick={() =>
                             changeWatchLaterValue({
                               id: listItem._id as string,
@@ -172,11 +174,12 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                       )}
                       {!removing && (
                         <button
+                          aria-label={`Remove ${listItem.media.title} from your list.`}
                           onClick={() => removeFromList(listItem._id as string)} // listItem.id
                           className="flex items-center justify-center gap-2 rounded-md bg-pink-600 px-8 py-4 text-lg font-semibold"
                         >
                           <FaStar fill="green" size={20} />
-                          <span className="hidden lg:block">Interested</span>
+                          <span className="sr-only">Interested</span>
                         </button>
                       )}
                       {removing && (
@@ -186,11 +189,13 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                       )}
                       {mediaFromAPI.external_ids.imdb_id && (
                         <Link
+                          aria-label={`Go to ${mediaFromAPI.title}'s IMDb page. Opens in a new tab.`}
+                          target="_blank"
                           href={`https://www.imdb.com/title/${mediaFromAPI.external_ids.imdb_id}`}
                         >
                           <Image
                             src="/images/imdb.png"
-                            alt=""
+                            alt="IMDB logo"
                             width={50}
                             height={80}
                           />
@@ -202,11 +207,12 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                     <>
                       {!removing && (
                         <button
+                          aria-label={`Remove ${listItem.media.title} from your list.`}
                           onClick={() => removeFromList(listItem._id as string)}
                           className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold"
                         >
                           <FaHeart fill="red" size={20} />
-                          <span>Favorited</span>
+                          <span className="sr-only">Favorited</span>
                         </button>
                       )}
                       {removing && (
@@ -216,11 +222,13 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                       )}
                       {mediaFromAPI.external_ids.imdb_id && (
                         <Link
+                          aria-label={`Go to ${mediaFromAPI.title}'s IMDb page. Opens in a new tab.`}
+                          target="_blank"
                           href={`https://www.imdb.com/title/${mediaFromAPI.external_ids.imdb_id}`}
                         >
                           <Image
                             src="/images/imdb.png"
-                            alt=""
+                            alt="IMDB logo"
                             width={50}
                             height={80}
                           />
@@ -233,6 +241,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                   <div className="flex w-full items-center justify-between gap-2 md:items-end md:justify-start">
                     {!addingFav && (
                       <button
+                        aria-label={`Add ${objectToSend.media.title} to your favorites list.`}
                         onClick={() => addFavToList(objectToSend)}
                         className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold"
                       >
@@ -247,6 +256,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                     )}
                     {!addingWatchLater && (
                       <button
+                        aria-label={`Add ${objectToSend.media.title} to your watch later list.`}
                         onClick={() => {
                           objectToSend.media.watchLater = true;
                           addWatchLaterToList(objectToSend);
@@ -264,11 +274,13 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                     )}
                     {mediaFromAPI.external_ids.imdb_id && (
                       <Link
+                        aria-label={`Go to ${mediaFromAPI.title}'s IMDb page. Opens in a new tab.`}
+                        target="_blank"
                         href={`https://www.imdb.com/title/${mediaFromAPI.external_ids.imdb_id}`}
                       >
                         <Image
                           src="/images/imdb.png"
-                          alt=""
+                          alt="IMDB logo"
                           width={60}
                           height={60}
                         />

@@ -1,15 +1,12 @@
-import { useState } from "react";
-import { FaX } from "react-icons/fa6";
-
 export default function TagPill({
   tag,
-  deletable,
-}: {
+} // deletable,
+: {
   key: number;
   tag: { id: number; name: string };
   deletable?: boolean;
 }) {
-  const [confirmDelete, setConfirmDelete] = useState(false);
+  // const [confirmDelete, setConfirmDelete] = useState(false);
   // const { removeTagById, removingTag } = useListActions();
 
   const defaultClasses =
@@ -22,16 +19,14 @@ export default function TagPill({
     <>
       {/* {removingTag && <Loading />} */}
 
-      <div className="flex">
-        <button
+      <div className={defaultClasses}>
+        {tag.name}
+        {/* <button
           disabled={!deletable}
           className={defaultClasses}
           key={tag.id}
-          onClick={() => {
-            console.log("remove tag", tag.id);
-          }}
+
         >
-          {confirmDelete ? `Remove ${tag.name}?` : tag.name}
           {deletable && <FaX />}
         </button>
         {deletable && confirmDelete && (
@@ -41,7 +36,7 @@ export default function TagPill({
           >
             Keep it
           </button>
-        )}
+        )} */}
       </div>
     </>
   );

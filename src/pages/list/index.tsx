@@ -74,10 +74,14 @@ export default function List() {
             <p aria-hidden className="text-lg text-white/70">
               |
             </p>
-            <button onClick={() => setShowFavorites(!showFavorites)}>
-              <h2 className="text-lg font-semibold text-white/70 lg:text-xl">
-                {showFavorites ? "Watch Later" : "Favorites"}
-              </h2>
+            <button
+              className="text-lg font-semibold text-white/70 lg:text-xl"
+              aria-label={`Change list to ${
+                showFavorites ? "Watch Later" : "Favorites"
+              }`}
+              onClick={() => setShowFavorites(!showFavorites)}
+            >
+              {showFavorites ? "Watch Later" : "Favorites"}
             </button>
           </div>
           <div className="flex gap-2">
@@ -161,6 +165,7 @@ const ListView = ({ item, index }: { item: MongoListItem; index: number }) => {
           <TagSection listItem={item} />
         </div>
         <button
+          aria-label={`Remove ${item.media.title} from your list. Requires confirmation.`}
           className="text-red-600 lg:col-span-1"
           onClick={() => setShowModal(true)}
         >
