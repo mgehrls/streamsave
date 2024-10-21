@@ -76,7 +76,7 @@ export type MongoMedia = {
   poster: string;
   backdrop: string | null;
   description: string;
-  watchLater: boolean;
+  watchLater?: boolean;
   tags: {id:number, name:string}[];
 }
 

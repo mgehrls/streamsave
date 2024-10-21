@@ -13,7 +13,7 @@ export const listItemRouter = createTRPCRouter({
             return userList;
            }),
     addListItem: privateProcedure
-        .input(z.object({media: z.object({id: z.number(), title: z.string(), poster: z.string(), type: z.string(), backdrop: z.string().nullable(), description:z.string(), watchLater: z.boolean(), tags: z.array(z.object({id: z.number(), name: z.string()}))})}))
+        .input(z.object({media: z.object({id: z.number(), title: z.string(), poster: z.string(), type: z.string(), backdrop: z.string().nullable(), description:z.string(), watchLater: z.boolean().optional(), tags: z.array(z.object({id: z.number(), name: z.string()}))})}))
            .mutation(async ({ ctx, input }) => {
             const { db, userId} = ctx;
             const {media} = input;
