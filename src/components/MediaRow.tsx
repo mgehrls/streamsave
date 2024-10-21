@@ -50,7 +50,6 @@ export default function MediaRow({
           slidesPerView={slidesPerView}
           spaceBetween={10}
           loop={true}
-          navigation={true}
           centeredSlidesBounds={true}
         >
           {media?.map((media) => {
