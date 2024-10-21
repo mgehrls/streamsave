@@ -27,7 +27,7 @@ function Header({ user }: { user: User }) {
             treamSave
           </h1>
         </Link>
-        <div className="flex items-center gap-16">
+        <div className="flex items-center gap-8 lg:gap-16">
           <Link href="/list">
             <button className="flex items-center justify-center py-2 text-lg tracking-wide transition-all hover:scale-105 hover:rounded-md hover:underline">
               My List
