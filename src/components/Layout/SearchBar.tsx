@@ -76,6 +76,7 @@ function SearchBar() {
       />
       {searchQuery !== "" && (
         <button
+          aria-label="Close search results"
           onClick={() => {
             setShowSearch(false);
             setSearchQuery("");

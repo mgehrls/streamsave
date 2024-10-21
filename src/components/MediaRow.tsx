@@ -42,7 +42,7 @@ export default function MediaRow({
 
   return (
     <div className={`p-4 py-6 ${bgColor}`}>
-      <h2 className="pb-2 text-xl font-bold tracking-wider">{title}</h2>
+      <h2 className="pb-4 text-xl font-bold tracking-wider">{title}</h2>
       <div>
         <Swiper
           className="w-full"
@@ -50,7 +50,6 @@ export default function MediaRow({
           slidesPerView={slidesPerView}
           spaceBetween={10}
           loop={true}
-          navigation={true}
           centeredSlidesBounds={true}
         >
           {media?.map((media) => {

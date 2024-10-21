@@ -1,5 +1,5 @@
 import type { UserResource } from '@clerk/types';
-import { ObjectId } from 'mongodb';
+import type { ObjectId } from 'mongodb';
 
 export type User =  {
   isLoaded: boolean;
@@ -76,7 +76,7 @@ export type MongoMedia = {
   poster: string;
   backdrop: string | null;
   description: string;
-  watchLater: boolean;
+  watchLater?: boolean;
   tags: {id:number, name:string}[];
 }
 

@@ -1,9 +1,9 @@
 import { api } from "~/utils/api";
 
 export default function useListActions(){
-
-    const ctx = api.useUtils();
-
+  
+  const ctx = api.useUtils();
+  
     const { mutate: addFavToList, isLoading: addingFav } =
     api.listItem.addListItem.useMutation({
       onSuccess: () => {
