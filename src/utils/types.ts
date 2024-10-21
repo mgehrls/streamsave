@@ -1,5 +1,5 @@
 import type { UserResource } from '@clerk/types';
-import { ObjectId } from 'mongodb';
+import type { ObjectId } from 'mongodb';
 
 export type User =  {
   isLoaded: boolean;

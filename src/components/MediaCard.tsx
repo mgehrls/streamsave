@@ -11,7 +11,6 @@ import { imageFromAPIBasePath } from "~/utils/constants";
 import { genresFromAPI } from "~/utils/genres";
 import { useState } from "react";
 import type { WithId } from "mongodb";
-import { link } from "fs";
 
 export default function MediaCard({
   media,

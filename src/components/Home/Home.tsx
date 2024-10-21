@@ -6,12 +6,11 @@ import BottomSection from "./Bottom";
 import MiddleSection from "./Middle";
 import TopSection from "./Top";
 import Feed from "../Feed/Feed";
-import Modal from "../Modal/Modal";
 
 function Home() {
     const user = useUser();
     const [isClient, setIsClient] = useState(false);
-    
+
     useEffect(() => {
       setIsClient(true);
     }, []);

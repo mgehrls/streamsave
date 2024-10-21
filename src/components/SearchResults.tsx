@@ -73,9 +73,8 @@ export default function SearchResults({
 
         const listItem = listData.find((item) => item.media.id == mediaFromApi.id);
         const dbId = listItem?._id ? listItem._id as string : undefined;
-
         const isWatchLater = listItem?.media.watchLater ? true : false;
-        let media = ApiMediaToListItem(mediaFromApi)
+        const media = ApiMediaToListItem(mediaFromApi)
 
         return (
           <div

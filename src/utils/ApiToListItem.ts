@@ -1,5 +1,5 @@
 import { genresFromAPI } from "./genres"
-import { APIResult, MongoMedia } from "./types"
+import type { APIResult, MongoMedia } from "./types"
 
 export const ApiMediaToListItem : (media: APIResult) => MongoMedia = (media) => {
     return {

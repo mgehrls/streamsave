@@ -1,6 +1,4 @@
 import { api } from "~/utils/api";
-import { APIResult, MongoMedia } from "./types";
-import { genresFromAPI } from "./genres";
 
 export default function useListActions(){
   
