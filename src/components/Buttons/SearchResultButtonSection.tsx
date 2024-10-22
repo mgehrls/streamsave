@@ -1,12 +1,11 @@
-import { FaRegHeart, FaStar, FaHeart } from "react-icons/fa";
-import { FaClockRotateLeft } from "react-icons/fa6";
-import { MongoMedia } from "~/utils/types";
-import useListActions from "~/utils/useListActions";
-import Loading from "../Loading";
-import FavoriteButton from "./FavoriteButton";
-import DestructiveModal from "../Modals/DestructiveModal";
 import { useState } from "react";
+
+import useListActions from "~/utils/useListActions";
+import FavoriteButton from "./FavoriteButton";
 import WatchLaterButton from "./WatchLaterButton";
+import DestructiveModal from "../Modals/DestructiveModal";
+
+import type { MongoMedia } from "~/utils/types";
 
 const SearchResultButtonSection = ({
   listItemId,
@@ -30,7 +29,7 @@ const SearchResultButtonSection = ({
   const [openModal, setOpenModal] = useState(false);
 
   return (
-    <div className="flex w-full items-end justify-between gap-2 sm:pt-4">
+    <div className="flex items-end gap-8 pt-4">
       <DestructiveModal
         open={openModal}
         onClose={() => setOpenModal(false)}
