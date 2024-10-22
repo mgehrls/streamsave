@@ -1,14 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Dispatch, SetStateAction } from "react";
-import { FaRegHeart, FaStar, FaHeart } from "react-icons/fa";
-import { FaClockRotateLeft } from "react-icons/fa6";
 import { api } from "~/utils/api";
-import type { APIResult, MongoMedia } from "~/utils/types";
+import type { APIResult } from "~/utils/types";
 import Loading from "./Loading";
-import useListActions from "~/utils/useListActions";
 import { imageFromAPIBasePath } from "~/utils/constants";
 import { ApiMediaToListItem } from "~/utils/ApiToListItem";
+import SearchResultButtonSection from "./Buttons/SearchResultButtonSection";
 
 export default function SearchResults({
   searchQuery,
@@ -54,7 +52,7 @@ export default function SearchResults({
   }
 
   return (
-    <div className="z-40 flex w-full max-w-4xl flex-col gap-6 overflow-x-hidden border-2 border-white bg-black p-4">
+    <div className="absolute left-0 top-8 z-40 mx-4 flex max-h-[300px] flex-col gap-2 overflow-x-hidden overflow-y-scroll bg-[#15181c] p-4 lg:mx-0 lg:max-h-[600px]">
       <div className="flex w-full gap-2">
         <h2 className="text-xl">{`Search results for "${searchQuery}"`}</h2>
         <button
@@ -80,11 +78,26 @@ export default function SearchResults({
 
         return (
           <div
-            className="flex w-full justify-between bg-slate-600"
+            className="flex w-full justify-between bg-slate-800"
             key={media.id}
           >
-            <ImageSection media={media} resetSearch={resetSearch} />
-            <div className="flex w-[60%] flex-col justify-center gap-2 p-2 lg:w-1/2 lg:p-8">
+            <Link
+              className="flex w-1/3 justify-center py-2"
+              aria-label={`Go to ${media.title}'s page`}
+              href={`/media/${media.type}/${media.id}`}
+            >
+              <Image
+                alt={`${media.title} poster`}
+                src={
+                  media.poster
+                    ? `${imageFromAPIBasePath}${media.poster}`
+                    : "/images/posterUnavailable.png"
+                }
+                width={100}
+                height={200}
+              />
+            </Link>
+            <div className="flex w-2/3 flex-col justify-center gap-2 p-4">
               <h3 className="font-bold lg:w-[28ch] lg:text-lg">
                 {media.title.length > 40
                   ? media.title.slice(0, 39)
@@ -93,7 +106,7 @@ export default function SearchResults({
               <p className="lg:text-md wrap line-clamp-2 text-sm">
                 {media.description?.slice(0, 100) + "..."}
               </p>
-              <Buttons
+              <SearchResultButtonSection
                 listItemId={dbId}
                 isWatchLater={isWatchLater}
                 media={media}
@@ -103,176 +116,14 @@ export default function SearchResults({
         );
       })}
       {filteredData.length !== 0 && (
-        <div className="flex justify-between px-8">
-          <p className="py-8 text-xl font-bold">End of results</p>
-          <button
-            aria-label="Close search results"
-            onClick={() => resetSearch()}
-            className="py-8 text-xl font-bold text-white"
-          >
-            X
-          </button>
-        </div>
+        <button
+          aria-label="Close search results"
+          onClick={() => resetSearch()}
+          className="flex items-center gap-8 self-center py-8 text-xl font-bold text-white"
+        >
+          <p className="py-8 text-xl font-bold">End of results</p>X
+        </button>
       )}
     </div>
   );
 }
-
-const ImageSection = ({
-  media,
-  resetSearch,
-}: {
-  media: MongoMedia;
-  resetSearch: () => void;
-}) => {
-  return (
-    <div
-      className="flex w-[40%] justify-center lg:w-1/2"
-      style={{
-        backgroundImage: `url(${imageFromAPIBasePath}${media.backdrop})`,
-        backgroundSize: "cover",
-      }}
-    >
-      <div className="flex w-full items-center justify-center bg-black lg:bg-opacity-50">
-        <Link
-          aria-label={`Go to ${media.title}'s page`}
-          href={`/media/${media.type}/${media.id}`}
-        >
-          <div className="max-h-[212px]">
-            <Image
-              alt={`${media.title} poster`}
-              src={
-                media.poster
-                  ? `${imageFromAPIBasePath}${media.poster}`
-                  : "/images/posterUnavailable.png"
-              }
-              width={150}
-              height={300}
-              className="border-x-[6px] border-y-2 border-black opacity-100"
-            />
-          </div>
-        </Link>
-      </div>
-    </div>
-  );
-};
-
-const Buttons = ({
-  listItemId,
-  isWatchLater,
-  media,
-}: {
-  listItemId: string | undefined;
-  isWatchLater: boolean;
-  media: MongoMedia;
-}) => {
-  const {
-    addFavToList,
-    addWatchLaterToList,
-    removeFromList,
-    changeWatchLaterValue,
-    addingFav,
-    addingWatchLater,
-    removing,
-    updating,
-  } = useListActions();
-
-  return (
-    <div className="flex items-end gap-2 sm:pt-4">
-      {listItemId ? (
-        isWatchLater ? (
-          <>
-            {!updating && (
-              <button
-                onClick={() =>
-                  changeWatchLaterValue({
-                    id: listItemId,
-                    watchLater: false,
-                    lastSeen: "",
-                  })
-                }
-                className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold"
-              >
-                <FaRegHeart size={20} />
-                <span className="hidden lg:block">Favorited</span>
-              </button>
-            )}
-            {updating && (
-              <div className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold">
-                <Loading />
-              </div>
-            )}
-            {!removing && (
-              <button
-                onClick={() => removeFromList(listItemId)}
-                className="flex items-center justify-center gap-2 rounded-md bg-pink-600 px-8 py-4 text-lg font-semibold"
-              >
-                <FaStar fill="green" size={20} />
-                <span className="hidden lg:block">Interested</span>
-              </button>
-            )}
-            {removing && (
-              <div className="flex items-center justify-center gap-2 rounded-md bg-pink-600 px-8 py-4 text-lg font-semibold">
-                <Loading />
-              </div>
-            )}
-          </>
-        ) : (
-          //in list, not watch later
-          <>
-            {!removing && (
-              <button
-                onClick={() => removeFromList(listItemId)}
-                className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold"
-              >
-                <FaHeart fill="red" size={20} />
-                <span>Favorited</span>
-              </button>
-            )}
-            {removing && (
-              <div className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold">
-                <Loading />
-              </div>
-            )}
-          </>
-        )
-      ) : (
-        // not in list
-        <div className="flex w-full items-center justify-between gap-2 md:items-end md:justify-start">
-          {!addingFav && (
-            <button
-              onClick={() => addFavToList({ media: media })}
-              className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold"
-            >
-              <FaRegHeart size={20} />
-              <span className="hidden lg:block">Favorited</span>
-            </button>
-          )}
-          {addingFav && (
-            <div className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold">
-              <Loading />
-            </div>
-          )}
-          {!addingWatchLater && (
-            <button
-              onClick={() => {
-                media.watchLater = true;
-                console.log("media", media);
-                addWatchLaterToList({ media: media });
-              }}
-              className="line-clamp-1 flex items-center justify-center gap-2 rounded-md bg-pink-600 px-8 py-4 text-lg font-semibold"
-            >
-              <FaClockRotateLeft size={20} />
-              <span className="hidden lg:block">Later</span>
-            </button>
-          )}
-          {addingWatchLater && (
-            <div className="flex items-center justify-center gap-2 rounded-md bg-pink-600 px-8 py-4 text-lg font-semibold">
-              <Loading />
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
-};
