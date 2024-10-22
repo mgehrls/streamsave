@@ -1,5 +1,5 @@
 import React from "react";
-import { FaHeart, FaRegHeart, FaStar } from "react-icons/fa";
+import { FaStar } from "react-icons/fa";
 import Loading from "../Loading";
 import { FaClockRotateLeft } from "react-icons/fa6";
 
