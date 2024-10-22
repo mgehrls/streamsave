@@ -63,7 +63,7 @@ function SearchBar() {
   return (
     <div
       onClick={(e) => e.stopPropagation()}
-      className="relative my-4 w-full self-center px-4 lg:mr-0 lg:w-full lg:max-w-lg lg:self-end lg:px-0"
+      className="relative my-4 w-full self-center px-4 md:mr-0 md:w-full md:max-w-lg md:self-end lg:px-0"
     >
       <input
         type="text"
@@ -81,20 +81,18 @@ function SearchBar() {
             setShowSearch(false);
             setSearchQuery("");
           }}
-          className="absolute -top-1 right-2 z-50 p-2 text-black"
+          className="absolute -top-1 right-4 z-50 p-2 text-white"
         >
           X
         </button>
       )}
 
       {showSearch && (
-        <div className="absolute left-0 top-8 z-10 mx-auto ml-2 flex max-h-96 flex-col overflow-y-scroll bg-opacity-50">
-          <SearchResults
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            setShowSearch={setShowSearch}
-          />
-        </div>
+        <SearchResults
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          setShowSearch={setShowSearch}
+        />
       )}
     </div>
   );
