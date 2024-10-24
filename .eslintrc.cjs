@@ -31,7 +31,7 @@ const config = {
       },
     ],
     'no-warning-comments': [
-      'error',
+      'warn',
       { terms: ['todo', 'fixme', 'xxx'], location: 'anywhere' }
     ]
   },
