@@ -30,6 +30,10 @@ const config = {
         checksVoidReturn: { attributes: false },
       },
     ],
+    'no-warning-comments': [
+      'error',
+      { terms: ['todo', 'fixme', 'xxx'], location: 'anywhere' }
+    ]
   },
 };
 
