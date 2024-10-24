@@ -24,7 +24,7 @@ export const listItemRouter = createTRPCRouter({
                     watchLater: media.watchLater,
                     id: media.id,
                     title: media.title,
-                    type: media.type,
+                    type: media.type === 'tv' ? 'tv' : 'movie',
                     poster: media.poster,
                     backdrop: media.backdrop,
                     description: media.description,

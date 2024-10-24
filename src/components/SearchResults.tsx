@@ -5,7 +5,7 @@ import { api } from "~/utils/api";
 import type { APIResult } from "~/utils/types";
 import Loading from "./Loading";
 import { imageFromAPIBasePath } from "~/utils/constants";
-import { ApiMediaToListItem } from "~/utils/ApiToListItem";
+import { SingleApiMediaToListItem, typeIsMovie } from "~/utils/ApiToListItem";
 import SearchResultButtonSection from "./Buttons/SearchResultButtonSection";
 
 export default function SearchResults({
@@ -42,9 +42,14 @@ export default function SearchResults({
     setShowSearch(false);
   }
 
-  const filteredData = data.filter(
-    (item: APIResult) => item.media_type !== "person",
-  );
+  // multi searching the api can return people, this filters them out.
+  const filteredData = data.filter((item: APIResult) => {
+    if (typeIsMovie(item)) {
+      return true;
+    } else {
+      item.media_type !== "person";
+    }
+  });
 
   function resetSearch() {
     setSearchQuery("");
@@ -74,7 +79,7 @@ export default function SearchResults({
         );
         const dbId = listItem?._id ? (listItem._id as string) : undefined;
         const isWatchLater = listItem?.media.watchLater ? true : false;
-        const media = ApiMediaToListItem(mediaFromApi);
+        const media = SingleApiMediaToListItem(mediaFromApi);
 
         return (
           <div

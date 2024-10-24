@@ -13,7 +13,7 @@ import TagPill from "~/components/TagPill";
 import { useEffect, useState } from "react";
 import useListActions from "~/utils/useListActions";
 import MediaRow from "~/components/MediaRow";
-import type { Media, MongoMedia } from "~/utils/types";
+import type { MongoMedia } from "~/utils/types";
 import { imageFromAPIBasePath } from "~/utils/constants";
 import { genresFromAPI } from "~/utils/genres";
 
@@ -111,9 +111,8 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
       </div>
     );
 
-  // if (isError || tagError)
-  //   throw Error("Error fetching data, please try again.");
-  console.log("type", objectToSend.media.type);
+  // todo: fix buttons here, will require button update
+
   return (
     <>
       <Head>
@@ -372,18 +371,8 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
             <MediaRow
               title={`More Like ${mediaFromAPI.title}`}
               bgColor="bg-zinc-600"
-              // listItems={userList}
-              media={mediaFromAPI.recommendations.results.map((result) => {
-                return {
-                  id: result.id,
-                  title: result.name ?? result.title,
-                  type: result.name ? "tv" : "movie",
-                  poster: result.poster_path,
-                  backdrop: result.backdrop_path,
-                  description: result.overview,
-                  genres: result.genre_ids,
-                } as Media;
-              })}
+              listItems={userList}
+              apiResult={mediaFromAPI.recommendations.results}
               // allTags={{tags:genresFromAPI}}
             />
           )}
