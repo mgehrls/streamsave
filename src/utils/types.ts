@@ -43,7 +43,7 @@ export type ShowAPIResult =   {
     title: string,
   }
 
-export type APIResult = MovieAPIResult & ShowAPIResult;
+export type APIResult = MovieAPIResult | ShowAPIResult;
   
 export type APIResponse = {
     pages: number,
@@ -72,13 +72,19 @@ export type MongoListItem = {
 export type MongoMedia = {
   id: number;
   title: string;
-  type: string;
+  type: 'movie' | 'tv';
   poster: string;
   backdrop: string | null;
   description: string;
   watchLater?: boolean;
   tags: {id:number, name:string}[];
 }
+
+export type DeleteMediaProps = {
+  setConfirmDeletion: React.Dispatch<React.SetStateAction<boolean>>;
+  setMediaToDeleteId: React.Dispatch<React.SetStateAction<string | null>>;
+  setMediaTitle: React.Dispatch<React.SetStateAction<string | null>>;
+};
 
 export type ListItemFull=({
   media: {

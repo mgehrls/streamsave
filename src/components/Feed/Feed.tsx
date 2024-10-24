@@ -23,19 +23,19 @@ function Feed() {
       <MediaRow
         listItems={data}
         title={"Trending Shows"}
-        media={trendingShows}
+        apiResult={trendingShows}
         bgColor="bg-zinc-500"
       />
       <MediaRow
         listItems={data}
         title={"Popular Shows"}
-        media={popularShows}
+        apiResult={popularShows}
         bgColor="bg-zinc-600"
       />
       <MediaRow
         listItems={data}
         title={"Popular Movies"}
-        media={popularMovies}
+        apiResult={popularMovies}
         bgColor="bg-zinc-700"
       />
     </>
