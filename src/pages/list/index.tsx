@@ -20,7 +20,9 @@ export default function List() {
   // const { data: allTags } = api.listItem.getAllTags.useQuery();
   // create filters, sort, and view state,
   const [tagFilter, setTagFilter] = useState<string>("");
-  const [sort, setSort] = useState<"alphaUp" | "alphaDown">("alphaUp");
+  // const [sort, setSort] = useState<"alphaUp" | "alphaDown">("alphaUp");
+  const sort = "alphaUp"; // hardcoded for now
+  //todo: add sorting functionality
 
   if (!list)
     return (
