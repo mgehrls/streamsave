@@ -1,7 +1,7 @@
 
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import type { APIResponse, SingleMediaAPIUnity } from "~/utils/types";
+import type { APIResponse, SingleMediaAPIUnity, SingleMovieAPIResponse, SingleShowAPIResponse } from "~/utils/types";
 
 const API_KEY_SECRET = process.env.API_KEY_SECRET
 
@@ -35,7 +35,11 @@ export const mDBRouter = createTRPCRouter({
       const {type, id} = input;
       const res = await fetch(`https://api.themoviedb.org/3/${type}/${id}?api_key=${API_KEY_SECRET}&language=en-US&adult=false&append_to_response=recommendations,external_ids,images`)
       const mediaData = await res.json() as SingleMediaAPIUnity
-      return {...mediaData, title: mediaData.name || mediaData.title}
+      if ( type === 'movie' ) {
+        return mediaData as SingleMovieAPIResponse
+      }else{
+        return mediaData as SingleShowAPIResponse
+      }
     }),
   search: publicProcedure
     .input(z.object({query: z.string()}))

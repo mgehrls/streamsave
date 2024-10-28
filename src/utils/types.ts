@@ -12,6 +12,7 @@ export type MovieAPIResult = {
     backdrop_path: string,
     genre_ids: [],
     id: number,
+    media_type: string,
     original_language: string,
     original_title: string,
     overview: string,
@@ -27,20 +28,19 @@ export type MovieAPIResult = {
 export type ShowAPIResult =   {
     adult: boolean,
     backdrop_path: string,
+    first_air_date: string,
+    genre_ids: number[],
     id: number,
+    media_type: string,
     name: string,
+    origin_country: string[],
     original_language: string,
     original_name: string,
     overview: string,
-    poster_path: string,
-    media_type: string,
-    genre_ids: number[],
     popularity: number,
-    first_air_date: string,
+    poster_path: string,
     vote_average: number,
     vote_count: number,
-    origin_country: string[],
-    title: string,
   }
 
 export type APIResult = MovieAPIResult | ShowAPIResult;
@@ -319,4 +319,4 @@ export type SingleShowAPIResponse = {
   vote_count: number
 }
 
-export type SingleMediaAPIUnity = SingleMovieAPIResponse & SingleShowAPIResponse
+export type SingleMediaAPIUnity = SingleMovieAPIResponse | SingleShowAPIResponse
