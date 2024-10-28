@@ -21,10 +21,6 @@ const SearchResultButtonSection = ({
     addWatchLaterToList,
     removeFromList,
     changeWatchLaterValue,
-    addingFav,
-    addingWatchLater,
-    removing,
-    updating,
   } = useListActions();
   const [openModal, setOpenModal] = useState(false);
 
@@ -40,9 +36,7 @@ const SearchResultButtonSection = ({
         mediaTitle={media.title}
       />
       <FavoriteButton
-        addingFav={addingFav}
         addFav={() => addFavToList({ media: media })}
-        updating={updating}
         changeWatchLaterToFav={() => {
           if (listItemId)
             changeWatchLaterValue({
@@ -51,7 +45,6 @@ const SearchResultButtonSection = ({
               lastSeen: "",
             });
         }}
-        removing={removing}
         removeFav={() => {
           setOpenModal(true);
         }}
@@ -60,12 +53,10 @@ const SearchResultButtonSection = ({
         mediaTitle={media.title}
       />
       <WatchLaterButton
-        addingWatchLater={addingWatchLater}
         addWatchLater={() => {
           media.watchLater = true;
           addWatchLaterToList({ media: media });
         }}
-        removing={removing}
         removeWatchLater={() => {
           setOpenModal(true);
         }}

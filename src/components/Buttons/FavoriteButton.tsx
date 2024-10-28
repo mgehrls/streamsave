@@ -1,11 +1,8 @@
 import React from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
-import Loading from "../Loading";
 
 type FavoriteButtonProps = {
-  addingFav: boolean;
-  updating: boolean;
-  removing: boolean;
+  slugPage?: boolean;
   addFav: () => void;
   changeWatchLaterToFav: () => void;
   removeFav: () => void;
@@ -15,62 +12,72 @@ type FavoriteButtonProps = {
 };
 
 function FavoriteButton({
-  addingFav,
   addFav,
-  updating,
   changeWatchLaterToFav,
-  removing,
   removeFav,
   listItemId,
   isWatchLater,
   mediaTitle,
+  slugPage,
 }: FavoriteButtonProps) {
-  if (!listItemId) {
+  const getAriaLabelForButton = () => {
+    if (!listItemId) {
+      return `Add ${mediaTitle} to favorite list.`;
+    }
+    if (isWatchLater) {
+      return `Change ${mediaTitle} from watch later to favorite`;
+    }
+    return `Remove ${mediaTitle} from list. Requires confirmation.`;
+  };
+
+  const handleClick = () => {
+    if (!listItemId) {
+      addFav();
+    } else if (isWatchLater) {
+      changeWatchLaterToFav();
+    } else {
+      removeFav();
+    }
+  };
+
+  const buttonContent = () => {
+    if (!listItemId) {
+      return (
+        <>
+          <FaRegHeart size={20} />
+          {slugPage && <span>Favorite</span>}
+        </>
+      );
+    }
+    if (isWatchLater) {
+      return (
+        <>
+          <FaRegHeart size={20} />
+          {slugPage && <span>Favorite</span>}
+        </>
+      );
+    }
     return (
       <>
-        {!addingFav ? (
-          <button
-            aria-label={`Add ${mediaTitle} to favorite list.`}
-            onClick={() => addFav()}
-          >
-            <FaRegHeart size={20} />
-          </button>
-        ) : (
-          <Loading />
-        )}
+        <FaHeart fill="red" size={20} />
+        {slugPage && <span>Remove</span>}
       </>
     );
-  } else if (isWatchLater) {
-    return (
-      <>
-        {!updating ? (
-          <button
-            aria-label={`Change ${mediaTitle} from watch later to favorite`}
-            onClick={() => changeWatchLaterToFav()}
-          >
-            <FaRegHeart size={20} />
-          </button>
-        ) : (
-          <Loading />
-        )}
-      </>
-    );
-  } else {
-    return (
-      <>
-        {!removing ? (
-          <button
-            aria-label={`Remove ${mediaTitle} from list. Requires confirmation.`}
-            onClick={() => removeFav()}
-          >
-            <FaHeart fill="red" size={20} />
-          </button>
-        ) : (
-          <Loading />
-        )}
-      </>
-    );
-  }
+  };
+
+  return (
+    <button
+      className={
+        slugPage
+          ? "flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold"
+          : ""
+      }
+      aria-label={getAriaLabelForButton()}
+      onClick={() => handleClick()}
+    >
+      {buttonContent()}
+    </button>
+  );
 }
 
 export default FavoriteButton;

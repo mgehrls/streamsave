@@ -1,7 +1,6 @@
 export default function TagPill({
-  tag,
-} // deletable,
-: {
+  tag, // deletable,
+}: {
   key: number;
   tag: { id: number; name: string };
   deletable?: boolean;
@@ -20,7 +19,7 @@ export default function TagPill({
       {/* {removingTag && <Loading />} */}
 
       <div className={defaultClasses}>
-        {tag.name}
+        {tag.name.toLocaleLowerCase()}
         {/* <button
           disabled={!deletable}
           className={defaultClasses}
