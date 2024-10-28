@@ -6,22 +6,25 @@ import LayoutWrapper from "~/components/Layout/LayoutWrapper";
 import { useUser } from "@clerk/nextjs";
 import Loading from "~/components/Loading";
 import Image from "next/image";
-import { FaHeart, FaRegHeart, FaArrowLeft, FaStar } from "react-icons/fa";
-import { FaClockRotateLeft } from "react-icons/fa6";
 import Link from "next/link";
 import TagPill from "~/components/TagPill";
 import { useEffect, useState } from "react";
 import useListActions from "~/utils/useListActions";
 import MediaRow from "~/components/MediaRow";
-import type { MongoMedia } from "~/utils/types";
+import type { APIResult, MongoMedia } from "~/utils/types";
 import { imageFromAPIBasePath } from "~/utils/constants";
 import { genresFromAPI } from "~/utils/genres";
+import FavoriteButton from "~/components/Buttons/FavoriteButton";
+import WatchLaterButton from "~/components/Buttons/WatchLaterButton";
+import DestructiveModal from "~/components/Modals/DestructiveModal";
+import { SingleApiMediaToListItem } from "~/utils/ApiToListItem";
 
 const SinglePostPage: NextPage<{ type: string; id: number }> = ({
   type,
   id,
 }) => {
   const [isClient, setIsClient] = useState(false);
+  const [confirmDeletion, setConfirmDeletion] = useState(false);
   const user = useUser();
   const { data: mediaFromAPI } = api.mDB.getSingleMedia.useQuery({
     type: type,
@@ -76,22 +79,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
 
   if (!mediaFromAPI) return <div>404</div>;
 
-  console.log("mediaFromAPI", mediaFromAPI);
-
-  const objectToSend: {
-    media: MongoMedia;
-  } = {
-    media: {
-      id: mediaFromAPI.id,
-      title: mediaFromAPI.title,
-      type: mediaFromAPI.name ? "tv" : "movie",
-      poster: mediaFromAPI.poster_path,
-      backdrop: mediaFromAPI.backdrop_path,
-      description: mediaFromAPI.overview,
-      watchLater: false,
-      tags: [],
-    },
-  };
+  const media: MongoMedia = SingleApiMediaToListItem(mediaFromAPI);
 
   const genres: { id: number; name: string }[] = mediaFromAPI.genres.map(
     (genre) => {
@@ -111,24 +99,17 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
       </div>
     );
 
-  // todo: fix buttons here, will require button update
+  // todo: fix buttons here, will require button update.
+  // todo: remove buttons don't confirm deletion yet.
 
   return (
     <>
       <Head>
-        <title>{`${mediaFromAPI.title}`}</title>
+        <title>{`${media.title}`}</title>
       </Head>
       <LayoutWrapper user={user}>
         <div className="relative w-full bg-zinc-800 text-white">
-          <Link
-            aria-label="Go back to home page."
-            className="absolute left-2 flex h-16 w-16 items-center justify-center"
-            href={"/"}
-          >
-            <FaArrowLeft size={32} />
-          </Link>
           <div className="flex flex-col items-center justify-center pb-8 pt-16 sm:flex-row">
-            {/* image */}
             <div className="flex w-full max-w-[300px] justify-center pb-8 sm:w-[50%] sm:pb-0 md:max-w-none">
               <Image
                 src={
@@ -142,157 +123,72 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                 className="w-4/5 border-2 border-black object-scale-down shadow-xl"
               />
             </div>
-            {/* info */}
+
             <div className="flex flex-col justify-center px-4 sm:w-1/2 sm:flex-col-reverse">
               {/* buttons */}
               <div className="flex items-end gap-2 sm:pt-4">
-                {listItem ? (
-                  listItem.media.watchLater ? (
-                    // in list, in watch later
-                    <>
-                      {!updating && (
-                        <button
-                          aria-label={`Change ${listItem.media.title} from something you want to watch later to a favorite of yours.`}
-                          onClick={() =>
-                            changeWatchLaterValue({
-                              id: listItem._id as string,
-                              watchLater: false,
-                              lastSeen: "",
-                            })
-                          }
-                          className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold"
-                        >
-                          <FaRegHeart size={20} />
-                          <span className="hidden lg:block">Favorited</span>
-                        </button>
-                      )}
-                      {updating && (
-                        <div className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold">
-                          <Loading />
-                        </div>
-                      )}
-                      {!removing && (
-                        <button
-                          aria-label={`Remove ${listItem.media.title} from your list.`}
-                          onClick={() => removeFromList(listItem._id as string)} // listItem.id
-                          className="flex items-center justify-center gap-2 rounded-md bg-pink-600 px-8 py-4 text-lg font-semibold"
-                        >
-                          <FaStar fill="green" size={20} />
-                          <span className="sr-only">Interested</span>
-                        </button>
-                      )}
-                      {removing && (
-                        <div className="flex items-center justify-center gap-2 rounded-md bg-pink-600 px-8 py-4 text-lg font-semibold">
-                          <Loading />
-                        </div>
-                      )}
-                      {mediaFromAPI.external_ids.imdb_id && (
-                        <Link
-                          aria-label={`Go to ${mediaFromAPI.title}'s IMDb page. Opens in a new tab.`}
-                          target="_blank"
-                          href={`https://www.imdb.com/title/${mediaFromAPI.external_ids.imdb_id}`}
-                        >
-                          <Image
-                            src="/images/imdb.png"
-                            alt="IMDB logo"
-                            width={50}
-                            height={80}
-                          />
-                        </Link>
-                      )}
-                    </>
-                  ) : (
-                    //in list, not watch later
-                    <>
-                      {!removing && (
-                        <button
-                          aria-label={`Remove ${listItem.media.title} from your list.`}
-                          onClick={() => removeFromList(listItem._id as string)}
-                          className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold"
-                        >
-                          <FaHeart fill="red" size={20} />
-                          <span className="sr-only">Favorited</span>
-                        </button>
-                      )}
-                      {removing && (
-                        <div className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold">
-                          <Loading />
-                        </div>
-                      )}
-                      {mediaFromAPI.external_ids.imdb_id && (
-                        <Link
-                          aria-label={`Go to ${mediaFromAPI.title}'s IMDb page. Opens in a new tab.`}
-                          target="_blank"
-                          href={`https://www.imdb.com/title/${mediaFromAPI.external_ids.imdb_id}`}
-                        >
-                          <Image
-                            src="/images/imdb.png"
-                            alt="IMDB logo"
-                            width={50}
-                            height={80}
-                          />
-                        </Link>
-                      )}
-                    </>
-                  )
-                ) : (
-                  // not in list
-                  <div className="flex w-full items-center justify-between gap-2 md:items-end md:justify-start">
-                    {!addingFav && (
-                      <button
-                        aria-label={`Add ${objectToSend.media.title} to your favorites list.`}
-                        onClick={() => addFavToList(objectToSend)}
-                        className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold"
-                      >
-                        <FaRegHeart size={20} />
-                        <span className="">Favorited</span>
-                      </button>
-                    )}
-                    {addingFav && (
-                      <div className="flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold">
-                        <Loading />
-                      </div>
-                    )}
-                    {!addingWatchLater && (
-                      <button
-                        aria-label={`Add ${objectToSend.media.title} to your watch later list.`}
-                        onClick={() => {
-                          objectToSend.media.watchLater = true;
-                          addWatchLaterToList(objectToSend);
-                        }}
-                        className="line-clamp-1 flex items-center justify-center gap-2 rounded-md bg-pink-600 px-8 py-4 text-lg font-semibold"
-                      >
-                        <FaClockRotateLeft size={20} />
-                        <span>Later</span>
-                      </button>
-                    )}
-                    {addingWatchLater && (
-                      <div className="flex items-center justify-center gap-2 rounded-md bg-pink-600 px-8 py-4 text-lg font-semibold">
-                        <Loading />
-                      </div>
-                    )}
-                    {mediaFromAPI.external_ids.imdb_id && (
-                      <Link
-                        aria-label={`Go to ${mediaFromAPI.title}'s IMDb page. Opens in a new tab.`}
-                        target="_blank"
-                        href={`https://www.imdb.com/title/${mediaFromAPI.external_ids.imdb_id}`}
-                      >
-                        <Image
-                          src="/images/imdb.png"
-                          alt="IMDB logo"
-                          width={60}
-                          height={60}
-                        />
-                      </Link>
-                    )}
-                  </div>
+                <DestructiveModal
+                  open={confirmDeletion}
+                  onClose={() => setConfirmDeletion(false)}
+                  onConfirmation={() => {
+                    if (listItem) removeFromList(listItem._id as string);
+                    setConfirmDeletion(false);
+                  }}
+                  mediaTitle={media.title}
+                />
+                <FavoriteButton
+                  addingFav={addingFav}
+                  addFav={() => {
+                    addFavToList({ media });
+                  }}
+                  updating={updating}
+                  changeWatchLaterToFav={() => {
+                    if (listItem?._id)
+                      changeWatchLaterValue({
+                        id: listItem._id as string,
+                        watchLater: false,
+                        lastSeen: "",
+                      });
+                  }}
+                  removing={removing}
+                  removeFav={() => setConfirmDeletion(true)}
+                  listItemId={listItem ? (listItem._id as string) : undefined}
+                  isWatchLater={listItem?.media.watchLater ?? false}
+                  mediaTitle={media.title}
+                  slugPage
+                />
+                <WatchLaterButton
+                  addingWatchLater={addingWatchLater}
+                  addWatchLater={() => {
+                    media.watchLater = true;
+                    addWatchLaterToList({ media });
+                  }}
+                  removing={removing}
+                  removeWatchLater={() => setConfirmDeletion(true)}
+                  listItemId={listItem ? (listItem._id as string) : undefined}
+                  isWatchLater={listItem?.media.watchLater ?? false}
+                  mediaTitle={media.title}
+                />
+                {mediaFromAPI.external_ids.imdb_id && (
+                  <Link
+                    aria-label={`Go to ${media.title}'s IMDb page. Opens in a new tab.`}
+                    target="_blank"
+                    href={`https://www.imdb.com/title/${mediaFromAPI.external_ids.imdb_id}`}
+                  >
+                    <Image
+                      src="/images/imdb.png"
+                      alt="IMDB logo"
+                      width={60}
+                      height={60}
+                    />
+                  </Link>
                 )}
               </div>
 
               {/* text area */}
               <div className="max-w-[425px]">
                 <h1 className="pt-4 text-2xl font-semibold tracking-wide md:text-4xl">
-                  {mediaFromAPI.title}
+                  {media.title}
                 </h1>
                 <div className="flex gap-2 py-2">
                   {genres.map((genre) => {
@@ -369,10 +265,10 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
           </div>
           {mediaFromAPI.recommendations.results.length > 0 && (
             <MediaRow
-              title={`More Like ${mediaFromAPI.title}`}
+              title={`More Like ${media.title}`}
               bgColor="bg-zinc-600"
               listItems={userList}
-              apiResult={mediaFromAPI.recommendations.results}
+              apiResult={mediaFromAPI.recommendations.results as APIResult[]}
               // allTags={{tags:genresFromAPI}}
             />
           )}
