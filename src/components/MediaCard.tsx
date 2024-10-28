@@ -18,15 +18,8 @@ export default function MediaCard({
   item?: WithId<MongoListItem>;
   deleteMedia: DeleteMediaProps;
 }) {
-  const {
-    addFavToList,
-    addWatchLaterToList,
-    changeWatchLaterValue,
-    addingFav,
-    addingWatchLater,
-    removing,
-    updating,
-  } = useListActions();
+  const { addFavToList, addWatchLaterToList, changeWatchLaterValue } =
+    useListActions();
 
   if (!mediaFromApi && !item) return null;
   // if there is no mediaFromAPI, item will alway be defined
@@ -46,9 +39,7 @@ export default function MediaCard({
       <div className="relative mx-auto min-w-[160px] max-w-[160px] bg-zinc-900 p-2">
         <div className={likeBtnClasses}>
           <FavoriteButton
-            addingFav={addingFav}
             addFav={() => addFavToList({ media: media })}
-            updating={updating}
             changeWatchLaterToFav={() => {
               if (item?._id)
                 changeWatchLaterValue({
@@ -57,7 +48,6 @@ export default function MediaCard({
                   lastSeen: "",
                 });
             }}
-            removing={removing}
             removeFav={() => {
               if (listItemId) {
                 deleteMedia.setMediaTitle(media.title);
@@ -72,12 +62,10 @@ export default function MediaCard({
         </div>
         <div className={watchLaterBtnClasses}>
           <WatchLaterButton
-            addingWatchLater={addingWatchLater}
             addWatchLater={() => {
               media.watchLater = true;
               addWatchLaterToList({ media: media });
             }}
-            removing={removing}
             removeWatchLater={() => {
               if (listItemId) {
                 deleteMedia.setMediaTitle(media.title);
