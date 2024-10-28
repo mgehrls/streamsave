@@ -30,6 +30,7 @@
     "**/*.cjs",
     "**/*.mjs",
     ".next/types/**/*.ts",
+    "query.js"
   ],
   "exclude": ["node_modules"]
 }
