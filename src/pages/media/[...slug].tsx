@@ -36,10 +36,6 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
     addWatchLaterToList,
     removeFromList,
     changeWatchLaterValue,
-    addingFav,
-    addingWatchLater,
-    removing,
-    updating,
   } = useListActions();
 
   const {
@@ -99,9 +95,6 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
       </div>
     );
 
-  // todo: fix buttons here, will require button update.
-  // todo: remove buttons don't confirm deletion yet.
-
   return (
     <>
       <Head>
@@ -109,7 +102,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
       </Head>
       <LayoutWrapper user={user}>
         <div className="relative w-full bg-zinc-800 text-white">
-          <div className="flex flex-col items-center justify-center pb-8 pt-16 sm:flex-row">
+          <div className="flex flex-col items-center justify-center pb-8 pt-8 sm:flex-row">
             <div className="flex w-full max-w-[300px] justify-center pb-8 sm:w-[50%] sm:pb-0 md:max-w-none">
               <Image
                 src={
@@ -120,13 +113,12 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                 alt=""
                 width={800}
                 height={400}
-                className="w-4/5 border-2 border-black object-scale-down shadow-xl"
+                className="w-2/3 border-2 border-black object-scale-down shadow-xl"
               />
             </div>
 
             <div className="flex flex-col justify-center px-4 sm:w-1/2 sm:flex-col-reverse">
-              {/* buttons */}
-              <div className="flex items-end gap-2 sm:pt-4">
+              <div className="flex flex-wrap items-end justify-between gap-4 sm:pt-4 lg:justify-start">
                 <DestructiveModal
                   open={confirmDeletion}
                   onClose={() => setConfirmDeletion(false)}
@@ -137,11 +129,9 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                   mediaTitle={media.title}
                 />
                 <FavoriteButton
-                  addingFav={addingFav}
                   addFav={() => {
                     addFavToList({ media });
                   }}
-                  updating={updating}
                   changeWatchLaterToFav={() => {
                     if (listItem?._id)
                       changeWatchLaterValue({
@@ -150,7 +140,6 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                         lastSeen: "",
                       });
                   }}
-                  removing={removing}
                   removeFav={() => setConfirmDeletion(true)}
                   listItemId={listItem ? (listItem._id as string) : undefined}
                   isWatchLater={listItem?.media.watchLater ?? false}
@@ -158,16 +147,15 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                   slugPage
                 />
                 <WatchLaterButton
-                  addingWatchLater={addingWatchLater}
                   addWatchLater={() => {
                     media.watchLater = true;
                     addWatchLaterToList({ media });
                   }}
-                  removing={removing}
                   removeWatchLater={() => setConfirmDeletion(true)}
                   listItemId={listItem ? (listItem._id as string) : undefined}
                   isWatchLater={listItem?.media.watchLater ?? false}
                   mediaTitle={media.title}
+                  slugPage
                 />
                 {mediaFromAPI.external_ids.imdb_id && (
                   <Link
@@ -178,8 +166,8 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                     <Image
                       src="/images/imdb.png"
                       alt="IMDB logo"
-                      width={60}
-                      height={60}
+                      width={40}
+                      height={40}
                     />
                   </Link>
                 )}
@@ -191,23 +179,20 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                   {media.title}
                 </h1>
                 <div className="flex gap-2 py-2">
-                  {genres.map((genre) => {
-                    return <TagPill key={genre.id} tag={genre} />;
-                  })}
+                  {listItem?.media.tags && listItem.media.tags.length > 0
+                    ? listItem.media.tags.map((genre) => {
+                        return <TagPill key={genre.id} tag={genre} />;
+                      })
+                    : genres.map((genre) => {
+                        return <TagPill key={genre.id} tag={genre} />;
+                      })}
                 </div>
                 <p className="py-4 tracking-wider">
                   {mediaFromAPI.overview.length > 200
                     ? `${mediaFromAPI.overview.slice(0, 200).trim()}...`
                     : mediaFromAPI.overview}
                 </p>
-                {listItem?.media.tags && listItem.media.tags.length > 0 && (
-                  <div className="rounded-md bg-black p-2">
-                    <h3 className="text-lg">Your Tags</h3>
-                    <div className="flex flex-wrap gap-2 py-2">
-                      {listItem.media.tags.map((genre) => {
-                        return <TagPill key={genre.id} tag={genre} />;
-                      })}
-                      {/* {addTag && (
+                {/* {addTag && (
                         <>
                           <input
                             id="newTagInput"
@@ -257,9 +242,6 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                           />
                         </button>
                       )} */}
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
           </div>
