@@ -37,14 +37,24 @@ function SearchBar() {
       }
     };
 
+    const handleScroll = () => {
+      console.log(window.scrollY);
+      if (window.scrollY > 100) {
+        setShowSearch(false);
+        setSearchQuery("");
+      }
+    };
+
     document.addEventListener("focus", handleFocus);
     document.addEventListener("click", handleClick);
     document.addEventListener("keydown", handleKeydown);
+    document.addEventListener("scroll", handleScroll);
 
     return () => {
       document.removeEventListener("focus", handleFocus);
       document.removeEventListener("click", handleClick);
       document.removeEventListener("keydown", handleKeydown);
+      document.removeEventListener("scroll", handleScroll);
       clearTimeout(timer);
     };
   }, [searchQuery, timer, isClient]);
@@ -63,7 +73,7 @@ function SearchBar() {
   return (
     <div
       onClick={(e) => e.stopPropagation()}
-      className="relative my-4 w-full self-center px-4 md:mr-0 md:w-full md:max-w-lg md:self-end lg:px-0"
+      className="my-4 w-full self-center px-4 md:mr-0 md:w-full md:max-w-lg md:self-end lg:px-0"
     >
       <input
         type="text"

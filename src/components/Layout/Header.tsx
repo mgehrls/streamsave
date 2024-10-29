@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 import Image from "next/image";
 import type { User } from "~/utils/types";
+import SearchBar from "./SearchBar";
 
 function Header({ user }: { user: User }) {
   const [showMenu, setShowMenu] = useState(false);
@@ -31,9 +32,10 @@ function Header({ user }: { user: User }) {
             treamSave
           </h1>
         </Link>
+        <SearchBar />
         <div className="flex items-center gap-8 lg:gap-16">
           <Link
-            className="flex items-center justify-center py-2 text-lg tracking-wide transition-all hover:scale-105 hover:rounded-md hover:underline"
+            className="hidden items-center justify-center whitespace-nowrap py-2 text-lg tracking-wide transition-all hover:scale-105 hover:rounded-md hover:underline lg:flex"
             aria-label="Go to your list."
             href="/list"
           >
@@ -42,6 +44,7 @@ function Header({ user }: { user: User }) {
           {user.user && (
             <div onClick={(e) => e.stopPropagation()}>
               <button
+                className="shrink-0"
                 aria-label="Toggles a menu with a sign out button."
                 onClick={() => setShowMenu(!showMenu)}
               >
@@ -51,7 +54,7 @@ function Header({ user }: { user: User }) {
                   alt="User Profile Image"
                   width={50}
                   height={50}
-                  className="rounded-full"
+                  className="shrink-0 rounded-full"
                 />
               </button>
               <div
@@ -61,6 +64,13 @@ function Header({ user }: { user: User }) {
                     : "hidden"
                 }
               >
+                <Link
+                  className="items-center justify-center p-2 text-center text-lg tracking-wide transition-all hover:scale-105 hover:rounded-md hover:underline lg:hidden"
+                  aria-label="Go to your list."
+                  href="/list"
+                >
+                  My List
+                </Link>
                 <SignOutButton>
                   <button
                     disabled={!showMenu}

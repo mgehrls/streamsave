@@ -1,7 +1,7 @@
 function Footer() {
   return (
-    <footer className="mt-4">
-      <div className="flex flex-col items-center justify-center bg-black px-8 py-8">
+    <footer className="bg-[#15181c]">
+      <div className="flex flex-col items-center justify-center px-8 py-4">
         <p className="text-md text-slate-200">
           &copy; 2023 StreamSave. All rights reserved.
         </p>
