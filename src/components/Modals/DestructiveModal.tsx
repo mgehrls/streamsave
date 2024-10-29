@@ -33,6 +33,7 @@ function DestructiveModal({
         </p>
         <div className="mt-4 flex items-center justify-center gap-4">
           <button
+            autoFocus
             aria-label={`Cancel and choose to keep ${mediaTitle} in your list.`}
             onClick={() => onClose()}
             className="rounded-lg border-2 bg-black px-4 py-2 text-white"
@@ -40,6 +41,7 @@ function DestructiveModal({
             Cancel
           </button>
           <button
+            tabIndex={0}
             aria-label={`Confirm deletion of ${mediaTitle}.`}
             onClick={() => onConfirmation()}
             className="rounded-lg border-2 border-red-600 bg-red-600 px-4 py-2 text-white"
