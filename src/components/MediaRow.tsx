@@ -41,20 +41,30 @@ export default function MediaRow({
 
   if (!apiResult && !listItems) return null;
 
-  const slidesPerView =
-    size.width && size.width < 440
-      ? 2
-      : size.width && size.width < 510
-      ? 2.5
-      : size.width && size.width < 595
-      ? 3
-      : size.width && size.width < 680
-      ? 3.5
-      : size.width && size.width < 760
-      ? 4
-      : size.width && size.width < 870
-      ? 4.5
-      : 5;
+  if (size.width === undefined) return null;
+
+  const slidesPerView = () => {
+    if (size.width) {
+      switch (true) {
+        case size.width > 960:
+          return 5;
+        case size.width > 860:
+          return 4.5;
+        case size.width > 760:
+          return 4;
+        case size.width > 685:
+          return 3.5;
+        case size.width > 590:
+          return 3;
+        case size.width > 510:
+          return 2.5;
+        case size.width > 400:
+          return 2;
+        default:
+          return 1.5;
+      }
+    }
+  };
 
   return (
     <div className={`p-4 py-6 ${bgColor}`}>
@@ -74,9 +84,7 @@ export default function MediaRow({
         <Swiper
           className="w-full"
           modules={[Navigation, Pagination, Scrollbar, A11y]}
-          slidesPerView={slidesPerView}
-          spaceBetween={10}
-          loop={true}
+          slidesPerView={slidesPerView()}
           centeredSlidesBounds={true}
         >
           {apiResult?.map((mediaFromApi) => {
