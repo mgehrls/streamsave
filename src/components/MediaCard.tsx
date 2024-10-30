@@ -1,7 +1,6 @@
 import type { APIResult, DeleteMediaProps, MongoListItem } from "~/utils/types";
 import Image from "next/image";
 import Link from "next/link";
-import TagPill from "./TagPill";
 import useListActions from "~/utils/useListActions";
 import { imageFromAPIBasePath } from "~/utils/constants";
 import type { WithId } from "mongodb";
@@ -27,17 +26,29 @@ export default function MediaCard({
     ? SingleApiMediaToListItem(mediaFromApi)
     : item!.media;
   const listItemId = item?._id ? (item._id as string) : undefined;
-  const tagsToDisplay = item?.media.tags ?? media.tags;
-
-  const likeBtnClasses =
-    "absolute right-0 top-0 rounded-bl-lg bg-black p-2 text-white opacity-70 hover:opacity-100";
-  const watchLaterBtnClasses =
-    "absolute left-0 top-0 rounded-br-lg bg-black p-2 text-white opacity-70 hover:opacity-100";
 
   return (
     <>
-      <div className="relative mx-auto min-w-[160px] max-w-[160px] bg-zinc-900 p-2">
-        <div className={likeBtnClasses}>
+      <div className="relative mx-auto w-[180px] rounded-lg bg-zinc-900">
+        <div className="absolute left-0 top-0 rounded-br-lg rounded-tl-lg bg-black px-2 pb-[2px] pt-2 text-white opacity-70 hover:opacity-100">
+          <WatchLaterButton
+            addWatchLater={() => {
+              media.watchLater = true;
+              addWatchLaterToList({ media: media });
+            }}
+            removeWatchLater={() => {
+              if (listItemId) {
+                deleteMedia.setMediaTitle(media.title);
+                deleteMedia.setMediaToDeleteId(listItemId);
+                deleteMedia.setConfirmDeletion(true);
+              }
+            }}
+            listItemId={listItemId}
+            isWatchLater={item?.media.watchLater ?? false}
+            mediaTitle={media.title}
+          />
+        </div>
+        <div className="absolute right-0 top-0 rounded-bl-lg rounded-tr-lg bg-black px-2 pb-[2px] pt-2 text-white opacity-70 hover:opacity-100">
           <FavoriteButton
             addFav={() => addFavToList({ media: media })}
             changeWatchLaterToFav={() => {
@@ -60,29 +71,11 @@ export default function MediaCard({
             mediaTitle={media.title}
           />
         </div>
-        <div className={watchLaterBtnClasses}>
-          <WatchLaterButton
-            addWatchLater={() => {
-              media.watchLater = true;
-              addWatchLaterToList({ media: media });
-            }}
-            removeWatchLater={() => {
-              if (listItemId) {
-                deleteMedia.setMediaTitle(media.title);
-                deleteMedia.setMediaToDeleteId(listItemId);
-                deleteMedia.setConfirmDeletion(true);
-              }
-            }}
-            listItemId={listItemId}
-            isWatchLater={item?.media.watchLater ?? false}
-            mediaTitle={media.title}
-          />
-        </div>
         <Link
           aria-label={`Go to ${media.title}'s page.`}
           href={`/media/${media.type}/${media.id}`}
         >
-          <div className="flex h-52 w-36 items-center bg-black">
+          <div className="flex h-[270px] w-[180px] items-center rounded-lg bg-black">
             <Image
               src={
                 media.poster
@@ -90,22 +83,10 @@ export default function MediaCard({
                   : "/images/posterUnavailable.png"
               }
               alt=""
-              width={176}
-              height={264}
-              className="object-scale-down"
+              width={180}
+              height={270}
+              className="rounded-lg object-cover"
             />
-          </div>
-          <div className="p-1">
-            <div className="mt-1 flex h-[40px] items-center">
-              <h3 className="text-md line-clamp-2 leading-[19px]">
-                {media.title}
-              </h3>
-            </div>
-            <div className="flex max-h-[52px] min-h-[52px] flex-wrap items-start gap-x-[2px] gap-y-1 overflow-hidden pt-2">
-              {tagsToDisplay.map((genre) => {
-                return <TagPill key={genre.id} tag={genre} />;
-              })}
-            </div>
           </div>
         </Link>
       </div>
