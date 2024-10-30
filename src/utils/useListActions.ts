@@ -19,14 +19,7 @@ export default function useListActions(){
 
   const { mutate: removeFromList, isLoading: removing } =
     api.listItem.deleteListItem.useMutation({
-      onError: (error) => {
-        console.error('error', error);
-      },
-      onSettled: (data) => {
-        console.log('settled', data);
-      },
       onSuccess: () => {
-        console.log('success')
         void ctx.listItem.getUserList.invalidate();
       },
     });

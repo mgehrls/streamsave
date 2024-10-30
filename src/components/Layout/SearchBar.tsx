@@ -38,7 +38,6 @@ function SearchBar() {
     };
 
     const handleScroll = () => {
-      console.log(window.scrollY);
       if (window.scrollY > 100) {
         setShowSearch(false);
         setSearchQuery("");

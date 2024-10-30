@@ -14,8 +14,7 @@ async function run() {
         const collection = database.collection('listItem');
 
         // Perform your query here
-        const results = await collection.find({}).toArray();
-        console.log(results);
+       await collection.find({}).toArray();
     } finally {
         await client.close();
     }
