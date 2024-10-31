@@ -9,7 +9,7 @@ function BottomSection() {
           Organized The Way You Want
         </h2>
         <SignInButton mode="modal">
-          <button className="flex items-center justify-center bg-pink-700 px-6 py-2 transition-all hover:scale-105 hover:rounded-md">
+          <button className="flex items-center justify-center bg-pink-700 px-6 py-2 transition-all hover:scale-105 hover:rounded-md motion-reduce:transition-none">
             Sign In
           </button>
         </SignInButton>

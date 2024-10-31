@@ -35,7 +35,7 @@ function Header({ user }: { user: User }) {
         <SearchBar />
         <div className="flex items-center gap-8 lg:gap-16">
           <Link
-            className="hidden items-center justify-center whitespace-nowrap py-2 text-lg tracking-wide transition-all hover:scale-105 hover:rounded-md hover:underline lg:flex"
+            className="hidden items-center justify-center whitespace-nowrap py-2 text-lg tracking-wide transition-all hover:scale-105 hover:rounded-md hover:underline motion-reduce:transition-none lg:flex"
             aria-label="Go to your list."
             href="/list"
           >
@@ -65,7 +65,7 @@ function Header({ user }: { user: User }) {
                 }
               >
                 <Link
-                  className="items-center justify-center p-2 text-center text-lg tracking-wide transition-all hover:scale-105 hover:rounded-md hover:underline lg:hidden"
+                  className="items-center justify-center p-2 text-center text-lg tracking-wide transition-all hover:scale-105 hover:rounded-md hover:underline motion-reduce:transition-none lg:hidden"
                   aria-label="Go to your list."
                   href="/list"
                 >
@@ -74,7 +74,7 @@ function Header({ user }: { user: User }) {
                 <SignOutButton>
                   <button
                     disabled={!showMenu}
-                    className="flex items-center justify-center bg-pink-700 px-6 py-2 transition-all hover:scale-105 hover:rounded-md"
+                    className="flex items-center justify-center bg-pink-700 px-6 py-2 transition-all hover:scale-105 hover:rounded-md motion-reduce:transition-none"
                   >
                     Sign Out
                   </button>

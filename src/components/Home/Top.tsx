@@ -22,7 +22,7 @@ function TopSection() {
           </div>
 
           <SignInButton mode="modal">
-            <button className="flex items-center justify-center bg-pink-700 px-6 py-2 transition-all hover:scale-105 hover:rounded-md">
+            <button className="flex items-center justify-center bg-pink-700 px-6 py-2 transition-all hover:scale-105 hover:rounded-md motion-reduce:transition-none">
               Sign In
             </button>
           </SignInButton>
