@@ -30,7 +30,7 @@ export default function MediaCard({
   return (
     <>
       <div className="relative mx-auto w-[180px] rounded-lg bg-zinc-900">
-        <div className="absolute left-0 top-0 rounded-br-lg rounded-tl-lg bg-black px-2 pb-[2px] pt-2 text-white opacity-70 hover:opacity-100">
+        <div className="absolute left-0 top-0 rounded-br-lg rounded-tl-lg bg-black text-white opacity-70 hover:opacity-100">
           <WatchLaterButton
             addWatchLater={() => {
               media.watchLater = true;
@@ -48,7 +48,7 @@ export default function MediaCard({
             mediaTitle={media.title}
           />
         </div>
-        <div className="absolute right-0 top-0 rounded-bl-lg rounded-tr-lg bg-black px-2 pb-[2px] pt-2 text-white opacity-70 hover:opacity-100">
+        <div className="absolute right-0 top-0 rounded-bl-lg rounded-tr-lg bg-black text-white opacity-70 hover:opacity-100">
           <FavoriteButton
             addFav={() => addFavToList({ media: media })}
             changeWatchLaterToFav={() => {
@@ -75,7 +75,7 @@ export default function MediaCard({
           aria-label={`Go to ${media.title}'s page.`}
           href={`/media/${media.type}/${media.id}`}
         >
-          <div className="flex h-[270px] w-[180px] items-center rounded-lg bg-black">
+          <div className="flex h-[270px] w-[180px] items-center overflow-hidden rounded-lg bg-black">
             <Image
               src={
                 media.poster
@@ -85,7 +85,7 @@ export default function MediaCard({
               alt=""
               width={180}
               height={270}
-              className="rounded-lg object-cover"
+              className="object-cover"
             />
           </div>
         </Link>
