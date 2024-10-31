@@ -29,7 +29,7 @@ export default function MediaCard({
 
   return (
     <>
-      <div className="relative mx-auto w-[180px] rounded-lg bg-zinc-900">
+      <div className="relative w-[180px] rounded-lg">
         <div className="absolute left-0 top-0 rounded-br-lg rounded-tl-lg bg-black text-white opacity-70 hover:opacity-100">
           <WatchLaterButton
             addWatchLater={() => {
@@ -75,7 +75,7 @@ export default function MediaCard({
           aria-label={`Go to ${media.title}'s page.`}
           href={`/media/${media.type}/${media.id}`}
         >
-          <div className="flex h-[270px] w-[180px] items-center overflow-hidden rounded-lg bg-black">
+          <div className="flex h-[270px] w-[180px] items-center overflow-hidden rounded-lg border-2 border-black bg-black">
             <Image
               src={
                 media.poster

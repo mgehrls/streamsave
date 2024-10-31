@@ -7,7 +7,9 @@ import "swiper/css/a11y";
 import { useState } from "react";
 import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
 import useListActions from "~/utils/useListActions";
-import useWindowSize from "~/utils/useWindowSize";
+import useWindowSize, {
+  convertWindowSizeToCardsPerRow,
+} from "~/utils/useWindowSize";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import MediaCard from "~/components/MediaCard";
@@ -43,29 +45,6 @@ export default function MediaRow({
 
   if (size.width === undefined) return null;
 
-  const slidesPerView = () => {
-    if (size.width) {
-      switch (true) {
-        case size.width > 960:
-          return 5;
-        case size.width > 860:
-          return 4.5;
-        case size.width > 760:
-          return 4;
-        case size.width > 685:
-          return 3.5;
-        case size.width > 590:
-          return 3;
-        case size.width > 510:
-          return 2.5;
-        case size.width > 400:
-          return 2;
-        default:
-          return 1.5;
-      }
-    }
-  };
-
   return (
     <div className={`p-4 py-6 ${bgColor}`}>
       <h2 className="pb-4 text-xl font-bold tracking-wider">{title}</h2>
@@ -84,7 +63,7 @@ export default function MediaRow({
         <Swiper
           className="w-full"
           modules={[Navigation, Pagination, Scrollbar, A11y]}
-          slidesPerView={slidesPerView()}
+          slidesPerView={convertWindowSizeToCardsPerRow(size)}
           centeredSlidesBounds={true}
         >
           {apiResult?.map((mediaFromApi) => {
