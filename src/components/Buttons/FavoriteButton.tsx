@@ -70,7 +70,7 @@ function FavoriteButton({
       className={
         slugPage
           ? "flex items-center justify-center gap-2 rounded-md bg-sky-600 px-8 py-4 text-lg font-semibold"
-          : ""
+          : "m-2 mx-2 mb-1"
       }
       aria-label={getAriaLabelForButton()}
       onClick={() => handleClick()}

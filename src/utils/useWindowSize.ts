@@ -1,18 +1,18 @@
 import { useState, useEffect } from 'react';
 
 interface WindowSize {
-    width: number | undefined;
-    height: number | undefined;
+    width: number;
+    height: number;
 }
 
 export default function useWindowSize() {
     const [windowSize, setWindowSize] = useState<WindowSize>({
-      width: undefined,
-      height: undefined,
+      width: 0,
+      height: 0,
     });
 
     function debounce(func: () => void) {
-      setTimeout(func, 1000);
+      setTimeout(func, 500);
       };
 
   
@@ -37,3 +37,26 @@ export default function useWindowSize() {
     }, []); // Empty array ensures that effect is only run on mount
     return windowSize;
   }
+
+export function convertWindowSizeToCardsPerRow(size:WindowSize){
+    switch (true) {
+      case size.width > 960:
+        return 5;
+      case size.width > 860:
+        return 4.5;
+      case size.width > 760:
+        return 4;
+      case size.width > 685:
+        return 3.5;
+      case size.width > 590:
+        return 3;
+      case size.width > 510:
+        return 2.5;
+      case size.width > 400:
+        return 2;
+      default:
+        return 1.5;
+    
+  
+}
+}

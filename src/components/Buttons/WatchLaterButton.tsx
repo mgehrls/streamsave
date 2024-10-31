@@ -58,7 +58,7 @@ function WatchLaterButton({
         className={
           slugPage
             ? "flex items-center justify-center gap-2 rounded-md bg-pink-600 px-8 py-4 text-lg font-semibold"
-            : ""
+            : "mx-2 mb-[2px] mt-2"
         }
         aria-label={ariaLabel()}
         onClick={() => handleClick()}
