@@ -23,7 +23,7 @@ const ListItem = ({
         index % 2 === 1 ? "bg-zinc-800" : "bg-zinc-700"
       }`}
     >
-      <div className="grid w-full grid-cols-12 place-content-center gap-2 overflow-hidden px-4 py-2">
+      <div className="grid w-full grid-cols-12 place-content-center gap-2 overflow-hidden px-4 py-2 lg:px-8">
         <Link
           className="col-span-5 place-content-center lg:col-span-4"
           aria-label={`Go to ${item.media.title}'s page.`}

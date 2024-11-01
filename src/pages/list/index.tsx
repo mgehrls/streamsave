@@ -81,7 +81,7 @@ export default function List() {
         onConfirmation={() => handleDeleteConfirmation()}
       />
       <div className="mx-4 my-4 lg:mx-0">
-        <div className="flex flex-col justify-between gap-2 rounded-t-2xl bg-[#36526a] p-4 md:flex-row md:items-center">
+        <div className="flex flex-col justify-between gap-2 rounded-t-2xl bg-[#36526a] p-4 md:flex-row md:items-center lg:px-8">
           <div className="flex items-end gap-2 lg:gap-4">
             <h1 className="text-2xl font-semibold tracking-wide text-white lg:text-4xl">
               {showFavorites ? "Favorites" : "Watch Later"}
