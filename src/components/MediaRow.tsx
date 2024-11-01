@@ -76,6 +76,7 @@ export default function MediaRow({
                   mediaFromApi={mediaFromApi}
                   item={item}
                   deleteMedia={deleteMedia}
+                  inMediaRow
                 />
               </SwiperSlide>
             );
