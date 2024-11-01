@@ -16,7 +16,7 @@ function AllItems({
   if (list.length === 0) {
     return (
       <div>
-        <p className="text-lg text-white">No items fit this criteria.</p>
+        <p className="text-lg text-white p-4 lg:px-8">No items fit this criteria.</p>
       </div>
     );
   }
