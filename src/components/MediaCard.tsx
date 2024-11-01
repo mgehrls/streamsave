@@ -7,15 +7,18 @@ import type { WithId } from "mongodb";
 import FavoriteButton from "./Buttons/FavoriteButton";
 import { SingleApiMediaToListItem } from "~/utils/ApiToListItem";
 import WatchLaterButton from "./Buttons/WatchLaterButton";
+import clsx from "clsx";
 
 export default function MediaCard({
   mediaFromApi,
   item,
   deleteMedia,
+  inMediaRow,
 }: {
   mediaFromApi?: APIResult;
   item?: WithId<MongoListItem>;
   deleteMedia: DeleteMediaProps;
+  inMediaRow?: boolean;
 }) {
   const { addFavToList, addWatchLaterToList, changeWatchLaterValue } =
     useListActions();
@@ -29,7 +32,9 @@ export default function MediaCard({
 
   return (
     <>
-      <div className="relative w-[180px] rounded-lg">
+      <div className={clsx("relative w-[180px] rounded-lg",
+        inMediaRow && 'mx-auto',
+      )}>
         <div className="absolute left-0 top-0 rounded-br-lg rounded-tl-lg bg-black text-white opacity-70 hover:opacity-100">
           <WatchLaterButton
             addWatchLater={() => {
