@@ -10,7 +10,7 @@ function Header({ user }: { user: User }) {
 
   return (
     <div className="flex w-full flex-col items-center justify-center bg-[#15181c] text-white">
-      <header className="relative flex w-full max-w-5xl items-center justify-between px-4 py-4 lg:px-2">
+      <header className="relative flex w-full max-w-5xl items-center justify-between px-4 py-2 lg:px-2">
         <Link
           aria-label="Go to homepage for Stream save."
           href="/"
@@ -60,7 +60,7 @@ function Header({ user }: { user: User }) {
               <div
                 className={
                   showMenu
-                    ? `absolute right-0 top-[87px] z-50 flex flex-col gap-2 border-[1px] border-slate-400 bg-zinc-900 px-4 py-4 opacity-100 transition-none`
+                    ? `absolute right-0 top-[80px] z-50 flex flex-col gap-2 border-[1px] border-slate-400 bg-zinc-900 px-4 py-4 opacity-100 transition-none`
                     : "hidden"
                 }
               >

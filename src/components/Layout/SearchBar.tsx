@@ -37,23 +37,14 @@ function SearchBar() {
       }
     };
 
-    const handleScroll = () => {
-      if (window.scrollY > 100) {
-        setShowSearch(false);
-        setSearchQuery("");
-      }
-    };
-
     document.addEventListener("focus", handleFocus);
     document.addEventListener("click", handleClick);
     document.addEventListener("keydown", handleKeydown);
-    document.addEventListener("scroll", handleScroll);
 
     return () => {
       document.removeEventListener("focus", handleFocus);
       document.removeEventListener("click", handleClick);
       document.removeEventListener("keydown", handleKeydown);
-      document.removeEventListener("scroll", handleScroll);
       clearTimeout(timer);
     };
   }, [searchQuery, timer, isClient]);
@@ -83,18 +74,6 @@ function SearchBar() {
         onInput={debounce}
         onChange={(e) => setSearchQuery(e.target.value)}
       />
-      {searchQuery !== "" && (
-        <button
-          aria-label="Close search results"
-          onClick={() => {
-            setShowSearch(false);
-            setSearchQuery("");
-          }}
-          className="absolute -top-1 right-4 z-50 p-2 text-white"
-        >
-          X
-        </button>
-      )}
 
       {showSearch && (
         <SearchResults

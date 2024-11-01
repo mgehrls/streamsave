@@ -28,7 +28,7 @@ export default function SearchResults({
 
   if (isLoading || listLoading)
     return (
-      <div className="bg-black px-20 py-8">
+      <div className="absolute left-0 top-20 z-40 mx-4 flex justify-center items-center min-h-[100px] max-h-[300px] flex-col gap-2 overflow-x-hidden overflow-y-scroll border-2 border-white/70 bg-[#15181c] md:mx-0 md:w-full lg:max-h-[600px]">
         <Loading />
       </div>
     );
@@ -64,7 +64,7 @@ export default function SearchResults({
       />
       <div
         onClick={(e) => e.stopPropagation()}
-        className="absolute left-0 top-24 z-40 mx-4 flex max-h-[300px] flex-col gap-2 overflow-x-hidden overflow-y-scroll border-2 border-white/70 bg-[#15181c] md:mx-0 md:w-full lg:max-h-[600px]"
+        className="absolute left-0 top-20 z-40 mx-4 flex max-h-[300px] flex-col gap-2 overflow-x-hidden overflow-y-scroll border-2 border-white/70 bg-[#15181c] md:mx-0 md:w-full lg:max-h-[600px]"
       >
         <div className="sticky top-0 flex w-full justify-between gap-2 bg-black/70 p-4">
           <h2 className="text-xl">{`Search results for "${searchQuery}"`}</h2>
