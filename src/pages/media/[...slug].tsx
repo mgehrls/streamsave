@@ -11,7 +11,7 @@ import TagPill from "~/components/TagPill";
 import { useEffect, useState } from "react";
 import useListActions from "~/utils/useListActions";
 import MediaRow from "~/components/MediaRow";
-import type { APIResult, MongoMedia } from "~/utils/types";
+import type { MongoMedia } from "~/utils/types";
 import { imageFromAPIBasePath } from "~/utils/constants";
 import { genresFromAPI } from "~/utils/genres";
 import FavoriteButton from "~/components/Buttons/FavoriteButton";
@@ -123,7 +123,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                   open={confirmDeletion}
                   onClose={() => setConfirmDeletion(false)}
                   onConfirmation={() => {
-                    if (listItem) removeFromList(listItem._id as string);
+                    if (listItem) removeFromList(listItem._id);
                     setConfirmDeletion(false);
                   }}
                   mediaTitle={media.title}
@@ -135,13 +135,13 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                   changeWatchLaterToFav={() => {
                     if (listItem?._id)
                       changeWatchLaterValue({
-                        id: listItem._id as string,
+                        id: listItem._id,
                         watchLater: false,
                         lastSeen: "",
                       });
                   }}
                   removeFav={() => setConfirmDeletion(true)}
-                  listItemId={listItem ? (listItem._id as string) : undefined}
+                  listItemId={listItem ? listItem._id : undefined}
                   isWatchLater={listItem?.media.watchLater ?? false}
                   mediaTitle={media.title}
                   slugPage
@@ -152,7 +152,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
                     addWatchLaterToList({ media });
                   }}
                   removeWatchLater={() => setConfirmDeletion(true)}
-                  listItemId={listItem ? (listItem._id as string) : undefined}
+                  listItemId={listItem ? listItem._id : undefined}
                   isWatchLater={listItem?.media.watchLater ?? false}
                   mediaTitle={media.title}
                   slugPage
@@ -250,7 +250,7 @@ const SinglePostPage: NextPage<{ type: string; id: number }> = ({
               title={`More Like ${media.title}`}
               bgColor="bg-zinc-600"
               listItems={userList}
-              apiResult={mediaFromAPI.recommendations.results as APIResult[]}
+              apiResult={mediaFromAPI.recommendations.results}
               // allTags={{tags:genresFromAPI}}
             />
           )}

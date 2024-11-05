@@ -1,19 +1,19 @@
 import { genresFromAPI } from "./genres"
-import type { APIResult, MongoMedia, MovieAPIResult, SingleMediaAPIUnity, SingleMovieAPIResponse } from "./types"
+import type { ApiResult, ExtendedApiResult, ExtendedMovieApiResult, MongoMedia, MovieApiResult } from "./types"
 
-export function typeIsExtended(media : APIResult | SingleMediaAPIUnity): media is SingleMediaAPIUnity {
+export function typeIsExtended(media : ApiResult | ExtendedApiResult): media is ExtendedApiResult {
     return "recommendations" in media;
 }
 
-export function typeIsExtendedMovie(media: SingleMediaAPIUnity): media is SingleMovieAPIResponse {
+export function typeIsExtendedMovie(media: ExtendedApiResult): media is ExtendedMovieApiResult {
     return 'budget' in media;
 }
 
-export function typeIsMovie(media: APIResult): media is MovieAPIResult {
+export function typeIsMovie(media: ApiResult): media is MovieApiResult {
     return "title" in media;
 }
 
-export const SingleApiMediaToListItem : (media: APIResult | SingleMediaAPIUnity) => MongoMedia = (media) => {
+export const SingleApiMediaToListItem : (media: ApiResult | ExtendedApiResult) => MongoMedia = (media) => {
     const isExtended = typeIsExtended(media);
     const isMovie = isExtended && typeIsExtendedMovie(media) || !isExtended && typeIsMovie(media);
     return {
@@ -31,5 +31,3 @@ export const SingleApiMediaToListItem : (media: APIResult | SingleMediaAPIUnity)
     }
 
   }
-
-// export const MultiApiToListItem = (mediaArray: APIResult[]) => {}

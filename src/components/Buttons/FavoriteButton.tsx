@@ -1,3 +1,4 @@
+import type { ObjectId } from "mongodb";
 import React from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 
@@ -6,7 +7,7 @@ type FavoriteButtonProps = {
   addFav: () => void;
   changeWatchLaterToFav: () => void;
   removeFav: () => void;
-  listItemId: string | undefined;
+  listItemId: ObjectId | undefined;
   isWatchLater: boolean;
   mediaTitle: string;
 };

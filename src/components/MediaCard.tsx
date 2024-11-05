@@ -1,4 +1,4 @@
-import type { APIResult, DeleteMediaProps, MongoListItem } from "~/utils/types";
+import type { ApiResult, DeleteMediaProps, MongoListItem } from "~/utils/types";
 import Image from "next/image";
 import Link from "next/link";
 import useListActions from "~/utils/useListActions";
@@ -15,7 +15,7 @@ export default function MediaCard({
   deleteMedia,
   inMediaRow,
 }: {
-  mediaFromApi?: APIResult;
+  mediaFromApi?: ApiResult;
   item?: WithId<MongoListItem>;
   deleteMedia: DeleteMediaProps;
   inMediaRow?: boolean;
@@ -28,13 +28,16 @@ export default function MediaCard({
   const media = mediaFromApi
     ? SingleApiMediaToListItem(mediaFromApi)
     : item!.media;
-  const listItemId = item?._id ? (item._id as string) : undefined;
+  const listItemId = item?._id ? item._id : undefined;
 
   return (
     <>
-      <div className={clsx("relative w-[180px] rounded-lg",
-        inMediaRow && 'mx-auto',
-      )}>
+      <div
+        className={clsx(
+          "relative w-[180px] rounded-lg",
+          inMediaRow && "mx-auto",
+        )}
+      >
         <div className="absolute left-0 top-0 rounded-br-lg rounded-tl-lg bg-black text-white opacity-70 hover:opacity-100">
           <WatchLaterButton
             addWatchLater={() => {
@@ -59,7 +62,7 @@ export default function MediaCard({
             changeWatchLaterToFav={() => {
               if (item?._id)
                 changeWatchLaterValue({
-                  id: item._id as string,
+                  id: item._id,
                   watchLater: false,
                   lastSeen: "",
                 });

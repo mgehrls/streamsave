@@ -15,8 +15,8 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import MediaCard from "~/components/MediaCard";
 import DestructiveModal from "./Modals/DestructiveModal";
 
-import type { APIResult, DeleteMediaProps, MongoListItem } from "~/utils/types";
-import type { WithId } from "mongodb";
+import type { ApiResult, DeleteMediaProps, MongoListItem } from "~/utils/types";
+import type { ObjectId, WithId } from "mongodb";
 
 export default function MediaRow({
   title,
@@ -25,13 +25,13 @@ export default function MediaRow({
   listItems,
 }: {
   title: string;
-  apiResult?: APIResult[];
+  apiResult?: ApiResult[];
   bgColor?: string;
   listItems?: WithId<MongoListItem>[];
 }) {
   const size = useWindowSize();
   const [confirmDeletion, setConfirmDeletion] = useState(false);
-  const [mediaToDeleteId, setMediaToDeleteId] = useState<string | null>(null);
+  const [mediaToDeleteId, setMediaToDeleteId] = useState<ObjectId | null>(null);
   const [mediaTitle, setMediaTitle] = useState<string | null>(null);
   const { removeFromList } = useListActions();
 
