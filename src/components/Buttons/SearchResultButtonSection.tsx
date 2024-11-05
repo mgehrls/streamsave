@@ -6,13 +6,14 @@ import WatchLaterButton from "./WatchLaterButton";
 import DestructiveModal from "../Modals/DestructiveModal";
 
 import type { MongoMedia } from "~/utils/types";
+import { type ObjectId } from "mongodb";
 
 const SearchResultButtonSection = ({
   listItemId,
   isWatchLater,
   media,
 }: {
-  listItemId: string | undefined;
+  listItemId: ObjectId | undefined;
   isWatchLater: boolean;
   media: MongoMedia;
 }) => {

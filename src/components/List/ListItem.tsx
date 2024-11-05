@@ -5,13 +5,14 @@ import { FaTrash } from "react-icons/fa";
 import type { DeleteMediaProps, MongoListItem } from "~/utils/types";
 
 import Loading from "../Loading";
+import { type WithId } from "mongodb";
 
 const ListItem = ({
   item,
   index,
   deleteMedia,
 }: {
-  item: MongoListItem;
+  item: WithId<MongoListItem>;
   index: number;
   deleteMedia: DeleteMediaProps;
 }) => {
@@ -39,7 +40,7 @@ const ListItem = ({
           className="text-red-600 lg:col-span-1"
           onClick={() => {
             deleteMedia.setMediaTitle(item.media.title);
-            deleteMedia.setMediaToDeleteId(item._id as string);
+            deleteMedia.setMediaToDeleteId(item._id);
             deleteMedia.setConfirmDeletion(true);
           }}
         >
