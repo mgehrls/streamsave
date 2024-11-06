@@ -8,38 +8,38 @@ import TopSection from "./Top";
 import Feed from "../Feed/Feed";
 
 function Home() {
-    const user = useUser();
-    const [isClient, setIsClient] = useState(false);
+  const user = useUser();
+  const [isClient, setIsClient] = useState(false);
 
-    useEffect(() => {
-      setIsClient(true);
-    }, []);
-  
-    if (!isClient) return;
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
-    if (!user.isLoaded){
-        return (
-            <div className="flex min-h-screen w-full items-center justify-center bg-zinc-900 text-slate-50">
-                <Loading />
-            </div>
-        )
-    } else if(user.isSignedIn){
-        return (
-            <LayoutWrapper user={user}>
-                <Feed />
-            </LayoutWrapper>
-        )
-    } else {
-        return (
-            <>
-              <TopSection />
-              <MiddleSection />
-              <BottomSection />
-            </>
-          )
-    }
+  if (!isClient) return;
 
-
+  if (!user.isLoaded) {
+    return (
+      <div className="flex min-h-screen w-full items-center justify-center text-slate-50">
+        <Loading />
+      </div>
+    );
+  } else if (user.isSignedIn) {
+    return (
+      <LayoutWrapper user={user}>
+        <Feed />
+      </LayoutWrapper>
+    );
+  } else {
+    return (
+      <div className="flex h-auto w-full justify-center">
+        <div className="flex w-full flex-col lg:max-w-7xl">
+          <TopSection />
+          <MiddleSection />
+          <BottomSection />
+        </div>
+      </div>
+    );
+  }
 }
 
 export default Home;

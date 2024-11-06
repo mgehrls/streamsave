@@ -6,6 +6,11 @@
   box-sizing: border-box;
   transition: all 0.25s linear;
 }
+
+:root {
+  --dark-background: #b0b0b0;
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     transition-property: opacity;

@@ -9,7 +9,7 @@ import Home from "~/components/Home/Home";
 
 export default function Root() {
   return (
-    <div className="min-w-screen flex flex-col items-center justify-center bg-black text-slate-50">
+    <div className="min-w-screen bg-darkBackground flex flex-col items-center justify-center text-slate-50">
       <Head>
         <title>StreamSave</title>
         <meta
@@ -22,4 +22,3 @@ export default function Root() {
     </div>
   );
 }
-

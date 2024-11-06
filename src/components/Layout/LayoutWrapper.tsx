@@ -11,7 +11,7 @@ export default function LayoutWrapper({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen w-full flex-col justify-between bg-[#0b0b0b]">
+    <div className="bg-darkBackground flex min-h-screen w-full flex-col justify-between">
       <div>
         <Header user={user} />
         <div className="flex h-auto justify-center">
