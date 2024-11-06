@@ -11,13 +11,13 @@ export default function LayoutWrapper({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen w-full flex-col justify-between">
-      <>
+    <div className="bg-darkBackground flex min-h-screen w-full flex-col justify-between">
+      <div>
         <Header user={user} />
         <div className="flex h-auto justify-center">
           <div className="flex w-full flex-col lg:max-w-5xl">{children}</div>
         </div>
-      </>
+      </div>
       <Footer />
     </div>
   );
