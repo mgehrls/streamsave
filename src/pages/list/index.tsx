@@ -8,13 +8,12 @@ import { useState } from "react";
 import DestructiveModal from "~/components/Modals/DestructiveModal";
 import Filters from "~/components/List/Filters";
 import AllItems from "~/components/List/AllItems";
-import { type ObjectId } from "mongodb";
 
 export default function List() {
   const { removeFromList } = useListActions();
   const [showModal, setShowModal] = useState(false);
   const [titleToDelete, setTitleToDelete] = useState<string | null>(null);
-  const [idToDelete, setIdToDelete] = useState<ObjectId | null>(null);
+  const [idToDelete, setIdToDelete] = useState<string | null>(null);
   const [showFavorites, setShowFavorites] = useState(true);
   const [typeFilter, setTypeFilter] = useState<"all" | "tv" | "movie">("all");
   const [view, setView] = useState<"list" | "cards">("list");

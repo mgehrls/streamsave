@@ -1,4 +1,3 @@
-import type { ObjectId } from "mongodb";
 import React from "react";
 import { FaStar } from "react-icons/fa";
 import { FaClockRotateLeft } from "react-icons/fa6";
@@ -6,7 +5,7 @@ import { FaClockRotateLeft } from "react-icons/fa6";
 type WatchLaterButtonProps = {
   addWatchLater: () => void;
   removeWatchLater: () => void;
-  listItemId: ObjectId | undefined;
+  listItemId: string | undefined;
   isWatchLater: boolean;
   mediaTitle: string;
   slugPage?: boolean;
