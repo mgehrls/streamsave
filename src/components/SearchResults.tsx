@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { type Dispatch, type SetStateAction } from "react";
 import { api } from "~/utils/api";
-import type { ApiResult } from "~/utils/types";
+import type { APIResult } from "~/utils/types";
 import Loading from "./Loading";
 import { imageFromAPIBasePath } from "~/utils/constants";
 import { SingleApiMediaToListItem, typeIsMovie } from "~/utils/ApiToListItem";
@@ -28,7 +28,7 @@ export default function SearchResults({
 
   if (isLoading || listLoading)
     return (
-      <div className="absolute left-0 top-20 z-40 mx-4 flex max-h-[300px] min-h-[100px] flex-col items-center justify-center gap-2 overflow-x-hidden overflow-y-scroll border-2 border-white/70 bg-[#15181c] md:mx-0 md:w-full lg:max-h-[600px]">
+      <div className="absolute left-0 top-20 z-40 mx-4 flex justify-center items-center min-h-[100px] max-h-[300px] flex-col gap-2 overflow-x-hidden overflow-y-scroll border-2 border-white/70 bg-[#15181c] md:mx-0 md:w-full lg:max-h-[600px]">
         <Loading />
       </div>
     );
@@ -43,7 +43,7 @@ export default function SearchResults({
   }
 
   // multi searching the api can return people, this filters them out.
-  const filteredData = data.filter((item: ApiResult) => {
+  const filteredData = data.filter((item: APIResult) => {
     if (typeIsMovie(item)) {
       return true;
     } else {
@@ -82,11 +82,11 @@ export default function SearchResults({
               <p className="text-xl">No results found</p>
             </div>
           )}
-          {filteredData.map((mediaFromApi: ApiResult) => {
+          {filteredData.map((mediaFromApi: APIResult) => {
             const listItem = listData.find(
               (item) => item.media.id == mediaFromApi.id,
             );
-            const dbId = listItem?._id ? listItem._id : undefined;
+            const dbId = listItem?._id ? (listItem._id as string) : undefined;
             const isWatchLater = listItem?.media.watchLater ? true : false;
             const media = SingleApiMediaToListItem(mediaFromApi);
 

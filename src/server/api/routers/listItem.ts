@@ -1,7 +1,7 @@
 import { createTRPCRouter, privateProcedure } from "~/server/api/trpc";
 import { z } from "zod";
 import type { MongoListItem } from "~/utils/types";
-import { ObjectId, type WithId } from "mongodb";
+import { ObjectId } from "mongodb";
 
 
 export const listItemRouter = createTRPCRouter({
@@ -36,20 +36,20 @@ export const listItemRouter = createTRPCRouter({
             });
         }),
     deleteListItem: privateProcedure
-        .input(z.instanceof(ObjectId))
+        .input(z.string())
         .mutation(async ({ ctx, input }) => {
             console.log('input', input);
             const { db } = ctx;
-            await db.db('streamsave').collection<WithId<MongoListItem>>('listItem').deleteOne({ _id: input }).catch((err: string | undefined)=>{
+            await db.db('streamsave').collection<MongoListItem>('listItem').deleteOne({ _id: new ObjectId(input) }).catch((err: string | undefined)=>{
                 throw new Error(err);
             });
         }),
     changeWatchLaterValue: privateProcedure
-        .input(z.object({id: z.instanceof(ObjectId), lastSeen: z.string(), watchLater: z.boolean()}))
+        .input(z.object({id: z.string(), lastSeen: z.string(), watchLater: z.boolean()}))
         .mutation(async ({ ctx, input }) => {
             const {id, lastSeen, watchLater} = input;
             const { db } = ctx;
-            const result = await db.db('streamsave').collection<WithId<MongoListItem>>('listItem').updateOne({_id: id}, {$set: { 'media.watchLater': watchLater, 'media.lastSeen': lastSeen }}).catch((err: string | undefined)=>{
+            const result = await db.db('streamsave').collection<MongoListItem>('listItem').updateOne({_id: new ObjectId(id)}, {$set: { 'media.watchLater': watchLater, 'media.lastSeen': lastSeen }}).catch((err: string | undefined)=>{
                 throw new Error(err);
             });
             console.log('result', result);
