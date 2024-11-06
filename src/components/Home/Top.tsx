@@ -13,8 +13,8 @@ function TopSection() {
           height={3330}
           className="w-1/4"
         />
-        <div className="mt-4">
-          <span className="text-sm font-bold tracking-wider text-slate-300">
+        <div className="mt-4 text-slate-200">
+          <span className="text-sm font-bold tracking-wider">
             Fill Your Show Hole
           </span>
           <h1 className="flex-shrink text-3xl font-medium md:text-5xl">
