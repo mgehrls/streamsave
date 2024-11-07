@@ -28,7 +28,7 @@ export default function SearchResults({
 
   if (isLoading || listLoading)
     return (
-      <div className="absolute left-0 top-20 z-40 mx-4 flex justify-center items-center min-h-[100px] max-h-[300px] flex-col gap-2 overflow-x-hidden overflow-y-scroll border-2 border-white/70 bg-[#15181c] md:mx-0 md:w-full lg:max-h-[600px]">
+      <div className="absolute left-0 top-20 z-40 mx-4 flex max-h-[300px] min-h-[100px] flex-col items-center justify-center gap-2 overflow-x-hidden overflow-y-scroll border-2 border-white/70 bg-[#15181c] md:mx-0 md:w-full lg:max-h-[600px]">
         <Loading />
       </div>
     );
@@ -44,10 +44,10 @@ export default function SearchResults({
 
   // multi searching the api can return people, this filters them out.
   const filteredData = data.filter((item: APIResult) => {
-    if (typeIsMovie(item)) {
+    if (item.media_type !== "person") {
       return true;
     } else {
-      item.media_type !== "person";
+      return false;
     }
   });
 
@@ -60,7 +60,7 @@ export default function SearchResults({
     <>
       <div
         onClick={() => resetSearch()}
-        className="fixed left-0 top-0 z-20 h-screen w-screen bg-black/80"
+        className="fixed left-0 top-0 z-20 h-screen w-screen bg-black/80 transition-none"
       />
       <div
         onClick={(e) => e.stopPropagation()}
