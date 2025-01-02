@@ -32,7 +32,7 @@ function Home() {
   } else {
     return (
       <div className="flex h-auto w-full justify-center">
-        <div className="flex w-full flex-col lg:max-w-7xl">
+        <div className="w-full flex-col lg:max-w-7xl">
           <TopSection />
           <MiddleSection />
           <BottomSection />

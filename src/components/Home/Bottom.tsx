@@ -25,13 +25,12 @@ function BottomSection() {
           <h2 className="line-clamp-1 text-xl font-bold leading-normal tracking-wider md:text-3xl lg:text-4xl  lg:leading-relaxed">
             Organized How You Want
           </h2>
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col items-center gap-4 sm:flex-row">
             <SignInButton mode="modal">
               <button className="flex items-center justify-center bg-sky-600 px-12 py-3 transition-all hover:scale-105 hover:rounded-md motion-reduce:transition-none">
                 Sign In
               </button>
             </SignInButton>
-            <p>or</p>
             <SignInButton mode="modal">
               <button className="flex items-center justify-center bg-pink-700 px-12 py-3 transition-all hover:scale-105 hover:rounded-md motion-reduce:transition-none">
                 Sign Up
